@@ -12,13 +12,13 @@ type command struct {
 }
 
 const (
-	help         = "help"
-	receiveOrder = "receive_order"
-	returnOrder  = "return_order"
-	deliverOrder = "deliver_order"
-	clientOrders = "client_orders"
-	refundOrder  = "refund_order"
-	refundsList  = "refunds_list"
+	help          = "help"
+	receiveOrder  = "receive_order"
+	returnOrder   = "return_order"
+	deliverOrders = "deliver_orders"
+	clientOrders  = "client_orders"
+	refundOrder   = "refund_order"
+	refundsList   = "refunds_list"
 )
 
 // TODO: change commands description and args
@@ -26,7 +26,7 @@ var commandsList = []command{
 	{help, "", []commandArg{}},
 	{receiveOrder, "", []commandArg{}},
 	{returnOrder, "", []commandArg{}},
-	{deliverOrder, "", []commandArg{}},
+	{deliverOrders, "", []commandArg{}},
 	{clientOrders, "", []commandArg{}},
 	{refundOrder, "", []commandArg{}},
 	{refundsList, "", []commandArg{}},

@@ -3,8 +3,9 @@ package storage
 import (
 	"encoding/json"
 	"errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/models"
 	"os"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/models"
 )
 
 type Storage struct {
@@ -15,7 +16,7 @@ func NewStorage(fileName string) Storage {
 	return Storage{fileName: fileName}
 }
 
-func (s Storage) AddOrder(newOrder models.Order) error {
+func (s Storage) AddOrder(newOrder models.Order) error { // TODO: add param sort by date
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -36,7 +37,6 @@ func (s Storage) ChangeOrders(changes map[int64]models.Order) error {
 	for i, order := range orders {
 		if _, ok := changes[order.OrderID]; ok {
 			orders[i] = changes[order.OrderID]
-			delete(changes, order.OrderID)
 		}
 	}
 	return s.RewriteAll(orders)
@@ -54,6 +54,19 @@ func (s Storage) RemoveOrder(orderID int64) error {
 		}
 	}
 	return errors.New("order not found")
+}
+
+func (s Storage) FindOrder(orderID int64) (*models.Order, error) {
+	orders, err := s.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	for _, order := range orders {
+		if order.OrderID == orderID {
+			return &order, nil
+		}
+	}
+	return nil, errors.New("order not found")
 }
 
 func (s Storage) ReadAll() ([]models.Order, error) {
