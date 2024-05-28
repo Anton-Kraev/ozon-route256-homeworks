@@ -17,4 +17,5 @@ type Order struct {
 	StoredUntil   time.Time
 	Status        Status
 	StatusChanged time.Time
+	Hash          string
 }

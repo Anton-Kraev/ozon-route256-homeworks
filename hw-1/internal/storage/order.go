@@ -22,6 +22,7 @@ func (r orderRecord) toDomain() models.Order {
 		StoredUntil:   r.StoredUntil,
 		Status:        models.Status(r.Status),
 		StatusChanged: r.StatusChanged,
+		Hash:          r.Hash,
 	}
 }
 
@@ -33,5 +34,6 @@ func toRecord(order models.Order) orderRecord {
 		StoredUntil:   order.StoredUntil,
 		Status:        string(order.Status),
 		StatusChanged: order.StatusChanged,
+		Hash:          order.Hash,
 	}
 }
