@@ -2,18 +2,26 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
+	"strings"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/cli"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/module"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/storage"
 )
 
-const (
-	fileName = "orders.json"
-)
-
 func main() {
+	var fileName string
+	if len(os.Args) > 1 {
+		fileName = os.Args[1]
+		if !strings.HasSuffix(fileName, ".json") {
+			fmt.Println("storage file must be .json")
+			return
+		}
+	} else {
+		fileName = "orders.json"
+	}
+
 	storageJSON := storage.NewStorage(fileName)
 	deliveryPointService := module.NewModule(module.Deps{
 		Storage: storageJSON,
@@ -22,8 +30,5 @@ func main() {
 		Module: deliveryPointService,
 	})
 
-	if err := commands.Run(); err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println("done")
+	commands.Run()
 }

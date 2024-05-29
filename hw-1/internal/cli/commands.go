@@ -1,33 +1,36 @@
 package cli
 
+type command struct {
+	name    string
+	desc    string
+	example string
+	args    []commandArg
+}
+
 type commandArg struct {
 	name string
 	desc string
 }
 
-type command struct {
-	name string
-	desc string
-	args []commandArg
-}
-
 const (
 	help          = "help"
-	receiveOrder  = "receive_order"
-	returnOrder   = "return_order"
-	deliverOrders = "deliver_orders"
-	clientOrders  = "client_orders"
-	refundOrder   = "refund_order"
-	refundsList   = "refunds_list"
+	exit          = "exit"
+	receiveOrder  = "receive"
+	returnOrder   = "return"
+	deliverOrders = "deliver"
+	clientOrders  = "olist"
+	refundOrder   = "refund"
+	refundsList   = "rlist"
 )
 
 // TODO: change commands description and args
 var commandsList = []command{
-	{help, "", []commandArg{}},
-	{receiveOrder, "", []commandArg{}},
-	{returnOrder, "", []commandArg{}},
-	{deliverOrders, "", []commandArg{}},
-	{clientOrders, "", []commandArg{}},
-	{refundOrder, "", []commandArg{}},
-	{refundsList, "", []commandArg{}},
+	{help, "", "", []commandArg{}},
+	{exit, "", "", []commandArg{}},
+	{receiveOrder, "", "", []commandArg{}},
+	{returnOrder, "", "", []commandArg{}},
+	{deliverOrders, "", "", []commandArg{}},
+	{clientOrders, "", "", []commandArg{}},
+	{refundOrder, "", "", []commandArg{}},
+	{refundsList, "", "", []commandArg{}},
 }
