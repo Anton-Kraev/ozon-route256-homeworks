@@ -7,8 +7,8 @@ import (
 )
 
 type orderRecord struct {
-	OrderID       int64     `json:"order_id"`
-	ClientID      int64     `json:"client_id"`
+	OrderID       uint64    `json:"order_id"`
+	ClientID      uint64    `json:"client_id"`
 	StoredUntil   time.Time `json:"stored_until"`
 	Status        string    `json:"status"`
 	StatusChanged time.Time `json:"status_changed"`

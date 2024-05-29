@@ -10,9 +10,9 @@ import (
 
 type Storage interface {
 	AddOrder(newOrder models.Order) error
-	ChangeOrders(changes map[int64]models.Order) error
-	RemoveOrder(orderID int64) error
-	FindOrder(orderID int64) (*models.Order, error)
+	ChangeOrders(changes map[uint64]models.Order) error
+	RemoveOrder(orderID uint64) error
+	FindOrder(orderID uint64) (*models.Order, error)
 	ReadAll() ([]models.Order, error)
 	RewriteAll(data []models.Order) error
 }
@@ -29,7 +29,7 @@ func NewModule(d Deps) Module {
 	return Module{Deps: d}
 }
 
-func (m Module) ReceiveOrder(orderID, clientID int64, storedUntil time.Time) error {
+func (m Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
 		return errors.New("retention time is in the past")
@@ -44,7 +44,7 @@ func (m Module) ReceiveOrder(orderID, clientID int64, storedUntil time.Time) err
 	})
 }
 
-func (m Module) ReturnOrder(orderId int64) error {
+func (m Module) ReturnOrder(orderId uint64) error {
 	order, err := m.Storage.FindOrder(orderId)
 	if err != nil {
 		return err
@@ -61,11 +61,11 @@ func (m Module) ReturnOrder(orderId int64) error {
 
 	order.Status = models.Returned
 	order.StatusChanged = now
-	return m.Storage.ChangeOrders(map[int64]models.Order{orderId: *order})
+	return m.Storage.ChangeOrders(map[uint64]models.Order{orderId: *order})
 }
 
-func (m Module) DeliverOrders(ordersID []int64) error {
-	delivered := make(map[int64]*models.Order)
+func (m Module) DeliverOrders(ordersID []uint64) error {
+	delivered := make(map[uint64]*models.Order)
 	for _, orderID := range ordersID {
 		delivered[orderID] = nil
 	}
@@ -107,7 +107,7 @@ func (m Module) DeliverOrders(ordersID []int64) error {
 		prevDelivered = &order
 	}
 
-	changes := make(map[int64]models.Order)
+	changes := make(map[uint64]models.Order)
 	for id, order := range delivered {
 		if order == nil {
 			return fmt.Errorf("order with id %d not found", id)
@@ -118,14 +118,14 @@ func (m Module) DeliverOrders(ordersID []int64) error {
 	return m.Storage.ChangeOrders(changes)
 }
 
-func (m Module) ClientOrders(clientID int64, lastN int, inStorage bool) ([]models.Order, error) {
+func (m Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
 	}
 
 	if lastN == 0 {
-		lastN = len(orders)
+		lastN = uint(len(orders))
 	}
 	var clientOrders []models.Order
 	for i := len(orders) - 1; i >= 0 && lastN > 0; i-- {
@@ -137,7 +137,7 @@ func (m Module) ClientOrders(clientID int64, lastN int, inStorage bool) ([]model
 	return clientOrders, nil
 }
 
-func (m Module) RefundOrder(orderID, clientID int64) error {
+func (m Module) RefundOrder(orderID, clientID uint64) error {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return err
@@ -157,14 +157,14 @@ func (m Module) RefundOrder(orderID, clientID int64) error {
 
 			order.Status = models.Refunded
 			order.StatusChanged = now
-			return m.Storage.ChangeOrders(map[int64]models.Order{orderID: order})
+			return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
 		}
 	}
 
 	return fmt.Errorf("order of client %d with id %d not found", clientID, orderID)
 }
 
-func (m Module) RefundsList(pageN, perPage int) ([]models.Order, error) {
+func (m Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
@@ -177,8 +177,8 @@ func (m Module) RefundsList(pageN, perPage int) ([]models.Order, error) {
 		}
 	}
 
-	if pageN*perPage >= len(refunds) {
+	if pageN*perPage >= uint(len(refunds)) {
 		return []models.Order{}, nil
 	}
-	return refunds[pageN*perPage : min(len(refunds), (pageN+1)*perPage)], err
+	return refunds[pageN*perPage : min(uint(len(refunds)), (pageN+1)*perPage)], err
 }

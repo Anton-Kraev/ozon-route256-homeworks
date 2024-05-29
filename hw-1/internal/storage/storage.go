@@ -29,7 +29,7 @@ func (s Storage) AddOrder(newOrder models.Order) error { // TODO: add param sort
 	return s.RewriteAll(append(orders, newOrder))
 }
 
-func (s Storage) ChangeOrders(changes map[int64]models.Order) error {
+func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func (s Storage) ChangeOrders(changes map[int64]models.Order) error {
 	return s.RewriteAll(orders)
 }
 
-func (s Storage) RemoveOrder(orderID int64) error {
+func (s Storage) RemoveOrder(orderID uint64) error {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (s Storage) RemoveOrder(orderID int64) error {
 	return errors.New("order not found")
 }
 
-func (s Storage) FindOrder(orderID int64) (*models.Order, error) {
+func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return nil, err

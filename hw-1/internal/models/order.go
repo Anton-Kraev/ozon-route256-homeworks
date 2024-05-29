@@ -12,8 +12,8 @@ const (
 )
 
 type Order struct {
-	OrderID       int64
-	ClientID      int64
+	OrderID       uint64
+	ClientID      uint64
 	StoredUntil   time.Time
 	Status        Status
 	StatusChanged time.Time
