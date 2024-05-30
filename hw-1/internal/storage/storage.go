@@ -16,7 +16,8 @@ func NewStorage(fileName string) Storage {
 	return Storage{fileName: fileName}
 }
 
-func (s Storage) AddOrder(newOrder models.Order) error { // TODO: add param sort by date
+// AddOrder adds new order to end of storage (if passed ID param is unique)
+func (s Storage) AddOrder(newOrder models.Order) error {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -31,6 +32,7 @@ func (s Storage) AddOrder(newOrder models.Order) error { // TODO: add param sort
 	return s.RewriteAll(append(orders, newOrder))
 }
 
+// ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>
 func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 	orders, err := s.ReadAll()
 	if err != nil {
@@ -41,12 +43,12 @@ func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 		if _, ok := changes[order.OrderID]; ok {
 			orders[i] = changes[order.OrderID]
 		}
-
 	}
 
 	return s.RewriteAll(orders)
 }
 
+// FindOrder find order with specified orderID in storage
 func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 	orders, err := s.ReadAll()
 	if err != nil {
@@ -62,6 +64,7 @@ func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 	return nil, errors.New("order not found")
 }
 
+// ReadAll return all orders
 func (s Storage) ReadAll() ([]models.Order, error) {
 	if _, err := os.Stat(s.fileName); errors.Is(err, os.ErrNotExist) {
 		f, errCreate := os.Create(s.fileName)
@@ -93,6 +96,7 @@ func (s Storage) ReadAll() ([]models.Order, error) {
 	return data, nil
 }
 
+// RewriteAll rewrites storage with specified data
 func (s Storage) RewriteAll(data []models.Order) error {
 	var orders []orderRecord
 	for _, order := range data {

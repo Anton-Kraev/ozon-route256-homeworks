@@ -31,6 +31,7 @@ func NewModule(d Deps) Module {
 	return Module{Deps: d}
 }
 
+// ReceiveOrder receives order from courier
 func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
@@ -51,6 +52,7 @@ func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) e
 	return m.Storage.AddOrder(newOrder)
 }
 
+// ReturnOrder returns order to courier
 func (m *Module) ReturnOrder(orderID uint64) error {
 	m.mu.Lock()
 	order, err := m.Storage.FindOrder(orderID)
@@ -76,6 +78,7 @@ func (m *Module) ReturnOrder(orderID uint64) error {
 	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: *order})
 }
 
+// DeliverOrders deliver list of orders to client
 func (m *Module) DeliverOrders(ordersID []uint64) error {
 	delivered := make(map[uint64]*models.Order)
 	for _, orderID := range ordersID {
@@ -147,6 +150,9 @@ func (m *Module) DeliverOrders(ordersID []uint64) error {
 	return m.Storage.ChangeOrders(changes)
 }
 
+// ClientOrders returns list of client orders
+// optional lastN for get last orders, by default return all orders
+// optional inStorage for get only orders from storage
 func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
@@ -173,6 +179,7 @@ func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]mo
 	return clientOrders, nil
 }
 
+// RefundOrder receives order refund from client
 func (m *Module) RefundOrder(orderID, clientID uint64) error {
 	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
@@ -207,6 +214,9 @@ func (m *Module) RefundOrder(orderID, clientID uint64) error {
 	return fmt.Errorf("order of client %d with id %d not found", clientID, orderID)
 }
 
+// RefundsList returns list of refunds paginated
+// optional pageN=<page number from the end>
+// optional perPage=<number of orders per page>
 func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {

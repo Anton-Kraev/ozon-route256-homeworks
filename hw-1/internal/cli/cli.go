@@ -38,6 +38,7 @@ func NewCLI(d Deps) CLI {
 	}
 }
 
+// Run runs command-line application, processes entered commands
 func (c CLI) Run() {
 	fmt.Println("The application is running")
 	fmt.Println("Type help to get a list of available commands")
@@ -200,7 +201,7 @@ func (c CLI) clientOrders(args []string) error {
 		fmt.Println("\nOrders list:")
 		for _, order := range orders {
 			fmt.Printf(
-				"orderID=%d clientID=%d status=%s\n",
+				"  orderID=%d clientID=%d status=%s\n",
 				order.OrderID, order.ClientID, order.Status,
 			)
 		}
@@ -245,7 +246,7 @@ func (c CLI) refundsList(args []string) error {
 		fmt.Println("\nRefunds list:")
 		for _, refund := range refunds {
 			fmt.Printf(
-				"orderID=%d clientID=%d refunded=%s\n",
+				"  orderID=%d clientID=%d refunded=%s\n",
 				refund.OrderID, refund.ClientID, refund.StatusChanged,
 			)
 		}
