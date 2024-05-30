@@ -21,11 +21,13 @@ func (s Storage) AddOrder(newOrder models.Order) error { // TODO: add param sort
 	if err != nil {
 		return err
 	}
+
 	for _, order := range orders {
 		if order.OrderID == newOrder.OrderID {
 			return errors.New("order ID must be unique")
 		}
 	}
+
 	return s.RewriteAll(append(orders, newOrder))
 }
 
@@ -34,11 +36,14 @@ func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 	if err != nil {
 		return err
 	}
+
 	for i, order := range orders {
 		if _, ok := changes[order.OrderID]; ok {
 			orders[i] = changes[order.OrderID]
 		}
+
 	}
+
 	return s.RewriteAll(orders)
 }
 
@@ -47,11 +52,13 @@ func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	for _, order := range orders {
 		if order.OrderID == orderID {
 			return &order, nil
 		}
 	}
+
 	return nil, errors.New("order not found")
 }
 
@@ -61,24 +68,28 @@ func (s Storage) ReadAll() ([]models.Order, error) {
 		if errCreate != nil {
 			return []models.Order{}, errCreate
 		}
+
 		if errClose := f.Close(); errClose != nil {
 			return []models.Order{}, errClose
 		}
 		return []models.Order{}, nil
 	}
-	b, errRead := os.ReadFile(s.fileName)
+
+	bytes, errRead := os.ReadFile(s.fileName)
 	if errRead != nil {
 		return []models.Order{}, errRead
 	}
 
 	var records []orderRecord
-	if errUnmarshal := json.Unmarshal(b, &records); errUnmarshal != nil {
+	if errUnmarshal := json.Unmarshal(bytes, &records); errUnmarshal != nil {
 		return []models.Order{}, errUnmarshal
 	}
+
 	var data []models.Order
 	for _, record := range records {
 		data = append(data, record.toDomain())
 	}
+
 	return data, nil
 }
 
@@ -87,9 +98,11 @@ func (s Storage) RewriteAll(data []models.Order) error {
 	for _, order := range data {
 		orders = append(orders, toRecord(order))
 	}
-	b, err := json.MarshalIndent(orders, "  ", "  ")
+
+	bytes, err := json.MarshalIndent(orders, "  ", "  ")
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(s.fileName, b, 0644)
+
+	return os.WriteFile(s.fileName, bytes, 0644)
 }
