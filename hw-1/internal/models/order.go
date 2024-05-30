@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/pkg/hash"
+)
 
 type Status string
 
@@ -18,4 +22,13 @@ type Order struct {
 	Status        Status
 	StatusChanged time.Time
 	Hash          string
+}
+
+func (o *Order) SetStatus(status Status, timeChanged time.Time) {
+	o.Status = status
+	o.StatusChanged = timeChanged
+}
+
+func (o *Order) SetHash() {
+	o.Hash = hash.GenerateHash()
 }

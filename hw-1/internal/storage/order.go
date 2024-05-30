@@ -26,7 +26,6 @@ func (r orderRecord) toDomain() models.Order {
 	}
 }
 
-// TODO: asynchronously add hash field
 func toRecord(order models.Order) orderRecord {
 	return orderRecord{
 		OrderID:       order.OrderID,

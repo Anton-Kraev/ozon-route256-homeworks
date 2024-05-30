@@ -52,9 +52,12 @@ func (c CLI) Run() {
 		} else if comm[0] == exit {
 			break
 		}
-		if err := c.handleCommand(comm[0], comm[1:]); err != nil {
-			fmt.Println(err)
-		}
+		go func() {
+			err := c.handleCommand(comm[0], comm[1:])
+			if err != nil {
+				fmt.Println(err)
+			}
+		}()
 	}
 }
 

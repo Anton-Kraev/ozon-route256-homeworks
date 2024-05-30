@@ -27,7 +27,7 @@ func main() {
 		Storage: storageJSON,
 	})
 	commands := cli.NewCLI(cli.Deps{
-		Module: deliveryPointService,
+		Module: &deliveryPointService,
 	})
 
 	commands.Run()

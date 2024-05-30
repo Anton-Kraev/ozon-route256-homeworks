@@ -3,6 +3,7 @@ package module
 import (
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/models"
@@ -11,7 +12,6 @@ import (
 type Storage interface {
 	AddOrder(newOrder models.Order) error
 	ChangeOrders(changes map[uint64]models.Order) error
-	RemoveOrder(orderID uint64) error
 	FindOrder(orderID uint64) (*models.Order, error)
 	ReadAll() ([]models.Order, error)
 	RewriteAll(data []models.Order) error
@@ -23,29 +23,37 @@ type Deps struct {
 
 type Module struct {
 	Deps
+	mu sync.Mutex
 }
 
 func NewModule(d Deps) Module {
 	return Module{Deps: d}
 }
 
-func (m Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
+func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
 		return errors.New("retention time is in the past")
 	}
 
-	return m.Storage.AddOrder(models.Order{
+	newOrder := models.Order{
 		OrderID:       orderID,
 		ClientID:      clientID,
 		StoredUntil:   storedUntil,
 		Status:        models.Received,
 		StatusChanged: now,
-	})
+	}
+	newOrder.SetHash()
+
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.Storage.AddOrder(newOrder)
 }
 
-func (m Module) ReturnOrder(orderId uint64) error {
+func (m *Module) ReturnOrder(orderId uint64) error {
+	m.mu.Lock()
 	order, err := m.Storage.FindOrder(orderId)
+	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
@@ -59,26 +67,37 @@ func (m Module) ReturnOrder(orderId uint64) error {
 		return errors.New("order has been delivered to client")
 	}
 
-	order.Status = models.Returned
-	order.StatusChanged = now
+	order.SetStatus(models.Returned, now)
+	order.SetHash()
+
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	return m.Storage.ChangeOrders(map[uint64]models.Order{orderId: *order})
 }
 
-func (m Module) DeliverOrders(ordersID []uint64) error {
+func (m *Module) DeliverOrders(ordersID []uint64) error {
 	delivered := make(map[uint64]*models.Order)
 	for _, orderID := range ordersID {
 		delivered[orderID] = nil
 	}
 
+	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
+	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
 
-	var prevDelivered *models.Order
+	var wg sync.WaitGroup
+	var prevDelivered models.Order
+	wg.Add(len(orders))
 	for _, order := range orders {
+		if _, ok := delivered[order.OrderID]; !ok {
+			continue
+		}
+
 		now := time.Now().UTC()
-		if prevDelivered != nil {
+		if prevDelivered.OrderID != 0 {
 			var errDifferentClient, errNotReceived, errExpired error
 			if order.ClientID != prevDelivered.ClientID {
 				errDifferentClient = fmt.Errorf(
@@ -101,12 +120,16 @@ func (m Module) DeliverOrders(ordersID []uint64) error {
 			}
 		}
 
-		order.Status = models.Delivered
-		order.StatusChanged = time.Now().UTC()
-		delivered[order.OrderID] = &order
-		prevDelivered = &order
+		prevDelivered = order
+		go func(order models.Order) {
+			defer wg.Done()
+			order.SetStatus(models.Delivered, now)
+			order.SetHash()
+			delivered[order.OrderID] = &order
+		}(order)
 	}
 
+	wg.Wait()
 	changes := make(map[uint64]models.Order)
 	for id, order := range delivered {
 		if order == nil {
@@ -115,10 +138,12 @@ func (m Module) DeliverOrders(ordersID []uint64) error {
 		changes[id] = *order
 	}
 
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	return m.Storage.ChangeOrders(changes)
 }
 
-func (m Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
+func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
@@ -137,8 +162,10 @@ func (m Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]mod
 	return clientOrders, nil
 }
 
-func (m Module) RefundOrder(orderID, clientID uint64) error {
+func (m *Module) RefundOrder(orderID, clientID uint64) error {
+	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
+	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
@@ -155,16 +182,18 @@ func (m Module) RefundOrder(orderID, clientID uint64) error {
 				return fmt.Errorf("more than two 2 days since order was deliverec")
 			}
 
-			order.Status = models.Refunded
-			order.StatusChanged = now
+			order.SetStatus(models.Refunded, now)
+			order.SetHash()
 			return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
 		}
 	}
 
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	return fmt.Errorf("order of client %d with id %d not found", clientID, orderID)
 }
 
-func (m Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
+func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
