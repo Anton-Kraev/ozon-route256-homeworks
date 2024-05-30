@@ -187,7 +187,7 @@ func (c CLI) clientOrders(args []string) error {
 	fs := flag.NewFlagSet(clientOrders, flag.ContinueOnError)
 	fs.Uint64Var(&clientID, "clientID", 0, "use --clientID=12345")
 	fs.UintVar(&lastN, "lastN", 0, "use --lastN=10")
-	fs.BoolVar(&inStorage, "storedUntil", false, "use --inStorage")
+	fs.BoolVar(&inStorage, "inStorage", false, "use --inStorage")
 
 	if err := fs.Parse(args); err != nil {
 		return err

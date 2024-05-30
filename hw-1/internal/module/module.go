@@ -97,7 +97,7 @@ func (m *Module) DeliverOrders(ordersID []uint64) error {
 		wg            sync.WaitGroup
 	)
 
-	wg.Add(len(orders))
+	wg.Add(len(ordersID))
 
 	for _, order := range orders {
 		if _, ok := delivered[order.OrderID]; !ok {
@@ -160,7 +160,7 @@ func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]mo
 	}
 
 	sort.Slice(orders, func(i, j int) bool {
-		return orders[i].StatusChanged.After(orders[i].StatusChanged)
+		return orders[i].StatusChanged.After(orders[j].StatusChanged)
 	})
 
 	if lastN == 0 {
@@ -224,7 +224,7 @@ func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	}
 
 	sort.Slice(orders, func(i, j int) bool {
-		return orders[i].StatusChanged.After(orders[i].StatusChanged)
+		return orders[i].StatusChanged.After(orders[j].StatusChanged)
 	})
 
 	var refunds []models.Order
@@ -241,5 +241,5 @@ func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	if pageN*perPage >= uint(len(refunds)) {
 		return []models.Order{}, nil
 	}
-	return refunds[pageN*perPage : max(uint(len(refunds)), (pageN+1)*perPage)], nil
+	return refunds[pageN*perPage : min(uint(len(refunds)), (pageN+1)*perPage)], nil
 }
