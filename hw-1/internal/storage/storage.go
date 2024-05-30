@@ -42,20 +42,6 @@ func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 	return s.RewriteAll(orders)
 }
 
-func (s Storage) RemoveOrder(orderID uint64) error {
-	orders, err := s.ReadAll()
-	if err != nil {
-		return err
-	}
-	for i, order := range orders {
-		if order.OrderID == orderID {
-			orders[i] = orders[len(orders)-1]
-			return s.RewriteAll(orders)
-		}
-	}
-	return errors.New("order not found")
-}
-
 func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 	orders, err := s.ReadAll()
 	if err != nil {
