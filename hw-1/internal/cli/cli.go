@@ -44,22 +44,31 @@ func (c CLI) Run() {
 	defer fmt.Println("The application has been stopped")
 
 	scanner := bufio.NewScanner(os.Stdin)
+	globalCounter := 1
+	fmt.Print("1) ")
 
 	for scanner.Scan() {
 		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
-
 		if len(comm) == 0 || comm[0] == "" {
+			fmt.Printf("%d) ", globalCounter)
 			continue
 		}
 		if comm[0] == exit {
 			break
 		}
 
-		go func() {
-			if err := c.handleCommand(comm[0], comm[1:]); err != nil {
-				fmt.Println(err)
+		go func(localCounter int) {
+			err := c.handleCommand(comm[0], comm[1:])
+			fmt.Println()
+			if err != nil {
+				fmt.Printf("%d) error: %v\n", localCounter, err)
+			} else {
+				fmt.Printf("%d) ok\n", localCounter)
 			}
-		}()
+			fmt.Printf("%d) ", globalCounter)
+		}(globalCounter)
+
+		globalCounter++
 	}
 }
 
@@ -86,17 +95,11 @@ func (c CLI) handleCommand(comm string, args []string) error {
 }
 
 func (c CLI) help() {
-	fmt.Println("Available commands list:")
-
+	fmt.Println("\nAvailable commands list:")
 	for _, cmd := range c.availableCommands {
 		fmt.Printf("  name: %s\n", cmd.name)
 		fmt.Printf("  description: %s\n", cmd.desc)
-		fmt.Printf("  usage: %s\n", cmd.example)
-		fmt.Printf("  args:\n")
-
-		for _, arg := range cmd.args {
-			fmt.Printf("--%2s: %s\n", arg.name, arg.desc)
-		}
+		fmt.Printf("  usage: %s\n\n", cmd.usage)
 	}
 }
 
@@ -194,9 +197,12 @@ func (c CLI) clientOrders(args []string) error {
 
 	orders, err := c.Module.ClientOrders(clientID, lastN, inStorage)
 	if err == nil {
-		fmt.Println("Orders id list")
+		fmt.Println("\nOrders list:")
 		for _, order := range orders {
-			fmt.Println(order.OrderID)
+			fmt.Printf(
+				"orderID=%d clientID=%d status=%s\n",
+				order.OrderID, order.ClientID, order.Status,
+			)
 		}
 	}
 
@@ -236,9 +242,12 @@ func (c CLI) refundsList(args []string) error {
 
 	refunds, err := c.Module.RefundsList(pageN, perPage)
 	if err == nil {
-		fmt.Println("Refunds list")
+		fmt.Println("\nRefunds list:")
 		for _, refund := range refunds {
-			fmt.Printf("order id = %d, date refunded = %s", refund.OrderID, refund.StatusChanged)
+			fmt.Printf(
+				"orderID=%d clientID=%d refunded=%s\n",
+				refund.OrderID, refund.ClientID, refund.StatusChanged,
+			)
 		}
 	}
 
