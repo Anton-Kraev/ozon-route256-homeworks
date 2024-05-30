@@ -46,9 +46,11 @@ func (c CLI) Run() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		scanner.Scan()
-		comm := strings.Split(scanner.Text(), " ")
-		if len(comm) == 0 {
+		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
+		if len(comm) == 0 || comm[0] == "" {
 			continue
+		} else if comm[0] == exit {
+			break
 		}
 		if err := c.handleCommand(comm[0], comm[1:]); err != nil {
 			fmt.Println(err)
@@ -58,8 +60,6 @@ func (c CLI) Run() {
 
 func (c CLI) handleCommand(comm string, args []string) error {
 	switch comm {
-	case exit:
-		return nil
 	case help:
 		c.help()
 		return nil
@@ -76,7 +76,7 @@ func (c CLI) handleCommand(comm string, args []string) error {
 	case refundsList:
 		return c.refundsList(args)
 	default:
-		return fmt.Errorf("Unknown command %s\n", comm)
+		return fmt.Errorf("unknown command %s", comm)
 	}
 }
 
@@ -102,7 +102,7 @@ func (c CLI) receiveOrder(args []string) error {
 	fs := flag.NewFlagSet(receiveOrder, flag.ContinueOnError)
 	fs.Uint64Var(&orderID, "orderID", 0, "use --orderID=12345")
 	fs.Uint64Var(&clientID, "clientID", 0, "use --clientID=67890")
-	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil=\"01.01.2024 09:10:11\"")
+	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil=02.01.2006-15:04:05")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func (c CLI) receiveOrder(args []string) error {
 	if clientID == 0 {
 		return errors.New("clientID must be positive number")
 	}
-	storedUntil, errTime := time.Parse("02.01.2006 15.04.05", storedUntilStr)
+	storedUntil, errTime := time.Parse("02.01.2006-15:04:05", storedUntilStr)
 	if errTime != nil {
 		return errTime
 	}
@@ -180,9 +180,6 @@ func (c CLI) clientOrders(args []string) error {
 	if clientID == 0 {
 		return errors.New("clientID must be positive number")
 	}
-	if lastN == 0 {
-		return errors.New("lastN must be positive number")
-	}
 
 	orders, err := c.Module.ClientOrders(clientID, lastN, inStorage)
 	if err == nil {
@@ -222,10 +219,6 @@ func (c CLI) refundsList(args []string) error {
 	fs.UintVar(&perPage, "perPage", 0, "use --perPage=10")
 	if err := fs.Parse(args); err != nil {
 		return err
-	}
-
-	if perPage == 0 {
-		return errors.New("perPage must be positive number")
 	}
 
 	refunds, err := c.Module.RefundsList(pageN, perPage)

@@ -151,7 +151,7 @@ func (m Module) RefundOrder(orderID, clientID uint64) error {
 				return fmt.Errorf("order with id %d was not delivered to client yet", order.OrderID)
 			}
 			now := time.Now().UTC()
-			if now.Add(time.Hour * 48).After(order.StatusChanged) {
+			if order.StatusChanged.Add(time.Hour * 48).Before(now) {
 				return fmt.Errorf("more than two 2 days since order was deliverec")
 			}
 
@@ -180,5 +180,8 @@ func (m Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	if pageN*perPage >= uint(len(refunds)) {
 		return []models.Order{}, nil
 	}
-	return refunds[pageN*perPage : min(uint(len(refunds)), (pageN+1)*perPage)], err
+	if perPage > uint(len(refunds)) || perPage == 0 {
+		perPage = uint(len(refunds))
+	}
+	return refunds[pageN*perPage : (pageN+1)*perPage], err
 }
