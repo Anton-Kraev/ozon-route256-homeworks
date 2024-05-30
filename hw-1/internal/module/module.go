@@ -3,6 +3,7 @@ package module
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"sync"
 	"time"
 
@@ -152,15 +153,20 @@ func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]mo
 		return []models.Order{}, err
 	}
 
+	sort.Slice(orders, func(i, j int) bool {
+		return orders[i].StatusChanged.After(orders[i].StatusChanged)
+	})
+
 	if lastN == 0 {
 		lastN = uint(len(orders))
 	}
 
 	var clientOrders []models.Order
-	for i := len(orders) - 1; i >= 0 && lastN > 0; i-- {
+	for i := 0; i < len(orders) && lastN > 0; i++ {
 		if orders[i].ClientID == clientID &&
 			(!inStorage || orders[i].Status == models.Received || orders[i].Status == models.Refunded) {
 			clientOrders = append(clientOrders, orders[i])
+			lastN--
 		}
 	}
 
@@ -187,7 +193,7 @@ func (m *Module) RefundOrder(orderID, clientID uint64) error {
 		}
 		now := time.Now().UTC()
 		if order.StatusChanged.Add(time.Hour * 48).Before(now) {
-			return fmt.Errorf("more than two 2 days since order was deliverec")
+			return fmt.Errorf("more than two 2 days since order was delivered")
 		}
 
 		order.SetStatus(models.Refunded, now)
@@ -207,6 +213,10 @@ func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 		return []models.Order{}, err
 	}
 
+	sort.Slice(orders, func(i, j int) bool {
+		return orders[i].StatusChanged.After(orders[i].StatusChanged)
+	})
+
 	var refunds []models.Order
 	for _, order := range orders {
 		if order.Status == models.Refunded {
@@ -221,5 +231,5 @@ func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	if pageN*perPage >= uint(len(refunds)) {
 		return []models.Order{}, nil
 	}
-	return refunds[pageN*perPage : (pageN+1)*perPage], err
+	return refunds[pageN*perPage : max(uint(len(refunds)), (pageN+1)*perPage)], nil
 }
