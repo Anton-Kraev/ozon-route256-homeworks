@@ -41,35 +41,27 @@ func (c CLI) Run() {
 	defer fmt.Println("The application has been stopped")
 
 	scanner := bufio.NewScanner(os.Stdin)
-	globalCounter := 1
-	fmt.Print("1) ")
+	cmdCounter := 1
 
 	for scanner.Scan() {
+		fmt.Printf("%d) ", cmdCounter)
+
 		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
 		if len(comm) == 0 || comm[0] == "" {
-			fmt.Printf("%d) ", globalCounter)
 			continue
 		}
 		if comm[0] == exit {
 			break
 		}
 
-		go func(localCounter int) {
-			err := c.handleCommand(comm[0], comm[1:])
-			fmt.Println()
-			printResult(localCounter, err)
-			fmt.Printf("%d) ", globalCounter)
-		}(globalCounter)
+		err := c.handleCommand(comm[0], comm[1:])
+		if err != nil {
+			fmt.Printf("%d) error: %v\n", cmdCounter, err)
+		} else {
+			fmt.Printf("%d) ok\n", cmdCounter)
+		}
 
-		globalCounter++
-	}
-}
-
-func printResult(counter int, err error) {
-	if err != nil {
-		fmt.Printf("%d) error: %v\n", counter, err)
-	} else {
-		fmt.Printf("%d) ok\n", counter)
+		cmdCounter++
 	}
 }
 

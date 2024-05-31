@@ -2,7 +2,6 @@ package module
 
 import (
 	"sort"
-	"sync"
 	"time"
 
 	domainErrors "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
@@ -19,7 +18,6 @@ type orderStorage interface {
 
 type OrderModule struct {
 	Storage orderStorage
-	mu      sync.Mutex
 }
 
 func NewOrderModule(storage orderStorage) OrderModule {
@@ -42,16 +40,12 @@ func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Ti
 	}
 	newOrder.SetHash()
 
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	return m.Storage.AddOrder(newOrder)
 }
 
 // ReturnOrder returns order to courier
 func (m *OrderModule) ReturnOrder(orderID uint64) error {
-	m.mu.Lock()
 	order, err := m.Storage.FindOrder(orderID)
-	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
@@ -70,8 +64,6 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	order.SetStatus(models.Returned, now)
 	order.SetHash()
 
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: *order})
 }
 
@@ -82,19 +74,12 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 		delivered[orderID] = nil
 	}
 
-	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
-	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
 
-	var (
-		prevDelivered models.Order
-		wg            sync.WaitGroup
-	)
-
-	wg.Add(len(ordersID))
+	var prevDelivered models.Order
 
 	for _, order := range orders {
 		if _, ok := delivered[order.OrderID]; !ok {
@@ -113,17 +98,12 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 			return domainErrors.ErrRetentionPeriodExpired(order.OrderID)
 		}
 
+		order.SetStatus(models.Delivered, now)
+		order.SetHash()
+
 		prevDelivered = order
-
-		go func(order models.Order) {
-			defer wg.Done()
-			order.SetStatus(models.Delivered, now)
-			order.SetHash()
-			delivered[order.OrderID] = &order
-		}(order)
+		delivered[order.OrderID] = &order
 	}
-
-	wg.Wait()
 
 	changes := make(map[uint64]models.Order)
 	for id, order := range delivered {
@@ -133,8 +113,6 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 		changes[id] = *order
 	}
 
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	return m.Storage.ChangeOrders(changes)
 }
 
@@ -174,9 +152,7 @@ func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, onlyInStorage bo
 
 // RefundOrder receives order refund from client
 func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
-	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
-	m.mu.Unlock()
 	if err != nil {
 		return err
 	}
@@ -203,8 +179,6 @@ func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
 		return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
 	}
 
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	return domainErrors.ErrOrderNotFound(orderID)
 }
 
