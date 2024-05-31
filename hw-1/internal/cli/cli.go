@@ -57,15 +57,19 @@ func (c CLI) Run() {
 		go func(localCounter int) {
 			err := c.handleCommand(comm[0], comm[1:])
 			fmt.Println()
-			if err != nil {
-				fmt.Printf("%d) error: %v\n", localCounter, err)
-			} else {
-				fmt.Printf("%d) ok\n", localCounter)
-			}
+			printResult(localCounter, err)
 			fmt.Printf("%d) ", globalCounter)
 		}(globalCounter)
 
 		globalCounter++
+	}
+}
+
+func printResult(counter int, err error) {
+	if err != nil {
+		fmt.Printf("%d) error: %v\n", counter, err)
+	} else {
+		fmt.Printf("%d) ok\n", counter)
 	}
 }
 
@@ -101,6 +105,7 @@ func (c CLI) help() {
 }
 
 func (c CLI) receiveOrder(args []string) error {
+	const timeFormat = "02.01.2006-15:04:05"
 	var (
 		orderID, clientID uint64
 		storedUntilStr    string
@@ -109,7 +114,7 @@ func (c CLI) receiveOrder(args []string) error {
 	fs := flag.NewFlagSet(receiveOrder, flag.ContinueOnError)
 	fs.Uint64Var(&orderID, "orderID", 0, "use --orderID=12345")
 	fs.Uint64Var(&clientID, "clientID", 0, "use --clientID=67890")
-	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil=02.01.2006-15:04:05")
+	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil="+timeFormat)
 
 	if err := fs.Parse(args); err != nil {
 		return err
@@ -120,7 +125,7 @@ func (c CLI) receiveOrder(args []string) error {
 	if clientID == 0 {
 		return errors.New("clientID must be positive number")
 	}
-	storedUntil, errTime := time.Parse("02.01.2006-15:04:05", storedUntilStr)
+	storedUntil, errTime := time.Parse(timeFormat, storedUntilStr)
 	if errTime != nil {
 		return errTime
 	}

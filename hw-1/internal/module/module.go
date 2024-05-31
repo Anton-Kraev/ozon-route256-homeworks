@@ -59,9 +59,11 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	now := time.Now().UTC()
 	if order.StoredUntil.After(now) {
 		return domainErrors.ErrRetentionPeriodNotExpiredYet
-	} else if order.Status == models.Returned {
+	}
+	if order.Status == models.Returned {
 		return domainErrors.ErrOrderAlreadyReturned
-	} else if order.Status == models.Delivered {
+	}
+	if order.Status == models.Delivered {
 		return domainErrors.ErrOrderDelivered
 	}
 
@@ -139,7 +141,7 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 // ClientOrders returns list of client orders
 // optional lastN for get last orders, by default return all orders
 // optional inStorage for get only orders from storage
-func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
+func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, onlyInStorage bool) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
@@ -154,10 +156,15 @@ func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, inStorage bool) 
 	}
 
 	var clientOrders []models.Order
-	for i := 0; i < len(orders) && lastN > 0; i++ {
-		if orders[i].ClientID == clientID &&
-			(!inStorage || orders[i].Status == models.Received || orders[i].Status == models.Refunded) {
-			clientOrders = append(clientOrders, orders[i])
+
+	for _, order := range orders {
+		if lastN == 0 {
+			break
+		}
+
+		inStorage := order.Status == models.Received || order.Status == models.Refunded
+		if order.ClientID == clientID && (inStorage || !onlyInStorage) {
+			clientOrders = append(clientOrders, order)
 			lastN--
 		}
 	}
@@ -181,7 +188,8 @@ func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
 
 		if order.Status == models.Refunded {
 			return domainErrors.ErrOrderAlreadyRefunded
-		} else if order.Status != models.Delivered {
+		}
+		if order.Status != models.Delivered {
 			return domainErrors.ErrOrderNotDeliveredYet
 		}
 		now := time.Now().UTC()
