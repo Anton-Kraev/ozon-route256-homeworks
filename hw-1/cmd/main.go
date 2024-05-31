@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"strings"
+	"log"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/cli"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/module"
@@ -11,15 +9,9 @@ import (
 )
 
 func main() {
-	var fileName string
-	if len(os.Args) > 1 {
-		fileName = os.Args[1]
-		if !strings.HasSuffix(fileName, ".json") {
-			fmt.Println("storage file must be .json")
-			return
-		}
-	} else {
-		fileName = "orders.json"
+	fileName, err := parseArgs()
+	if err != nil {
+		log.Fatalln(err)
 	}
 
 	storageJSON := storage.NewOrderStorage(fileName)
