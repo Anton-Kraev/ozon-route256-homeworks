@@ -8,16 +8,16 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-type Storage struct {
+type OrderStorage struct {
 	fileName string
 }
 
-func NewStorage(fileName string) Storage {
-	return Storage{fileName: fileName}
+func NewOrderStorage(fileName string) OrderStorage {
+	return OrderStorage{fileName: fileName}
 }
 
 // AddOrder adds new order to end of storage (if passed ID param is unique)
-func (s Storage) AddOrder(newOrder models.Order) error {
+func (s OrderStorage) AddOrder(newOrder models.Order) error {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -33,7 +33,7 @@ func (s Storage) AddOrder(newOrder models.Order) error {
 }
 
 // ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>
-func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
+func (s OrderStorage) ChangeOrders(changes map[uint64]models.Order) error {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return err
@@ -49,7 +49,7 @@ func (s Storage) ChangeOrders(changes map[uint64]models.Order) error {
 }
 
 // FindOrder find order with specified orderID in storage
-func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
+func (s OrderStorage) FindOrder(orderID uint64) (*models.Order, error) {
 	orders, err := s.ReadAll()
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (s Storage) FindOrder(orderID uint64) (*models.Order, error) {
 }
 
 // ReadAll return all orders
-func (s Storage) ReadAll() ([]models.Order, error) {
+func (s OrderStorage) ReadAll() ([]models.Order, error) {
 	if _, err := os.Stat(s.fileName); errors.Is(err, os.ErrNotExist) {
 		f, errCreate := os.Create(s.fileName)
 		if errCreate != nil {
@@ -97,7 +97,7 @@ func (s Storage) ReadAll() ([]models.Order, error) {
 }
 
 // RewriteAll rewrites storage with specified data
-func (s Storage) RewriteAll(data []models.Order) error {
+func (s OrderStorage) RewriteAll(data []models.Order) error {
 	var orders []orderRecord
 	for _, order := range data {
 		orders = append(orders, toRecord(order))

@@ -13,7 +13,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-type Module interface {
+type orderModule interface {
 	ReceiveOrder(orderID uint64, clientID uint64, storedUntil time.Time) error
 	ReturnOrder(orderID uint64) error
 	DeliverOrders(ordersID []uint64) error
@@ -22,18 +22,14 @@ type Module interface {
 	RefundsList(pageN uint, perPage uint) ([]models.Order, error)
 }
 
-type Deps struct {
-	Module Module
-}
-
 type CLI struct {
-	Deps
+	Module            orderModule
 	availableCommands []command
 }
 
-func NewCLI(d Deps) CLI {
+func NewCLI(module orderModule) CLI {
 	return CLI{
-		Deps:              d,
+		Module:            module,
 		availableCommands: commandsList,
 	}
 }

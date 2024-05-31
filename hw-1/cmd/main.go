@@ -22,13 +22,9 @@ func main() {
 		fileName = "orders.json"
 	}
 
-	storageJSON := storage.NewStorage(fileName)
-	deliveryPointService := module.NewModule(module.Deps{
-		Storage: storageJSON,
-	})
-	commands := cli.NewCLI(cli.Deps{
-		Module: &deliveryPointService,
-	})
+	storageJSON := storage.NewOrderStorage(fileName)
+	deliveryPointService := module.NewOrderModule(storageJSON)
+	commands := cli.NewCLI(&deliveryPointService)
 
 	commands.Run()
 }

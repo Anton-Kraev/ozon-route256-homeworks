@@ -9,7 +9,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-type Storage interface {
+type orderStorage interface {
 	AddOrder(newOrder models.Order) error
 	ChangeOrders(changes map[uint64]models.Order) error
 	FindOrder(orderID uint64) (*models.Order, error)
@@ -17,21 +17,17 @@ type Storage interface {
 	RewriteAll(data []models.Order) error
 }
 
-type Deps struct {
-	Storage Storage
+type OrderModule struct {
+	Storage orderStorage
+	mu      sync.Mutex
 }
 
-type Module struct {
-	Deps
-	mu sync.Mutex
-}
-
-func NewModule(d Deps) Module {
-	return Module{Deps: d}
+func NewOrderModule(storage orderStorage) OrderModule {
+	return OrderModule{Storage: storage}
 }
 
 // ReceiveOrder receives order from courier
-func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
+func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
 		return domainErrors.ErrRetentionTimeInPast
@@ -52,7 +48,7 @@ func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) e
 }
 
 // ReturnOrder returns order to courier
-func (m *Module) ReturnOrder(orderID uint64) error {
+func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	m.mu.Lock()
 	order, err := m.Storage.FindOrder(orderID)
 	m.mu.Unlock()
@@ -78,7 +74,7 @@ func (m *Module) ReturnOrder(orderID uint64) error {
 }
 
 // DeliverOrders deliver list of orders to client
-func (m *Module) DeliverOrders(ordersID []uint64) error {
+func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 	delivered := make(map[uint64]*models.Order)
 	for _, orderID := range ordersID {
 		delivered[orderID] = nil
@@ -143,7 +139,7 @@ func (m *Module) DeliverOrders(ordersID []uint64) error {
 // ClientOrders returns list of client orders
 // optional lastN for get last orders, by default return all orders
 // optional inStorage for get only orders from storage
-func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
+func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
@@ -170,7 +166,7 @@ func (m *Module) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]mo
 }
 
 // RefundOrder receives order refund from client
-func (m *Module) RefundOrder(orderID, clientID uint64) error {
+func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
 	m.mu.Lock()
 	orders, err := m.Storage.ReadAll()
 	m.mu.Unlock()
@@ -207,7 +203,7 @@ func (m *Module) RefundOrder(orderID, clientID uint64) error {
 // RefundsList returns list of refunds paginated
 // optional pageN=<page number from the end>
 // optional perPage=<number of orders per page>
-func (m *Module) RefundsList(pageN, perPage uint) ([]models.Order, error) {
+func (m *OrderModule) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	orders, err := m.Storage.ReadAll()
 	if err != nil {
 		return []models.Order{}, err
