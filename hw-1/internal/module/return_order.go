@@ -3,7 +3,7 @@ package module
 import (
 	"time"
 
-	domainErrors "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
@@ -16,13 +16,13 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 
 	now := time.Now().UTC()
 	if order.StoredUntil.After(now) {
-		return domainErrors.ErrRetentionPeriodNotExpiredYet
+		return errsdomain.ErrRetentionPeriodNotExpiredYet
 	}
 	if order.Status == models.Returned {
-		return domainErrors.ErrOrderAlreadyReturned
+		return errsdomain.ErrOrderAlreadyReturned
 	}
 	if order.Status == models.Delivered {
-		return domainErrors.ErrOrderDelivered
+		return errsdomain.ErrOrderDelivered
 	}
 
 	order.SetStatus(models.Returned, now)
