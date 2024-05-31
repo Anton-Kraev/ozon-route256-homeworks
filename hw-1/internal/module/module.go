@@ -1,13 +1,12 @@
 package module
 
 import (
-	"errors"
-	"fmt"
 	"sort"
 	"sync"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/models"
+	domainErrors "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
 type Storage interface {
@@ -35,7 +34,7 @@ func NewModule(d Deps) Module {
 func (m *Module) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
-		return errors.New("retention time is in the past")
+		return domainErrors.ErrRetentionTimeInPast
 	}
 
 	newOrder := models.Order{
@@ -63,11 +62,11 @@ func (m *Module) ReturnOrder(orderID uint64) error {
 
 	now := time.Now().UTC()
 	if order.StoredUntil.After(now) {
-		return errors.New("retention period isn't expired yet")
+		return domainErrors.ErrRetentionPeriodNotExpiredYet
 	} else if order.Status == models.Returned {
-		return errors.New("order has been already returned")
+		return domainErrors.ErrOrderAlreadyReturned
 	} else if order.Status == models.Delivered {
-		return errors.New("order has been delivered to client")
+		return domainErrors.ErrOrderDelivered
 	}
 
 	order.SetStatus(models.Returned, now)
@@ -107,22 +106,13 @@ func (m *Module) DeliverOrders(ordersID []uint64) error {
 		now := time.Now().UTC()
 
 		if prevDelivered.OrderID != 0 && order.ClientID != prevDelivered.ClientID {
-			return fmt.Errorf(
-				"orders with id %d and %d belong to different clients",
-				order.ClientID, prevDelivered.ClientID,
-			)
+			return domainErrors.ErrDifferentClientOrders(order.ClientID, prevDelivered.ClientID)
 		}
 		if order.Status != models.Received {
-			return fmt.Errorf(
-				"order with id %d has the %s status",
-				order.OrderID, order.Status,
-			)
+			return domainErrors.ErrUnexpectedOrderStatus(order.OrderID, order.Status)
 		}
 		if now.After(order.StoredUntil) {
-			return fmt.Errorf(
-				"retention period of order with id %d has expired",
-				order.OrderID,
-			)
+			return domainErrors.ErrRetentionPeriodExpired(order.OrderID)
 		}
 
 		prevDelivered = order
@@ -140,7 +130,7 @@ func (m *Module) DeliverOrders(ordersID []uint64) error {
 	changes := make(map[uint64]models.Order)
 	for id, order := range delivered {
 		if order == nil {
-			return fmt.Errorf("order with id %d not found", id)
+			return domainErrors.ErrOrderNotFound(id)
 		}
 		changes[id] = *order
 	}
@@ -194,13 +184,13 @@ func (m *Module) RefundOrder(orderID, clientID uint64) error {
 		}
 
 		if order.Status == models.Refunded {
-			return fmt.Errorf("order with id %d has been already refunded", order.OrderID)
+			return domainErrors.ErrOrderAlreadyRefunded
 		} else if order.Status != models.Delivered {
-			return fmt.Errorf("order with id %d was not delivered to client yet", order.OrderID)
+			return domainErrors.ErrOrderNotDeliveredYet
 		}
 		now := time.Now().UTC()
 		if order.StatusChanged.Add(time.Hour * 48).Before(now) {
-			return fmt.Errorf("more than two 2 days since order was delivered")
+			return domainErrors.ErrOrderDeliveredLongAgo
 		}
 
 		order.SetStatus(models.Refunded, now)
@@ -211,7 +201,7 @@ func (m *Module) RefundOrder(orderID, clientID uint64) error {
 
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return fmt.Errorf("order of client %d with id %d not found", clientID, orderID)
+	return domainErrors.ErrOrderNotFound(orderID)
 }
 
 // RefundsList returns list of refunds paginated

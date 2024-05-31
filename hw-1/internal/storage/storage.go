@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
 type Storage struct {
