@@ -27,6 +27,7 @@ func (c CLI) receiveOrder(args []string) error {
 	if clientID == 0 {
 		return errors.New("clientID must be positive number")
 	}
+
 	storedUntil, errTime := time.Parse(timeFormat, storedUntilStr)
 	if errTime != nil {
 		return errTime

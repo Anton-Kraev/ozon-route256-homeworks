@@ -19,8 +19,8 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	}
 
 	order := orders[0]
-
 	now := time.Now().UTC()
+
 	if order.StoredUntil.After(now) {
 		return errsdomain.ErrRetentionPeriodNotExpiredYet
 	}
