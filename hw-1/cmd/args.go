@@ -1,13 +1,13 @@
 package main
 
 import (
-	"errors"
 	"flag"
+	"log"
 	"os"
 	"strings"
 )
 
-func parseArgs() (string, error) {
+func parseArgs() string {
 	var (
 		args     = os.Args[1:]
 		fileName string
@@ -17,11 +17,11 @@ func parseArgs() (string, error) {
 	fs.StringVar(&fileName, "filename", "orders.json", "use --filename=orders.json")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		log.Fatalln(err)
 	}
 	if !strings.HasSuffix(fileName, ".json") {
-		return "", errors.New("storage file must be .json")
+		log.Fatalln("storage file must be .json")
 	}
 
-	return fileName, nil
+	return fileName
 }
