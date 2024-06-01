@@ -39,12 +39,12 @@ func (c CLI) Run() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 	cmdCounter := 1
+	fmt.Printf("%d) ", cmdCounter)
 
 	for scanner.Scan() {
-		fmt.Printf("%d) ", cmdCounter)
-
 		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
 		if len(comm) == 0 || comm[0] == "" {
+			fmt.Printf("%d) ", cmdCounter)
 			continue
 		}
 		if comm[0] == exit {
@@ -59,6 +59,7 @@ func (c CLI) Run() {
 		}
 
 		cmdCounter++
+		fmt.Printf("%d) ", cmdCounter)
 	}
 }
 
