@@ -1,18 +1,10 @@
 package models
 
 import (
+	"slices"
 	"time"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/pkg/hash"
-)
-
-type Status string
-
-const (
-	Received  Status = "received"
-	Returned  Status = "returned"
-	Delivered Status = "delivered"
-	Refunded  Status = "refunded"
 )
 
 type Order struct {
@@ -31,4 +23,12 @@ func (o *Order) SetStatus(status Status, timeChanged time.Time) {
 
 func (o *Order) SetHash() {
 	o.Hash = hash.GenerateHash()
+}
+
+func (o *Order) MatchesFilter(filter OrderFilter) bool {
+	matchesOrderID := len(filter.OrdersID) == 0 || slices.Contains(filter.OrdersID, o.OrderID)
+	matchesClientId := len(filter.ClientsID) == 0 || slices.Contains(filter.ClientsID, o.ClientID)
+	matchesStatus := len(filter.Statuses) == 0 || slices.Contains(filter.Statuses, o.Status)
+
+	return matchesOrderID && matchesClientId && matchesStatus
 }

@@ -9,10 +9,16 @@ import (
 
 // ReturnOrder returns order to courier
 func (m *OrderModule) ReturnOrder(orderID uint64) error {
-	order, err := m.Storage.FindOrder(orderID)
+	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: []uint64{orderID}})
 	if err != nil {
 		return err
 	}
+
+	if len(orders) == 0 {
+		return errsdomain.ErrOrderNotFound(orderID)
+	}
+
+	order := orders[0]
 
 	now := time.Now().UTC()
 	if order.StoredUntil.After(now) {
@@ -28,5 +34,5 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	order.SetStatus(models.Returned, now)
 	order.SetHash()
 
-	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: *order})
+	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
 }

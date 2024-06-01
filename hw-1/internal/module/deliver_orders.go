@@ -14,7 +14,7 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 		delivered[orderID] = nil
 	}
 
-	orders, err := m.Storage.ReadAll()
+	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: ordersID})
 	if err != nil {
 		return err
 	}
@@ -22,10 +22,6 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 	var prevDelivered models.Order
 
 	for _, order := range orders {
-		if _, ok := delivered[order.OrderID]; !ok {
-			continue
-		}
-
 		now := time.Now().UTC()
 
 		if prevDelivered.OrderID != 0 && order.ClientID != prevDelivered.ClientID {

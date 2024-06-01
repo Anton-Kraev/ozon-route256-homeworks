@@ -5,11 +5,9 @@ import (
 )
 
 type orderStorage interface {
-	AddOrder(newOrder models.Order) error
+	AddOrders(newOrders []models.Order) error
 	ChangeOrders(changes map[uint64]models.Order) error
-	FindOrder(orderID uint64) (*models.Order, error)
-	ReadAll() ([]models.Order, error)
-	RewriteAll(data []models.Order) error
+	GetOrders(filter models.OrderFilter) ([]models.Order, error)
 }
 
 type OrderModule struct {

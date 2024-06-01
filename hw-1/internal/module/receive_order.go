@@ -23,5 +23,5 @@ func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Ti
 	}
 	newOrder.SetHash()
 
-	return m.Storage.AddOrder(newOrder)
+	return m.Storage.AddOrders([]models.Order{newOrder})
 }

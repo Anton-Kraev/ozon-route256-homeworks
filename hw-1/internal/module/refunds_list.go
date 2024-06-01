@@ -1,8 +1,6 @@
 package module
 
 import (
-	"sort"
-
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
@@ -10,28 +8,15 @@ import (
 // optional pageN=<page number from the end>
 // optional perPage=<number of orders per page>
 func (m *OrderModule) RefundsList(pageN, perPage uint) ([]models.Order, error) {
-	orders, err := m.Storage.ReadAll()
+	orders, err := m.Storage.GetOrders(models.OrderFilter{
+		Statuses:     []models.Status{models.Refunded},
+		PageN:        pageN,
+		PerPage:      perPage,
+		SortedByDate: true,
+	})
 	if err != nil {
 		return []models.Order{}, err
 	}
 
-	sort.Slice(orders, func(i, j int) bool {
-		return orders[i].StatusChanged.After(orders[j].StatusChanged)
-	})
-
-	var refunds []models.Order
-	for _, order := range orders {
-		if order.Status == models.Refunded {
-			refunds = append(refunds, order)
-		}
-	}
-
-	if perPage > uint(len(refunds)) || perPage == 0 {
-		perPage = uint(len(refunds))
-	}
-
-	if pageN*perPage >= uint(len(refunds)) {
-		return []models.Order{}, nil
-	}
-	return refunds[pageN*perPage : min(uint(len(refunds)), (pageN+1)*perPage)], nil
+	return orders, nil
 }

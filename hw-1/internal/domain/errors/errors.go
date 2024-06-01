@@ -32,3 +32,7 @@ func ErrRetentionPeriodExpired(orderID uint64) error {
 func ErrOrderNotFound(orderID uint64) error {
 	return fmt.Errorf("order with id %d not found", orderID)
 }
+
+func ErrOrderIDNotUnique(orderID uint64) error {
+	return fmt.Errorf("order with ID %d already exist", orderID)
+}
