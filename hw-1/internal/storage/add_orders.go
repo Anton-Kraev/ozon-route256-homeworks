@@ -5,7 +5,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// AddOrders adds new orders to end of storage (if passed orders IDs is unique)
+// AddOrders adds new orders to end of storage (if passed orders IDs is unique).
 func (s OrderStorage) AddOrders(newOrders []models.Order) error {
 	orders, err := s.readAll()
 	if err != nil {

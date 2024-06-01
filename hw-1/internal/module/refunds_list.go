@@ -6,7 +6,7 @@ import (
 
 // RefundsList returns list of refunds paginated
 // optional pageN=<page number from the end>
-// optional perPage=<number of orders per page>
+// optional perPage=<number of orders per page>.
 func (m *OrderModule) RefundsList(pageN, perPage uint) ([]models.Order, error) {
 	orders, err := m.Storage.GetOrders(models.OrderFilter{
 		Statuses:     []models.Status{models.Refunded},

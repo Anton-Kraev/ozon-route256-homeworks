@@ -7,7 +7,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// ReceiveOrder receives order from courier
+// ReceiveOrder receives order from courier.
 func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {

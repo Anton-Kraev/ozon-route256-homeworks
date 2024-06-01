@@ -5,7 +5,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>
+// ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>.
 func (s OrderStorage) ChangeOrders(changes map[uint64]models.Order) error {
 	orders, err := s.readAll()
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 
 // ClientOrders returns list of client orders
 // optional lastN for get last orders, by default return all orders
-// optional inStorage for get only orders from storage
+// optional inStorage for get only orders from storage.
 func (m *OrderModule) ClientOrders(clientID uint64, lastN uint, onlyInStorage bool) ([]models.Order, error) {
 	filter := models.OrderFilter{
 		ClientsID:    []uint64{clientID},

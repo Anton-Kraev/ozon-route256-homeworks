@@ -16,7 +16,7 @@ func NewOrderStorage(fileName string) OrderStorage {
 	return OrderStorage{fileName: fileName}
 }
 
-// readAll return all orders
+// readAll return all orders.
 func (s OrderStorage) readAll() ([]models.Order, error) {
 	if _, err := os.Stat(s.fileName); errors.Is(err, os.ErrNotExist) {
 		f, errCreate := os.Create(s.fileName)
@@ -49,7 +49,7 @@ func (s OrderStorage) readAll() ([]models.Order, error) {
 	return data, nil
 }
 
-// rewriteAll rewrites storage with specified data
+// rewriteAll rewrites storage with specified data.
 func (s OrderStorage) rewriteAll(data []models.Order) error {
 	var orders []orderRecord
 	for _, order := range data {

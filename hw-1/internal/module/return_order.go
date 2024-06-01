@@ -7,7 +7,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// ReturnOrder returns order to courier
+// ReturnOrder returns order to courier.
 func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: []uint64{orderID}})
 	if err != nil {

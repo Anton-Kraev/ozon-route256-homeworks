@@ -7,11 +7,11 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// DeliverOrders deliver list of orders to client
+// DeliverOrders deliver list of orders to client.
 func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
-	delivered := make(map[uint64]*models.Order)
+	delivered := make(map[uint64]models.Order)
 	for _, orderID := range ordersID {
-		delivered[orderID] = nil
+		delivered[orderID] = models.Order{}
 	}
 
 	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: ordersID})
@@ -38,15 +38,15 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 		order.SetHash()
 
 		prevDelivered = order
-		delivered[order.OrderID] = &order
+		delivered[order.OrderID] = order
 	}
 
 	changes := make(map[uint64]models.Order)
 	for id, order := range delivered {
-		if order == nil {
+		if order.OrderID == 0 {
 			return errsdomain.ErrOrderNotFound(id)
 		}
-		changes[id] = *order
+		changes[id] = order
 	}
 
 	return m.Storage.ChangeOrders(changes)

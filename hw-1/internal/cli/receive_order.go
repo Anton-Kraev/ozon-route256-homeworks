@@ -7,7 +7,6 @@ import (
 )
 
 func (c CLI) receiveOrder(args []string) error {
-	const timeFormat = "02.01.2006-15:04:05"
 	var (
 		orderID, clientID uint64
 		storedUntilStr    string

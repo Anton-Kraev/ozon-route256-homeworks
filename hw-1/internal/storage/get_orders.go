@@ -7,7 +7,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// GetOrders returns orders that matches specified filter
+// GetOrders returns orders that matches specified filter.
 func (s OrderStorage) GetOrders(filter models.OrderFilter) ([]models.Order, error) {
 	orders, err := s.readAll()
 	if err != nil {

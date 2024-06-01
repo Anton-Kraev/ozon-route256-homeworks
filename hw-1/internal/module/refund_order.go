@@ -7,7 +7,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
-// RefundOrder receives order refund from client
+// RefundOrder receives order refund from client.
 func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
 	orders, err := m.Storage.GetOrders(models.OrderFilter{
 		OrdersID:  []uint64{orderID},

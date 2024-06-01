@@ -10,6 +10,8 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
 )
 
+const timeFormat = "02.01.2006-15:04:05"
+
 type orderModule interface {
 	ReceiveOrder(orderID uint64, clientID uint64, storedUntil time.Time) error
 	ReturnOrder(orderID uint64) error
@@ -31,7 +33,7 @@ func NewCLI(module orderModule) CLI {
 	}
 }
 
-// Run runs command-line application, processes entered commands
+// Run runs command-line application, processes entered commands.
 func (c CLI) Run() {
 	fmt.Println("The application is running")
 	fmt.Println("Type help to get a list of available commands")
