@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/cli"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/module"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/storage"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/cli"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/module"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/storage"
 )
 
 func main() {

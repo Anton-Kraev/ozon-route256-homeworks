@@ -4,7 +4,7 @@ import (
 	"slices"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/pkg/hash"
+	"gitlab.ozon.dev/antonkraeww/homeworks/pkg/hash"
 )
 
 type Order struct {

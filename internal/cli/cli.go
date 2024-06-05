@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 const timeFormat = "02.01.2006-15:04:05"

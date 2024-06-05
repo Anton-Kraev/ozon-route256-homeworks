@@ -1,4 +1,4 @@
-module gitlab.ozon.dev/antonkraeww/homeworks/hw-1
+module gitlab.ozon.dev/antonkraeww/homeworks
 
 go 1.22.2
 

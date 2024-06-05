@@ -3,8 +3,8 @@ package module
 import (
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 // ReturnOrder returns order to courier.

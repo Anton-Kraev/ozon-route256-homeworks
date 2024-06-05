@@ -1,8 +1,8 @@
 package storage
 
 import (
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 // AddOrders adds new orders to end of storage (if passed orders IDs is unique).

@@ -1,7 +1,7 @@
 package module
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-1/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 // RefundsList returns list of refunds paginated
