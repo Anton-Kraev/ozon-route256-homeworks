@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"flag"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 	"strconv"
 	"strings"
 )
@@ -33,5 +34,5 @@ func (c CLI) deliverOrders(args []string) error {
 		ordersList = append(ordersList, orderID)
 	}
 
-	return c.Service.DeliverOrders(ordersList)
+	return c.Service.DeliverOrders(requests.DeliverOrdersRequest{OrdersID: ordersList})
 }

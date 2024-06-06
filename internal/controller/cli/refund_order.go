@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"flag"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 func (c CLI) refundOrder(args []string) error {
@@ -22,5 +23,5 @@ func (c CLI) refundOrder(args []string) error {
 		return errors.New("clientID must be positive number")
 	}
 
-	return c.Service.RefundOrder(orderID, clientID)
+	return c.Service.RefundOrder(requests.RefundOrderRequest{OrderID: orderID, ClientID: clientID})
 }

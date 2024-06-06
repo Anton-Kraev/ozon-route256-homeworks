@@ -3,8 +3,6 @@ package models
 import (
 	"slices"
 	"time"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/pkg/hash"
 )
 
 type Order struct {
@@ -21,8 +19,8 @@ func (o *Order) SetStatus(status Status, timeChanged time.Time) {
 	o.StatusChanged = timeChanged
 }
 
-func (o *Order) SetHash() {
-	o.Hash = hash.GenerateHash()
+func (o *Order) SetHash(hash string) {
+	o.Hash = hash
 }
 
 func (o *Order) MatchesFilter(filter OrderFilter) bool {

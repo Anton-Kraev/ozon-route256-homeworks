@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 const timeFormat = "02.01.2006-15:04:05"
 
 type orderService interface {
-	ReceiveOrder(orderID uint64, clientID uint64, storedUntil time.Time) error
-	ReturnOrder(orderID uint64) error
-	DeliverOrders(ordersID []uint64) error
-	ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]models.Order, error)
-	RefundOrder(orderID uint64, clientID uint64) error
-	RefundsList(pageN uint, perPage uint) ([]models.Order, error)
+	ReceiveOrder(req requests.ReceiveOrderRequest) error
+	ReturnOrder(req requests.ReturnOrderRequest) error
+	DeliverOrders(req requests.DeliverOrdersRequest) error
+	ClientOrders(req requests.ClientOrdersRequest) ([]models.Order, error)
+	RefundOrder(req requests.RefundOrderRequest) error
+	RefundsList(req requests.RefundsListRequest) ([]models.Order, error)
 }
 
 type CLI struct {

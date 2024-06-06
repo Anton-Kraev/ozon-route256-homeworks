@@ -5,20 +5,21 @@ import (
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 // RefundOrder receives order refund from client.
-func (s *OrderService) RefundOrder(orderID, clientID uint64) error {
+func (s *OrderService) RefundOrder(req requests.RefundOrderRequest) error {
 	orders, err := s.Repo.GetOrders(models.OrderFilter{
-		OrdersID:  []uint64{orderID},
-		ClientsID: []uint64{clientID},
+		OrdersID:  []uint64{req.OrderID},
+		ClientsID: []uint64{req.ClientID},
 	})
 	if err != nil {
 		return err
 	}
 
 	if len(orders) != 0 {
-		return errsdomain.ErrOrderNotFound(orderID)
+		return errsdomain.ErrOrderNotFound(req.OrderID)
 	}
 
 	order := orders[0]
@@ -35,7 +36,7 @@ func (s *OrderService) RefundOrder(orderID, clientID uint64) error {
 	}
 
 	order.SetStatus(models.Refunded, now)
-	order.SetHash()
+	order.SetHash(req.Hash)
 
-	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(map[uint64]models.Order{req.OrderID: order})
 }

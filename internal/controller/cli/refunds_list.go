@@ -3,6 +3,7 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 func (c CLI) refundsList(args []string) error {
@@ -16,7 +17,7 @@ func (c CLI) refundsList(args []string) error {
 		return err
 	}
 
-	refunds, err := c.Service.RefundsList(pageN, perPage)
+	refunds, err := c.Service.RefundsList(requests.RefundsListRequest{PageN: pageN, PerPage: perPage})
 	if err == nil {
 		fmt.Println("\nRefunds list:")
 		for _, refund := range refunds {

@@ -5,17 +5,18 @@ import (
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 // ReturnOrder returns order to courier.
-func (s *OrderService) ReturnOrder(orderID uint64) error {
-	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: []uint64{orderID}})
+func (s *OrderService) ReturnOrder(req requests.ReturnOrderRequest) error {
+	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: []uint64{req.OrderID}})
 	if err != nil {
 		return err
 	}
 
 	if len(orders) == 0 {
-		return errsdomain.ErrOrderNotFound(orderID)
+		return errsdomain.ErrOrderNotFound(req.OrderID)
 	}
 
 	order := orders[0]
@@ -32,7 +33,7 @@ func (s *OrderService) ReturnOrder(orderID uint64) error {
 	}
 
 	order.SetStatus(models.Returned, now)
-	order.SetHash()
+	order.SetHash(req.Hash)
 
-	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(map[uint64]models.Order{req.OrderID: order})
 }

@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"flag"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 	"time"
 )
 
@@ -32,5 +33,9 @@ func (c CLI) receiveOrder(args []string) error {
 		return errTime
 	}
 
-	return c.Service.ReceiveOrder(orderID, clientID, storedUntil)
+	return c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
+		OrderID:     orderID,
+		ClientID:    clientID,
+		StoredUntil: storedUntil,
+	})
 }

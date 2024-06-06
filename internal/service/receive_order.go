@@ -5,23 +5,24 @@ import (
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 // ReceiveOrder receives order from courier.
-func (s *OrderService) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
+func (s *OrderService) ReceiveOrder(req requests.ReceiveOrderRequest) error {
 	now := time.Now().UTC()
-	if now.After(storedUntil) {
+	if now.After(req.StoredUntil) {
 		return errsdomain.ErrRetentionTimeInPast
 	}
 
 	newOrder := models.Order{
-		OrderID:       orderID,
-		ClientID:      clientID,
-		StoredUntil:   storedUntil,
+		OrderID:       req.OrderID,
+		ClientID:      req.ClientID,
+		StoredUntil:   req.StoredUntil,
 		Status:        models.Received,
 		StatusChanged: now,
+		Hash:          req.Hash,
 	}
-	newOrder.SetHash()
 
 	return s.Repo.AddOrders([]models.Order{newOrder})
 }

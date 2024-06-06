@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 func (c CLI) clientOrders(args []string) error {
@@ -25,7 +26,11 @@ func (c CLI) clientOrders(args []string) error {
 		return errors.New("clientID must be positive number")
 	}
 
-	orders, err := c.Service.ClientOrders(clientID, lastN, inStorage)
+	orders, err := c.Service.ClientOrders(requests.ClientOrdersRequest{
+		ClientID:  clientID,
+		LastN:     lastN,
+		InStorage: inStorage,
+	})
 	if err == nil {
 		fmt.Println("\nOrders list:")
 		for _, order := range orders {
