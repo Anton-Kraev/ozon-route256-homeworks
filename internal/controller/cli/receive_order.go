@@ -3,8 +3,9 @@ package cli
 import (
 	"errors"
 	"flag"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 	"time"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 func (c CLI) receiveOrder(args []string) error {

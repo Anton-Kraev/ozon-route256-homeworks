@@ -3,6 +3,7 @@ package cli
 import (
 	"flag"
 	"fmt"
+
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
