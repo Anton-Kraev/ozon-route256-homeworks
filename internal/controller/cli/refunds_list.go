@@ -16,7 +16,7 @@ func (c CLI) refundsList(args []string) error {
 		return err
 	}
 
-	refunds, err := c.Module.RefundsList(pageN, perPage)
+	refunds, err := c.Service.RefundsList(pageN, perPage)
 	if err == nil {
 		fmt.Println("\nRefunds list:")
 		for _, refund := range refunds {

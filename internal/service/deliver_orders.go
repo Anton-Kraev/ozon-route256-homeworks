@@ -1,4 +1,4 @@
-package module
+package service
 
 import (
 	"time"
@@ -8,13 +8,13 @@ import (
 )
 
 // DeliverOrders deliver list of orders to client.
-func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
+func (s *OrderService) DeliverOrders(ordersID []uint64) error {
 	delivered := make(map[uint64]models.Order)
 	for _, orderID := range ordersID {
 		delivered[orderID] = models.Order{}
 	}
 
-	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: ordersID})
+	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: ordersID})
 	if err != nil {
 		return err
 	}
@@ -49,5 +49,5 @@ func (m *OrderModule) DeliverOrders(ordersID []uint64) error {
 		changes[id] = order
 	}
 
-	return m.Storage.ChangeOrders(changes)
+	return s.Repo.ChangeOrders(changes)
 }

@@ -32,5 +32,5 @@ func (c CLI) receiveOrder(args []string) error {
 		return errTime
 	}
 
-	return c.Module.ReceiveOrder(orderID, clientID, storedUntil)
+	return c.Service.ReceiveOrder(orderID, clientID, storedUntil)
 }

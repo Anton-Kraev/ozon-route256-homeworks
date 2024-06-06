@@ -12,7 +12,7 @@ import (
 
 const timeFormat = "02.01.2006-15:04:05"
 
-type orderModule interface {
+type orderService interface {
 	ReceiveOrder(orderID uint64, clientID uint64, storedUntil time.Time) error
 	ReturnOrder(orderID uint64) error
 	DeliverOrders(ordersID []uint64) error
@@ -22,13 +22,13 @@ type orderModule interface {
 }
 
 type CLI struct {
-	Module            orderModule
+	Service           orderService
 	availableCommands []command
 }
 
-func NewCLI(module orderModule) CLI {
+func NewCLI(service orderService) CLI {
 	return CLI{
-		Module:            module,
+		Service:           service,
 		availableCommands: commandsList,
 	}
 }

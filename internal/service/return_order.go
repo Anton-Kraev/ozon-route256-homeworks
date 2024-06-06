@@ -1,4 +1,4 @@
-package module
+package service
 
 import (
 	"time"
@@ -8,8 +8,8 @@ import (
 )
 
 // ReturnOrder returns order to courier.
-func (m *OrderModule) ReturnOrder(orderID uint64) error {
-	orders, err := m.Storage.GetOrders(models.OrderFilter{OrdersID: []uint64{orderID}})
+func (s *OrderService) ReturnOrder(orderID uint64) error {
+	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: []uint64{orderID}})
 	if err != nil {
 		return err
 	}
@@ -34,5 +34,5 @@ func (m *OrderModule) ReturnOrder(orderID uint64) error {
 	order.SetStatus(models.Returned, now)
 	order.SetHash()
 
-	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
 }

@@ -1,4 +1,4 @@
-package storage
+package repository
 
 import (
 	"math"
@@ -8,8 +8,8 @@ import (
 )
 
 // GetOrders returns orders that matches specified filter.
-func (s OrderStorage) GetOrders(filter models.OrderFilter) ([]models.Order, error) {
-	orders, err := s.readAll()
+func (r OrderRepository) GetOrders(filter models.OrderFilter) ([]models.Order, error) {
+	orders, err := r.readAll()
 	if err != nil {
 		return []models.Order{}, err
 	}

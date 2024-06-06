@@ -22,5 +22,5 @@ func (c CLI) refundOrder(args []string) error {
 		return errors.New("clientID must be positive number")
 	}
 
-	return c.Module.RefundOrder(orderID, clientID)
+	return c.Service.RefundOrder(orderID, clientID)
 }

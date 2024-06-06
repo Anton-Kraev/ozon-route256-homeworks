@@ -1,4 +1,4 @@
-package storage
+package repository
 
 import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
@@ -6,8 +6,8 @@ import (
 )
 
 // ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>.
-func (s OrderStorage) ChangeOrders(changes map[uint64]models.Order) error {
-	orders, err := s.readAll()
+func (r OrderRepository) ChangeOrders(changes map[uint64]models.Order) error {
+	orders, err := r.readAll()
 	if err != nil {
 		return err
 	}
@@ -28,5 +28,5 @@ func (s OrderStorage) ChangeOrders(changes map[uint64]models.Order) error {
 		}
 	}
 
-	return s.rewriteAll(orders)
+	return r.rewriteAll(orders)
 }

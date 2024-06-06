@@ -25,7 +25,7 @@ func (c CLI) clientOrders(args []string) error {
 		return errors.New("clientID must be positive number")
 	}
 
-	orders, err := c.Module.ClientOrders(clientID, lastN, inStorage)
+	orders, err := c.Service.ClientOrders(clientID, lastN, inStorage)
 	if err == nil {
 		fmt.Println("\nOrders list:")
 		for _, order := range orders {

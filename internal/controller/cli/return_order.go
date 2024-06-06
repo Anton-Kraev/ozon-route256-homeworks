@@ -18,5 +18,5 @@ func (c CLI) returnOrder(args []string) error {
 		return errors.New("orderID must be positive number")
 	}
 
-	return c.Module.ReturnOrder(orderID)
+	return c.Service.ReturnOrder(orderID)
 }

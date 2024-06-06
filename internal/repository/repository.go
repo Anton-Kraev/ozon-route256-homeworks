@@ -1,4 +1,4 @@
-package storage
+package repository
 
 import (
 	"encoding/json"
@@ -8,18 +8,18 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
-type OrderStorage struct {
+type OrderRepository struct {
 	fileName string
 }
 
-func NewOrderStorage(fileName string) OrderStorage {
-	return OrderStorage{fileName: fileName}
+func NewOrderRepository(fileName string) OrderRepository {
+	return OrderRepository{fileName: fileName}
 }
 
 // readAll return all orders.
-func (s OrderStorage) readAll() ([]models.Order, error) {
-	if _, err := os.Stat(s.fileName); errors.Is(err, os.ErrNotExist) {
-		f, errCreate := os.Create(s.fileName)
+func (r OrderRepository) readAll() ([]models.Order, error) {
+	if _, err := os.Stat(r.fileName); errors.Is(err, os.ErrNotExist) {
+		f, errCreate := os.Create(r.fileName)
 
 		if errCreate != nil {
 			return []models.Order{}, errCreate
@@ -31,7 +31,7 @@ func (s OrderStorage) readAll() ([]models.Order, error) {
 		return []models.Order{}, nil
 	}
 
-	bytes, errRead := os.ReadFile(s.fileName)
+	bytes, errRead := os.ReadFile(r.fileName)
 	if errRead != nil {
 		return []models.Order{}, errRead
 	}
@@ -50,7 +50,7 @@ func (s OrderStorage) readAll() ([]models.Order, error) {
 }
 
 // rewriteAll rewrites storage with specified data.
-func (s OrderStorage) rewriteAll(data []models.Order) error {
+func (r OrderRepository) rewriteAll(data []models.Order) error {
 	var orders []orderRecord
 	for _, order := range data {
 		orders = append(orders, toRecord(order))
@@ -61,5 +61,5 @@ func (s OrderStorage) rewriteAll(data []models.Order) error {
 		return err
 	}
 
-	return os.WriteFile(s.fileName, bytes, 0644)
+	return os.WriteFile(r.fileName, bytes, 0644)
 }

@@ -1,4 +1,4 @@
-package storage
+package repository
 
 import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
@@ -6,8 +6,8 @@ import (
 )
 
 // AddOrders adds new orders to end of storage (if passed orders IDs is unique).
-func (s OrderStorage) AddOrders(newOrders []models.Order) error {
-	orders, err := s.readAll()
+func (r OrderRepository) AddOrders(newOrders []models.Order) error {
+	orders, err := r.readAll()
 	if err != nil {
 		return err
 	}
@@ -23,5 +23,5 @@ func (s OrderStorage) AddOrders(newOrders []models.Order) error {
 		}
 	}
 
-	return s.rewriteAll(append(orders, newOrders...))
+	return r.rewriteAll(append(orders, newOrders...))
 }

@@ -1,4 +1,4 @@
-package module
+package service
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 )
 
 // ReceiveOrder receives order from courier.
-func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
+func (s *OrderService) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
 		return errsdomain.ErrRetentionTimeInPast
@@ -23,5 +23,5 @@ func (m *OrderModule) ReceiveOrder(orderID, clientID uint64, storedUntil time.Ti
 	}
 	newOrder.SetHash()
 
-	return m.Storage.AddOrders([]models.Order{newOrder})
+	return s.Repo.AddOrders([]models.Order{newOrder})
 }

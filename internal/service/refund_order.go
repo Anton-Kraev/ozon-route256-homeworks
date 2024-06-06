@@ -1,4 +1,4 @@
-package module
+package service
 
 import (
 	"time"
@@ -8,8 +8,8 @@ import (
 )
 
 // RefundOrder receives order refund from client.
-func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
-	orders, err := m.Storage.GetOrders(models.OrderFilter{
+func (s *OrderService) RefundOrder(orderID, clientID uint64) error {
+	orders, err := s.Repo.GetOrders(models.OrderFilter{
 		OrdersID:  []uint64{orderID},
 		ClientsID: []uint64{clientID},
 	})
@@ -37,5 +37,5 @@ func (m *OrderModule) RefundOrder(orderID, clientID uint64) error {
 	order.SetStatus(models.Refunded, now)
 	order.SetHash()
 
-	return m.Storage.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
 }

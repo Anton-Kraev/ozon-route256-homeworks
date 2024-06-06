@@ -33,5 +33,5 @@ func (c CLI) deliverOrders(args []string) error {
 		ordersList = append(ordersList, orderID)
 	}
 
-	return c.Module.DeliverOrders(ordersList)
+	return c.Service.DeliverOrders(ordersList)
 }

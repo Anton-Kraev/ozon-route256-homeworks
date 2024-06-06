@@ -1,4 +1,4 @@
-package module
+package service
 
 import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
@@ -7,8 +7,8 @@ import (
 // RefundsList returns list of refunds paginated
 // optional pageN=<page number from the end>
 // optional perPage=<number of orders per page>.
-func (m *OrderModule) RefundsList(pageN, perPage uint) ([]models.Order, error) {
-	orders, err := m.Storage.GetOrders(models.OrderFilter{
+func (s *OrderService) RefundsList(pageN, perPage uint) ([]models.Order, error) {
+	orders, err := s.Repo.GetOrders(models.OrderFilter{
 		Statuses:     []models.Status{models.Refunded},
 		PageN:        pageN,
 		PerPage:      perPage,
