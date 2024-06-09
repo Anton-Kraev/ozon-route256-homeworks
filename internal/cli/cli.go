@@ -9,6 +9,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/tasks"
 	"os"
 	"strings"
+	"sync"
 )
 
 const timeFormat = "02.01.2006-15:04:05"
@@ -36,6 +37,7 @@ type CLI struct {
 	availableCommands []command
 	logger            taskLogger
 	workerPool        workerPool
+	mutex             sync.Mutex
 }
 
 func NewCLI(service orderService, logger taskLogger, pool workerPool) CLI {
@@ -74,14 +76,20 @@ func (c *CLI) handleCommand(comm string, args []string) {
 		c.help()
 	case receiveOrder:
 		c.workerPool.AddTask(1, func() (string, error) {
+			c.mutex.Lock()
+			defer c.mutex.Unlock()
 			return c.receiveOrder(args)
 		})
 	case returnOrder:
 		c.workerPool.AddTask(1, func() (string, error) {
+			c.mutex.Lock()
+			defer c.mutex.Unlock()
 			return c.returnOrder(args)
 		})
 	case deliverOrders:
 		c.workerPool.AddTask(1, func() (string, error) {
+			c.mutex.Lock()
+			defer c.mutex.Unlock()
 			return c.deliverOrders(args)
 		})
 	case clientOrders:
@@ -90,6 +98,8 @@ func (c *CLI) handleCommand(comm string, args []string) {
 		})
 	case refundOrder:
 		c.workerPool.AddTask(1, func() (string, error) {
+			c.mutex.Lock()
+			defer c.mutex.Unlock()
 			return c.refundOrder(args)
 		})
 	case refundsList:
