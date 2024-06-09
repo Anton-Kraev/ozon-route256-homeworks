@@ -1,4 +1,4 @@
-package models
+package order
 
 type Status string
 

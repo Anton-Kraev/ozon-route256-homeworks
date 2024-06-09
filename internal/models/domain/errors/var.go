@@ -1,10 +1,10 @@
-package errsdomain
+package errors
 
 import (
 	"errors"
 	"fmt"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 )
 
 var (
@@ -21,7 +21,7 @@ func ErrDifferentClientOrders(clientID, anotherClientID uint64) error {
 	return fmt.Errorf("orders with id %d and %d belong to different clients", clientID, anotherClientID)
 }
 
-func ErrUnexpectedOrderStatus(orderID uint64, status models.Status) error {
+func ErrUnexpectedOrderStatus(orderID uint64, status order.Status) error {
 	return fmt.Errorf("order with id %d has the %s status", orderID, status)
 }
 

@@ -1,19 +1,24 @@
 package service
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 )
 
 type orderRepository interface {
-	AddOrders(newOrders []models.Order) error
-	ChangeOrders(changes map[uint64]models.Order) error
-	GetOrders(filter models.OrderFilter) ([]models.Order, error)
+	AddOrders(newOrders []order.Order) error
+	ChangeOrders(changes map[uint64]order.Order) error
+	GetOrders(filter order.OrderFilter) ([]order.Order, error)
+}
+
+type hashGenerator interface {
+	GetHash() string
 }
 
 type OrderService struct {
-	Repo orderRepository
+	Repo   orderRepository
+	hashes hashGenerator
 }
 
-func NewOrderService(repo orderRepository) OrderService {
-	return OrderService{Repo: repo}
+func NewOrderService(repo orderRepository, hashGenerator hashGenerator) *OrderService {
+	return &OrderService{Repo: repo, hashes: hashGenerator}
 }

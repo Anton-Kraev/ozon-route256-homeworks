@@ -3,12 +3,11 @@ package cli
 import (
 	"errors"
 	"flag"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"time"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
-func (c CLI) receiveOrder(args []string) error {
+func (c *CLI) receiveOrder(args []string) error {
 	var (
 		orderID, clientID uint64
 		storedUntilStr    string
@@ -34,9 +33,29 @@ func (c CLI) receiveOrder(args []string) error {
 		return errTime
 	}
 
-	return c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
+	req := requests.ReceiveOrderRequest{
 		OrderID:     orderID,
 		ClientID:    clientID,
 		StoredUntil: storedUntil,
+	}
+	c.cmdManager.AddTask(func() (string, error) {
+		return receiveOrderTask(c, req)
 	})
+
+	return nil
+}
+
+func receiveOrderTask(cli *CLI, req requests.ReceiveOrderRequest) (string, error) {
+	hash, ok := cli.cmdManager.GetHash()
+	if !ok {
+		return "", errors.New("hash generation stopped")
+	}
+
+	req.Hash = hash
+
+	cli.cmdManager.Mutex.Lock()
+	err := cli.Service.ReceiveOrder(req)
+	cli.cmdManager.Mutex.Unlock()
+
+	return "", err
 }

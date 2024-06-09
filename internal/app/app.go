@@ -1,9 +1,15 @@
 package app
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/controller/cli"
+	"context"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/cli"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/repository"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/service"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/hash_generator"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/logger"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/worker_pool"
+	"os/signal"
+	"syscall"
 )
 
 type App struct {
@@ -11,8 +17,21 @@ type App struct {
 }
 
 func (app App) Start() {
-	repositoryJSON := repository.NewOrderRepository(app.StorageFile)
-	deliveryPointService := service.NewOrderService(repositoryJSON)
-	commands := cli.NewCLI(&deliveryPointService)
-	commands.Run()
+	parentCtx := context.Background()
+	ctx, cancel := context.WithCancel(parentCtx)
+	signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	orderRepositoryJSON := repository.NewOrderRepository(app.StorageFile)
+
+	hg := hashgen.NewHashGenerator(5)
+	orderService := service.NewOrderService(orderRepositoryJSON, hg)
+
+	wp := workerpool.NewWorkerPool(5, 5)
+	lg := logger.Logger{}
+	commands := cli.NewCLI(orderService, lg, wp)
+
+	hg.Run(ctx)
+	wp.Run(ctx)
+	commands.Run(ctx)
 }

@@ -1,11 +1,10 @@
 package service
 
 import (
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"time"
-
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/requests"
 )
 
 // ReceiveOrder receives order from courier.
@@ -15,14 +14,14 @@ func (s *OrderService) ReceiveOrder(req requests.ReceiveOrderRequest) error {
 		return errsdomain.ErrRetentionTimeInPast
 	}
 
-	newOrder := models.Order{
+	newOrder := order.Order{
 		OrderID:       req.OrderID,
 		ClientID:      req.ClientID,
 		StoredUntil:   req.StoredUntil,
-		Status:        models.Received,
+		Status:        order.Received,
 		StatusChanged: now,
 		Hash:          req.Hash,
 	}
 
-	return s.Repo.AddOrders([]models.Order{newOrder})
+	return s.Repo.AddOrders([]order.Order{newOrder})
 }

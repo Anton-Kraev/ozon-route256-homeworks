@@ -1,8 +1,8 @@
 package repository
 
 import (
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 )
 
 // ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>.

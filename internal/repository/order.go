@@ -1,9 +1,8 @@
 package repository
 
 import (
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"time"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 type orderRecord struct {
@@ -15,18 +14,18 @@ type orderRecord struct {
 	Hash          string    `json:"hash"`
 }
 
-func (r orderRecord) toDomain() models.Order {
-	return models.Order{
+func (r orderRecord) toDomain() order.Order {
+	return order.Order{
 		OrderID:       r.OrderID,
 		ClientID:      r.ClientID,
 		StoredUntil:   r.StoredUntil,
-		Status:        models.Status(r.Status),
+		Status:        order.Status(r.Status),
 		StatusChanged: r.StatusChanged,
 		Hash:          r.Hash,
 	}
 }
 
-func toRecord(order models.Order) orderRecord {
+func toRecord(order order.Order) orderRecord {
 	return orderRecord{
 		OrderID:       order.OrderID,
 		ClientID:      order.ClientID,

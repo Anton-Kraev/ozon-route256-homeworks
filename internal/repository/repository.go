@@ -3,9 +3,8 @@ package repository
 import (
 	"encoding/json"
 	"errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"os"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/domain/models"
 )
 
 type OrderRepository struct {

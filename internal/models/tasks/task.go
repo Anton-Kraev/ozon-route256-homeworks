@@ -8,5 +8,5 @@ type Task struct {
 type TaskResult struct {
 	TaskID int
 	Result string
-	Err    error
+	Error  error
 }
