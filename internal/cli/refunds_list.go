@@ -3,11 +3,12 @@ package cli
 import (
 	"flag"
 	"fmt"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"strings"
 )
 
-func (c *CLI) refundsList(args []string) error {
+func (c *CLI) refundsList(args []string) (string, error) {
 	var pageN, perPage uint
 
 	fs := flag.NewFlagSet(refundsList, flag.ContinueOnError)
@@ -15,23 +16,18 @@ func (c *CLI) refundsList(args []string) error {
 	fs.UintVar(&perPage, "perPage", 0, "use --perPage=10")
 
 	if err := fs.Parse(args); err != nil {
-		return err
+		return "", err
 	}
 
-	req := requests.RefundsListRequest{PageN: pageN, PerPage: perPage}
-	c.cmdManager.AddTask(func() (string, error) {
-		return refundsListTask(c, req)
-	})
-
-	return nil
-}
-
-func refundsListTask(cli *CLI, req requests.RefundsListRequest) (string, error) {
-	refunds, err := cli.Service.RefundsList(req)
+	refunds, err := c.Service.RefundsList(requests.RefundsListRequest{PageN: pageN, PerPage: perPage})
 	if err != nil {
 		return "", err
 	}
 
+	return refundsListToString(refunds), nil
+}
+
+func refundsListToString(refunds []models.Order) string {
 	result := strings.Builder{}
 
 	result.WriteString("\nRefunds list:")
@@ -42,5 +38,5 @@ func refundsListTask(cli *CLI, req requests.RefundsListRequest) (string, error) 
 		))
 	}
 
-	return result.String(), nil
+	return result.String()
 }

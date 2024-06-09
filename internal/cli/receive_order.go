@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (c *CLI) receiveOrder(args []string) error {
+func (c *CLI) receiveOrder(args []string) (string, error) {
 	var (
 		orderID, clientID uint64
 		storedUntilStr    string
@@ -19,43 +19,23 @@ func (c *CLI) receiveOrder(args []string) error {
 	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil="+timeFormat)
 
 	if err := fs.Parse(args); err != nil {
-		return err
+		return "", err
 	}
 	if orderID == 0 {
-		return errors.New("orderID must be positive number")
+		return "", errors.New("orderID must be positive number")
 	}
 	if clientID == 0 {
-		return errors.New("clientID must be positive number")
+		return "", errors.New("clientID must be positive number")
 	}
 
 	storedUntil, errTime := time.Parse(timeFormat, storedUntilStr)
 	if errTime != nil {
-		return errTime
+		return "", errTime
 	}
 
-	req := requests.ReceiveOrderRequest{
+	return "", c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
 		OrderID:     orderID,
 		ClientID:    clientID,
 		StoredUntil: storedUntil,
-	}
-	c.cmdManager.AddTask(func() (string, error) {
-		return receiveOrderTask(c, req)
 	})
-
-	return nil
-}
-
-func receiveOrderTask(cli *CLI, req requests.ReceiveOrderRequest) (string, error) {
-	hash, ok := cli.cmdManager.GetHash()
-	if !ok {
-		return "", errors.New("hash generation stopped")
-	}
-
-	req.Hash = hash
-
-	cli.cmdManager.Mutex.Lock()
-	err := cli.Service.ReceiveOrder(req)
-	cli.cmdManager.Mutex.Unlock()
-
-	return "", err
 }

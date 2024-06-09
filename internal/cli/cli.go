@@ -54,50 +54,50 @@ func (c *CLI) Run(ctx context.Context) {
 	defer fmt.Println("The application has been stopped")
 
 	scanner := bufio.NewScanner(os.Stdin)
-	cmdCounter := 1
-	fmt.Printf("%d) ", cmdCounter)
 
 	for scanner.Scan() {
 		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
 		if len(comm) == 0 || comm[0] == "" {
-			fmt.Printf("%d) ", cmdCounter)
 			continue
 		}
 		if comm[0] == exit {
 			break
 		}
 
-		err := c.handleCommand(comm[0], comm[1:])
-		if err != nil {
-			fmt.Printf("%d) error: %v\n", cmdCounter, err)
-		} else {
-			fmt.Printf("%d) ok\n", cmdCounter)
-		}
-
-		cmdCounter++
-		fmt.Printf("%d) ", cmdCounter)
+		c.handleCommand(comm[0], comm[1:])
 	}
 }
 
-func (c *CLI) handleCommand(comm string, args []string) error {
+func (c *CLI) handleCommand(comm string, args []string) {
 	switch comm {
 	case help:
 		c.help()
-		return nil
 	case receiveOrder:
-		return c.receiveOrder(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.receiveOrder(args)
+		})
 	case returnOrder:
-		return c.returnOrder(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.returnOrder(args)
+		})
 	case deliverOrders:
-		return c.deliverOrders(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.deliverOrders(args)
+		})
 	case clientOrders:
-		return c.clientOrders(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.clientOrders(args)
+		})
 	case refundOrder:
-		return c.refundOrder(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.refundOrder(args)
+		})
 	case refundsList:
-		return c.refundsList(args)
+		c.workerPool.AddTask(1, func() (string, error) {
+			return c.refundsList(args)
+		})
 	default:
-		return fmt.Errorf("unknown command %s", comm)
+		c.unknownCommand(comm)
 	}
 }
 
@@ -109,4 +109,8 @@ func (c *CLI) help() {
 		fmt.Printf("  description: %s\n", cmd.desc)
 		fmt.Printf("  usage: %s\n\n", cmd.usage)
 	}
+}
+
+func (c *CLI) unknownCommand(command string) {
+	fmt.Printf("unknown command %s\n", command)
 }

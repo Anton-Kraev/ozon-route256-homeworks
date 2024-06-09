@@ -4,11 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"strings"
 )
 
-func (c *CLI) clientOrders(args []string) error {
+func (c *CLI) clientOrders(args []string) (string, error) {
 	var (
 		clientID  uint64
 		lastN     uint
@@ -21,30 +22,25 @@ func (c *CLI) clientOrders(args []string) error {
 	fs.BoolVar(&inStorage, "inStorage", false, "use --inStorage")
 
 	if err := fs.Parse(args); err != nil {
-		return err
+		return "", err
 	}
 	if clientID == 0 {
-		return errors.New("clientID must be positive number")
+		return "", errors.New("clientID must be positive number")
 	}
 
-	req := requests.ClientOrdersRequest{
+	orders, err := c.Service.ClientOrders(requests.ClientOrdersRequest{
 		ClientID:  clientID,
 		LastN:     lastN,
 		InStorage: inStorage,
-	}
-	c.cmdManager.AddTask(func() (string, error) {
-		return clientOrdersTask(c, req)
 	})
-
-	return nil
-}
-
-func clientOrdersTask(cli *CLI, req requests.ClientOrdersRequest) (string, error) {
-	orders, err := cli.Service.ClientOrders(req)
 	if err != nil {
 		return "", err
 	}
 
+	return clientOrdersToString(orders), nil
+}
+
+func clientOrdersToString(orders []models.Order) string {
 	result := strings.Builder{}
 
 	result.WriteString("\nOrders list:")
@@ -55,5 +51,5 @@ func clientOrdersTask(cli *CLI, req requests.ClientOrdersRequest) (string, error
 		))
 	}
 
-	return result.String(), nil
+	return result.String()
 }
