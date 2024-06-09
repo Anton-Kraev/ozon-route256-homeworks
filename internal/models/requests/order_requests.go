@@ -10,20 +10,17 @@ type ClientOrdersRequest struct {
 
 type DeliverOrdersRequest struct {
 	OrdersID []uint64
-	Hashes   []string
 }
 
 type ReceiveOrderRequest struct {
 	OrderID     uint64
 	ClientID    uint64
 	StoredUntil time.Time
-	Hash        string
 }
 
 type RefundOrderRequest struct {
 	OrderID  uint64
 	ClientID uint64
-	Hash     string
 }
 
 type RefundsListRequest struct {
@@ -33,5 +30,4 @@ type RefundsListRequest struct {
 
 type ReturnOrderRequest struct {
 	OrderID uint64
-	Hash    string
 }

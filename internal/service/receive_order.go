@@ -20,7 +20,7 @@ func (s *OrderService) ReceiveOrder(req requests.ReceiveOrderRequest) error {
 		StoredUntil:   req.StoredUntil,
 		Status:        order.Received,
 		StatusChanged: now,
-		Hash:          req.Hash,
+		Hash:          s.hashes.GetHash(),
 	}
 
 	return s.Repo.AddOrders([]order.Order{newOrder})

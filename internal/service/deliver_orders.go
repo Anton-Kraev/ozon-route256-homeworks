@@ -21,7 +21,7 @@ func (s *OrderService) DeliverOrders(req requests.DeliverOrdersRequest) error {
 
 	var prevDelivered models.Order
 
-	for i, order := range orders {
+	for _, order := range orders {
 		now := time.Now().UTC()
 
 		if prevDelivered.OrderID != 0 && order.ClientID != prevDelivered.ClientID {
@@ -35,7 +35,7 @@ func (s *OrderService) DeliverOrders(req requests.DeliverOrdersRequest) error {
 		}
 
 		order.SetStatus(models.Delivered, now)
-		order.SetHash(req.Hashes[i])
+		order.SetHash(s.hashes.GetHash())
 
 		prevDelivered = order
 		delivered[order.OrderID] = order

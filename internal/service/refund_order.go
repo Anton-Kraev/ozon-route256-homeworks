@@ -35,7 +35,7 @@ func (s *OrderService) RefundOrder(req requests.RefundOrderRequest) error {
 	}
 
 	order.SetStatus(models.Refunded, now)
-	order.SetHash(req.Hash)
+	order.SetHash(s.hashes.GetHash())
 
 	return s.Repo.ChangeOrders(map[uint64]models.Order{req.OrderID: order})
 }

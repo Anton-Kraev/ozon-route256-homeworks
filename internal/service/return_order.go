@@ -32,7 +32,7 @@ func (s *OrderService) ReturnOrder(req requests.ReturnOrderRequest) error {
 	}
 
 	order.SetStatus(models.Returned, now)
-	order.SetHash(req.Hash)
+	order.SetHash(s.hashes.GetHash())
 
 	return s.Repo.ChangeOrders(map[uint64]models.Order{req.OrderID: order})
 }
