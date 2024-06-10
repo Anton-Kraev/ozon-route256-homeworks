@@ -9,6 +9,7 @@ type command struct {
 const (
 	help          = "help"
 	exit          = "exit"
+	numWorkers    = "numWorkers"
 	receiveOrder  = "receive"
 	returnOrder   = "return"
 	deliverOrders = "deliver"
@@ -27,6 +28,11 @@ var commandsList = []command{
 		exit,
 		"shutdown the application",
 		"exit",
+	},
+	{
+		numWorkers,
+		"change the number of workers in worker pool",
+		"numWorkers --num=4",
 	},
 	{
 		receiveOrder,

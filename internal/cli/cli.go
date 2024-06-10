@@ -3,10 +3,10 @@ package cli
 import (
 	"bufio"
 	"context"
+	"flag"
 	"fmt"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/tasks"
 	"os"
 	"strings"
 	"sync"
@@ -23,37 +23,31 @@ type orderService interface {
 	RefundsList(req requests.RefundsListRequest) ([]order.Order, error)
 }
 
-type taskLogger interface {
-	Log(taskRes tasks.TaskResult)
-}
-
 type workerPool interface {
 	AddTask(taskID int, task func() (string, error))
-	GetTaskResult() tasks.TaskResult
+	SetNumWorkers(workersN int)
+	Done() <-chan struct{}
 }
 
 type CLI struct {
 	Service           orderService
 	availableCommands []command
-	logger            taskLogger
 	workerPool        workerPool
 	mutex             sync.Mutex
 }
 
-func NewCLI(service orderService, logger taskLogger, pool workerPool) CLI {
+func NewCLI(service orderService, pool workerPool) CLI {
 	return CLI{
 		Service:           service,
 		availableCommands: commandsList,
-		logger:            logger,
 		workerPool:        pool,
 	}
 }
 
 // Run runs command-line application, processes entered commands.
-func (c *CLI) Run(ctx context.Context) {
+func (c *CLI) Run(cancel context.CancelFunc) {
 	fmt.Println("The application is running")
 	fmt.Println("Type help to get a list of available commands")
-	defer fmt.Println("The application has been stopped")
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -63,17 +57,23 @@ func (c *CLI) Run(ctx context.Context) {
 			continue
 		}
 		if comm[0] == exit {
+			cancel()
 			break
 		}
 
 		c.handleCommand(comm[0], comm[1:])
 	}
+
+	<-c.workerPool.Done()
+	fmt.Println("The application has been stopped")
 }
 
 func (c *CLI) handleCommand(comm string, args []string) {
 	switch comm {
 	case help:
 		c.help()
+	case numWorkers:
+		c.numWorkers(args)
 	case receiveOrder:
 		c.workerPool.AddTask(1, func() (string, error) {
 			c.mutex.Lock()
@@ -119,6 +119,22 @@ func (c *CLI) help() {
 		fmt.Printf("  description: %s\n", cmd.desc)
 		fmt.Printf("  usage: %s\n\n", cmd.usage)
 	}
+}
+
+func (c *CLI) numWorkers(args []string) {
+	var workersN uint
+
+	fs := flag.NewFlagSet(numWorkers, flag.ContinueOnError)
+	fs.UintVar(&workersN, "workersN", 0, "use --num=4")
+
+	if err := fs.Parse(args); err != nil {
+		fmt.Println(err)
+	}
+	if workersN == 0 {
+		fmt.Println("number of workers must be more than zero")
+	}
+
+	c.workerPool.SetNumWorkers(int(workersN))
 }
 
 func (c *CLI) unknownCommand(command string) {

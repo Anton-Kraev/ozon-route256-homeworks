@@ -6,7 +6,6 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/repository"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/service"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/hash_generator"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/logger"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/worker_pool"
 	"os/signal"
 	"syscall"
@@ -28,10 +27,9 @@ func (app App) Start() {
 	orderService := service.NewOrderService(orderRepositoryJSON, hg)
 
 	wp := workerpool.NewWorkerPool(5, 5)
-	lg := logger.Logger{}
-	commands := cli.NewCLI(orderService, lg, wp)
+	commands := cli.NewCLI(orderService, wp)
 
 	hg.Run(ctx)
 	wp.Run(ctx)
-	commands.Run(ctx)
+	commands.Run(cancel)
 }
