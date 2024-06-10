@@ -77,6 +77,7 @@ func (wp *WorkerPool) worker(workerID int) {
 		res, err := task.Execute()
 		wp.results <- tasks.TaskResult{TaskID: task.ID, Result: res, Error: err}
 
+		// stop some workers if workersN decreased
 		if workerID > wp.workersN {
 			return
 		}
@@ -92,5 +93,6 @@ func (wp *WorkerPool) resultLogger() {
 		}
 	}
 
+	// done if all results have been processed
 	wp.done <- struct{}{}
 }

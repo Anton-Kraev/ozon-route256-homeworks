@@ -68,6 +68,7 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 		}
 	}()
 
+	// waiting for all tasks processing
 	<-c.workerPool.Done()
 	fmt.Println("The application has been stopped")
 }
