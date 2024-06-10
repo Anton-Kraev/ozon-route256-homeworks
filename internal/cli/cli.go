@@ -5,11 +5,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"os"
 	"strings"
 	"sync"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 )
 
 const timeFormat = "02.01.2006-15:04:05"

@@ -2,14 +2,15 @@ package app
 
 import (
 	"context"
+	"os/signal"
+	"syscall"
+
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/app/config"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/cli"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/repository"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/service"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/hash_generator"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/worker_pool"
-	"os/signal"
-	"syscall"
+	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/hash_generator"
+	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/internal/workers/worker_pool"
 )
 
 type App struct {

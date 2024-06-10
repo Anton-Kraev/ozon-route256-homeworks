@@ -2,8 +2,9 @@ package workerpool
 
 import (
 	"fmt"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/tasks"
 	"sync"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/tasks"
 )
 
 type WorkerPool struct {

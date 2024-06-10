@@ -1,10 +1,11 @@
 package service
 
 import (
+	"time"
+
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
-	"time"
 )
 
 // ReceiveOrder receives order from courier.

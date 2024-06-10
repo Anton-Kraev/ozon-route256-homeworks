@@ -1,9 +1,10 @@
 package repository
 
 import (
-	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"math"
 	"sort"
+
+	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 )
 
 // GetOrders returns orders that matches specified filter.

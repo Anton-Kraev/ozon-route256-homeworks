@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"time"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 )
 
 type orderRecord struct {

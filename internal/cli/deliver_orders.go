@@ -3,9 +3,10 @@ package cli
 import (
 	"errors"
 	"flag"
-	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 	"strconv"
 	"strings"
+
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
 )
 
 func (c *CLI) deliverOrders(args []string) (string, error) {

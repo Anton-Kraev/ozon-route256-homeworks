@@ -3,9 +3,10 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"strings"
+
 	models "gitlab.ozon.dev/antonkraeww/homeworks/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/models/requests"
-	"strings"
 )
 
 func (c *CLI) refundsList(args []string) (string, error) {

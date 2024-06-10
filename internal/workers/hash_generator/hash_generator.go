@@ -2,6 +2,7 @@ package hashgen
 
 import (
 	"context"
+
 	"gitlab.ozon.dev/antonkraeww/homeworks/pkg/hash"
 )
 
