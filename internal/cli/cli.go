@@ -72,6 +72,7 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 
 					if input[0] == exit {
 						cancel()
+
 						break
 					}
 
@@ -102,6 +103,7 @@ func (c *CLI) handleCommand(input []string) {
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
+
 			return c.receiveOrder(args)
 		})
 	case returnOrder:
@@ -109,6 +111,7 @@ func (c *CLI) handleCommand(input []string) {
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
+
 			return c.returnOrder(args)
 		})
 	case deliverOrders:
@@ -116,6 +119,7 @@ func (c *CLI) handleCommand(input []string) {
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
+
 			return c.deliverOrders(args)
 		})
 	case clientOrders:

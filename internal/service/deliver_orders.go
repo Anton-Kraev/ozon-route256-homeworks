@@ -15,7 +15,7 @@ func (s *OrderService) DeliverOrders(req requests.DeliverOrdersRequest) error {
 		delivered[orderID] = models.Order{}
 	}
 
-	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: req.OrdersID})
+	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: req.OrdersID})
 	if err != nil {
 		return err
 	}
@@ -43,10 +43,12 @@ func (s *OrderService) DeliverOrders(req requests.DeliverOrdersRequest) error {
 	}
 
 	changes := make(map[uint64]models.Order)
+
 	for id, order := range delivered {
 		if order.OrderID == 0 {
 			return errsdomain.ErrOrderNotFound(id)
 		}
+
 		changes[id] = order
 	}
 

@@ -18,19 +18,18 @@ type App struct {
 }
 
 func (app App) Start() {
-	parentCtx := context.Background()
-	ctx, cancel := signal.NotifyContext(parentCtx, syscall.SIGINT, syscall.SIGTERM)
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
 	orderRepositoryJSON := repository.NewOrderRepository(app.StorageFile)
 
-	hg := hashgen.NewHashGenerator(config.HashesN)
-	orderService := service.NewOrderService(orderRepositoryJSON, hg)
+	hashGen := hashgen.NewHashGenerator(config.HashesN)
+	orderService := service.NewOrderService(orderRepositoryJSON, hashGen)
 
-	wp := workerpool.NewWorkerPool(config.WorkersN, config.TasksN)
-	commands := cli.NewCLI(orderService, wp)
+	workerPool := workerpool.NewWorkerPool(config.WorkersN, config.TasksN)
+	commands := cli.NewCLI(orderService, workerPool)
 
-	hg.Run(ctx)
-	wp.Run()
+	hashGen.Run(ctx)
+	workerPool.Run()
 	commands.Run(ctx, cancel)
 }

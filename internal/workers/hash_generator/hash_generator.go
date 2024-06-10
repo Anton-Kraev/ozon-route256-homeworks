@@ -20,6 +20,7 @@ func (g *HashGenerator) Run(ctx context.Context) {
 			select {
 			case <-ctx.Done():
 				close(g.hashes)
+
 				return
 			default:
 				g.hashes <- hash.GenerateHash()

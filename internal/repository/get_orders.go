@@ -8,7 +8,7 @@ import (
 )
 
 // GetOrders returns orders that matches specified filter.
-func (r OrderRepository) GetOrders(filter models.OrderFilter) ([]models.Order, error) {
+func (r OrderRepository) GetOrders(filter models.Filter) ([]models.Order, error) {
 	orders, err := r.readAll()
 	if err != nil {
 		return []models.Order{}, err
@@ -29,6 +29,7 @@ func (r OrderRepository) GetOrders(filter models.OrderFilter) ([]models.Order, e
 	}
 
 	var filteredOrders []models.Order
+
 	for _, order := range orders {
 		if order.MatchesFilter(filter) {
 			filteredOrders = append(filteredOrders, order)

@@ -10,7 +10,9 @@ import (
 
 // RefundOrder receives order refund from client.
 func (s *OrderService) RefundOrder(req requests.RefundOrderRequest) error {
-	orders, err := s.Repo.GetOrders(models.OrderFilter{
+	const maxRefundPeriod = time.Hour * 48
+
+	orders, err := s.Repo.GetOrders(models.Filter{
 		OrdersID:  []uint64{req.OrderID},
 		ClientsID: []uint64{req.ClientID},
 	})
@@ -31,7 +33,7 @@ func (s *OrderService) RefundOrder(req requests.RefundOrderRequest) error {
 	}
 
 	now := time.Now().UTC()
-	if order.StatusChanged.Add(time.Hour * 48).Before(now) {
+	if order.StatusChanged.Add(maxRefundPeriod).Before(now) {
 		return errsdomain.ErrOrderDeliveredLongAgo
 	}
 

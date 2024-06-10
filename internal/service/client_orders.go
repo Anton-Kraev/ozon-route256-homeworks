@@ -9,7 +9,7 @@ import (
 // optional lastN for get last orders, by default return all orders
 // optional inStorage for get only orders from storage.
 func (s *OrderService) ClientOrders(req requests.ClientOrdersRequest) ([]order.Order, error) {
-	filter := order.OrderFilter{
+	filter := order.Filter{
 		ClientsID:    []uint64{req.ClientID},
 		PerPage:      req.LastN,
 		SortedByDate: true,

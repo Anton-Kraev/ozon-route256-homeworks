@@ -30,8 +30,8 @@ func (c *CLI) refundsList(args []string) (string, error) {
 
 func refundsListToString(refunds []models.Order) string {
 	result := strings.Builder{}
-
 	result.WriteString("\nRefunds list:\n")
+
 	for _, refund := range refunds {
 		result.WriteString(fmt.Sprintf(
 			"  orderID=%d clientID=%d refunded=%s\n",

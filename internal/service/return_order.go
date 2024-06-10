@@ -10,7 +10,7 @@ import (
 
 // ReturnOrder returns order to courier.
 func (s *OrderService) ReturnOrder(req requests.ReturnOrderRequest) error {
-	orders, err := s.Repo.GetOrders(models.OrderFilter{OrdersID: []uint64{req.OrderID}})
+	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: []uint64{req.OrderID}})
 	if err != nil {
 		return err
 	}

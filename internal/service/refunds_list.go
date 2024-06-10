@@ -9,7 +9,7 @@ import (
 // optional pageN=<page number from the end>
 // optional perPage=<number of orders per page>.
 func (s *OrderService) RefundsList(req requests.RefundsListRequest) ([]order.Order, error) {
-	orders, err := s.Repo.GetOrders(order.OrderFilter{
+	orders, err := s.Repo.GetOrders(order.Filter{
 		Statuses:     []order.Status{order.Refunded},
 		PageN:        req.PageN,
 		PerPage:      req.PerPage,
