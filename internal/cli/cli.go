@@ -24,14 +24,16 @@ type orderService interface {
 }
 
 type workerPool interface {
-	AddTask(taskID int, task func() (string, error))
+	AddTask(taskID int, command string, task func() (string, error))
 	SetNumWorkers(workersN int)
+	Shutdown()
 	Done() <-chan struct{}
 }
 
 type CLI struct {
 	Service           orderService
 	availableCommands []command
+	cmdCounter        int
 	workerPool        workerPool
 	mutex             sync.Mutex
 }
@@ -45,65 +47,91 @@ func NewCLI(service orderService, pool workerPool) CLI {
 }
 
 // Run runs command-line application, processes entered commands.
-func (c *CLI) Run(cancel context.CancelFunc) {
+func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 	fmt.Println("The application is running")
 	fmt.Println("Type help to get a list of available commands")
 
 	scanner := bufio.NewScanner(os.Stdin)
 
-	for scanner.Scan() {
-		comm := strings.Split(strings.TrimSpace(scanner.Text()), " ")
-		if len(comm) == 0 || comm[0] == "" {
-			continue
-		}
-		if comm[0] == exit {
-			cancel()
-			break
-		}
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				c.workerPool.Shutdown()
 
-		c.handleCommand(comm[0], comm[1:])
-	}
+				fmt.Println("Stopping application...")
+
+				return
+			default:
+				for scanner.Scan() {
+					input := strings.Split(strings.TrimSpace(scanner.Text()), " ")
+					if len(input) == 0 || input[0] == "" {
+						continue
+					}
+
+					if input[0] == exit {
+						cancel()
+						break
+					}
+
+					c.handleCommand(input)
+				}
+			}
+		}
+	}()
 
 	<-c.workerPool.Done()
 	fmt.Println("The application has been stopped")
 }
 
-func (c *CLI) handleCommand(comm string, args []string) {
+func (c *CLI) handleCommand(input []string) {
+	var (
+		inputString = strings.Join(input, " ")
+		comm        = input[0]
+		args        = input[1:]
+	)
+
 	switch comm {
 	case help:
 		c.help()
 	case numWorkers:
 		c.numWorkers(args)
 	case receiveOrder:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
 			return c.receiveOrder(args)
 		})
 	case returnOrder:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
 			return c.returnOrder(args)
 		})
 	case deliverOrders:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
 			return c.deliverOrders(args)
 		})
 	case clientOrders:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			return c.clientOrders(args)
 		})
 	case refundOrder:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
 			return c.refundOrder(args)
 		})
 	case refundsList:
-		c.workerPool.AddTask(1, func() (string, error) {
+		c.cmdCounter++
+		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			return c.refundsList(args)
 		})
 	default:
@@ -125,7 +153,7 @@ func (c *CLI) numWorkers(args []string) {
 	var workersN uint
 
 	fs := flag.NewFlagSet(numWorkers, flag.ContinueOnError)
-	fs.UintVar(&workersN, "workersN", 0, "use --num=4")
+	fs.UintVar(&workersN, "num", 0, "use --num=4")
 
 	if err := fs.Parse(args); err != nil {
 		fmt.Println(err)

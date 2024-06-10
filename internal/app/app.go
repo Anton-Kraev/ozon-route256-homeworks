@@ -17,8 +17,7 @@ type App struct {
 
 func (app App) Start() {
 	parentCtx := context.Background()
-	ctx, cancel := context.WithCancel(parentCtx)
-	signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
+	ctx, cancel := signal.NotifyContext(parentCtx, syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
 	orderRepositoryJSON := repository.NewOrderRepository(app.StorageFile)
@@ -30,6 +29,6 @@ func (app App) Start() {
 	commands := cli.NewCLI(orderService, wp)
 
 	hg.Run(ctx)
-	wp.Run(ctx)
-	commands.Run(cancel)
+	wp.Run()
+	commands.Run(ctx, cancel)
 }

@@ -2,7 +2,6 @@ package hashgen
 
 import (
 	"context"
-
 	"gitlab.ozon.dev/antonkraeww/homeworks/pkg/hash"
 )
 
@@ -15,15 +14,17 @@ func NewHashGenerator(hashesN int) *HashGenerator {
 }
 
 func (g *HashGenerator) Run(ctx context.Context) {
-	for {
-		select {
-		case <-ctx.Done():
-			close(g.hashes)
-			return
-		default:
-			g.hashes <- hash.GenerateHash()
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				close(g.hashes)
+				return
+			default:
+				g.hashes <- hash.GenerateHash()
+			}
 		}
-	}
+	}()
 }
 
 func (g *HashGenerator) GetHash() string {

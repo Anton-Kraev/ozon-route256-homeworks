@@ -43,7 +43,7 @@ func (c *CLI) clientOrders(args []string) (string, error) {
 func clientOrdersToString(orders []models.Order) string {
 	result := strings.Builder{}
 
-	result.WriteString("\nOrders list:")
+	result.WriteString("\nOrders list:\n")
 	for _, order := range orders {
 		result.WriteString(fmt.Sprintf(
 			"  orderID=%d clientID=%d status=%s\n",
