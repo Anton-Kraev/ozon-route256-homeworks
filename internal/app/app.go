@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"gitlab.ozon.dev/antonkraeww/homeworks/internal/app/config"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/cli"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/repository"
 	"gitlab.ozon.dev/antonkraeww/homeworks/internal/service"
@@ -22,10 +23,10 @@ func (app App) Start() {
 
 	orderRepositoryJSON := repository.NewOrderRepository(app.StorageFile)
 
-	hg := hashgen.NewHashGenerator(5)
+	hg := hashgen.NewHashGenerator(config.HashesN)
 	orderService := service.NewOrderService(orderRepositoryJSON, hg)
 
-	wp := workerpool.NewWorkerPool(5, 5)
+	wp := workerpool.NewWorkerPool(config.WorkersN, config.TasksN)
 	commands := cli.NewCLI(orderService, wp)
 
 	hg.Run(ctx)
