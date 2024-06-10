@@ -7,7 +7,7 @@ import (
 type orderRepository interface {
 	AddOrders(newOrders []order.Order) error
 	ChangeOrders(changes map[uint64]order.Order) error
-	GetOrders(filter order.OrderFilter) ([]order.Order, error)
+	GetOrders(filter order.Filter) ([]order.Order, error)
 }
 
 type hashGenerator interface {
