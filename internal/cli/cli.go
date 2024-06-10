@@ -58,26 +58,12 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 		for {
 			select {
 			case <-ctx.Done():
-				c.workerPool.Shutdown()
-
 				fmt.Println("Stopping application...")
+				c.workerPool.Shutdown()
 
 				return
 			default:
-				for scanner.Scan() {
-					input := strings.Split(strings.TrimSpace(scanner.Text()), " ")
-					if len(input) == 0 || input[0] == "" {
-						continue
-					}
-
-					if input[0] == exit {
-						cancel()
-
-						break
-					}
-
-					c.handleCommand(input)
-				}
+				c.handleCommand(scanner, cancel)
 			}
 		}
 	}()
@@ -86,7 +72,24 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 	fmt.Println("The application has been stopped")
 }
 
-func (c *CLI) handleCommand(input []string) {
+func (c *CLI) handleCommand(scanner *bufio.Scanner, cancel context.CancelFunc) {
+	for scanner.Scan() {
+		input := strings.Split(strings.TrimSpace(scanner.Text()), " ")
+		if len(input) == 0 || input[0] == "" {
+			continue
+		}
+
+		if input[0] == exit {
+			cancel()
+		} else {
+			c.runCommand(input)
+		}
+
+		break
+	}
+}
+
+func (c *CLI) runCommand(input []string) {
 	var (
 		inputString = strings.Join(input, " ")
 		comm        = input[0]
@@ -140,7 +143,7 @@ func (c *CLI) handleCommand(input []string) {
 			return c.refundsList(args)
 		})
 	default:
-		c.unknownCommand(comm)
+		fmt.Printf("unknown command %s\n", comm)
 	}
 }
 
@@ -168,8 +171,4 @@ func (c *CLI) numWorkers(args []string) {
 	}
 
 	c.workerPool.SetNumWorkers(int(workersN))
-}
-
-func (c *CLI) unknownCommand(command string) {
-	fmt.Printf("unknown command %s\n", command)
 }
