@@ -30,5 +30,10 @@ func (c *CLI) deliverOrders(args []string) (string, error) {
 		}
 	}
 
-	return "", c.Service.DeliverOrders(requests.DeliverOrdersRequest{OrdersID: orders})
+	errDeliver := c.Service.DeliverOrders(requests.DeliverOrdersRequest{OrdersID: orders})
+	if errDeliver != nil {
+		return "", fmt.Errorf("can't deliver orders: %v", errDeliver)
+	}
+
+	return "", nil
 }

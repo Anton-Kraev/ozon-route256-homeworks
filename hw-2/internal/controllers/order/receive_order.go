@@ -3,6 +3,7 @@ package order
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"time"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
@@ -34,9 +35,14 @@ func (c *CLI) receiveOrder(args []string) (string, error) {
 		return "", errTime
 	}
 
-	return "", c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
+	errReceive := c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
 		OrderID:     orderID,
 		ClientID:    clientID,
 		StoredUntil: storedUntil,
 	})
+	if errReceive != nil {
+		return "", fmt.Errorf("can't receive order: %v", errReceive)
+	}
+
+	return "", nil
 }

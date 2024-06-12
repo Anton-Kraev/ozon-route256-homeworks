@@ -35,7 +35,7 @@ func (c *CLI) clientOrders(args []string) (string, error) {
 		InStorage: inStorage,
 	})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("can't get client orders: %v", err)
 	}
 
 	return clientOrdersToString(orders), nil

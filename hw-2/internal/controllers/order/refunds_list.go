@@ -22,7 +22,7 @@ func (c *CLI) refundsList(args []string) (string, error) {
 
 	refunds, err := c.Service.RefundsList(requests.RefundsListRequest{PageN: pageN, PerPage: perPage})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("can't get refunds list: %v", err)
 	}
 
 	return refundsListToString(refunds), nil
