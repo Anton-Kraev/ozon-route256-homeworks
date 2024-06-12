@@ -1,6 +1,8 @@
 package order
 
 import (
+	"fmt"
+
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
 )
@@ -24,7 +26,10 @@ func (r OrderRepository) ChangeOrders(changes map[uint64]models.Order) error {
 	// return err with first order that not found
 	if len(changes) != 0 {
 		for orderID := range changes {
-			return errsdomain.ErrOrderNotFound(orderID)
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrOrderNotFound,
+				errsdomain.ErrorOrderNotFound(orderID),
+			)
 		}
 	}
 

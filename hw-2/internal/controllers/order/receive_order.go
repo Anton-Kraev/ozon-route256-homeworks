@@ -3,8 +3,9 @@ package order
 import (
 	"errors"
 	"flag"
-	"fmt"
 	"time"
+
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 )
 
 func (c *CLI) receiveOrder(args []string) (string, error) {
@@ -35,7 +36,13 @@ func (c *CLI) receiveOrder(args []string) (string, error) {
 
 	errReceive := c.Service.ReceiveOrder(orderID, clientID, storedUntil)
 	if errReceive != nil {
-		return "", fmt.Errorf("can't receive order: %v", errReceive)
+		switch {
+		case errors.Is(errReceive, errsdomain.ErrOrderIDNotUnique) ||
+			errors.Is(errReceive, errsdomain.ErrRetentionTimeInPast):
+			return "", errReceive
+		default:
+			return "", errors.New("can't receive order")
+		}
 	}
 
 	return "", nil

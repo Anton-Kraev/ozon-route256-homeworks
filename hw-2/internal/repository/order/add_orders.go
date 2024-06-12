@@ -1,6 +1,8 @@
 package order
 
 import (
+	"fmt"
+
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
 )
@@ -19,7 +21,10 @@ func (r OrderRepository) AddOrders(newOrders []models.Order) error {
 
 	for _, order := range newOrders {
 		if _, ok := alreadyInStorage[order.OrderID]; ok {
-			return errsdomain.ErrOrderIDNotUnique(order.OrderID)
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrOrderIDNotUnique,
+				errsdomain.ErrorOrderIDNotUnique(order.OrderID),
+			)
 		}
 	}
 

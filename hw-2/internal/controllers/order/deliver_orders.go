@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/controllers/order/helpers"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 )
 
 func (c *CLI) deliverOrders(args []string) (string, error) {
@@ -31,7 +32,15 @@ func (c *CLI) deliverOrders(args []string) (string, error) {
 
 	errDeliver := c.Service.DeliverOrders(orders)
 	if errDeliver != nil {
-		return "", fmt.Errorf("can't deliver orders: %v", errDeliver)
+		switch {
+		case errors.Is(errDeliver, errsdomain.ErrOrderNotFound) ||
+			errors.Is(errDeliver, errsdomain.ErrDifferentClients) ||
+			errors.Is(errDeliver, errsdomain.ErrUnexpectedOrderStatus) ||
+			errors.Is(errDeliver, errsdomain.ErrRetentionPeriodExpired):
+			return "", errDeliver
+		default:
+			return "", errors.New("can't deliver orders")
+		}
 	}
 
 	return "", nil

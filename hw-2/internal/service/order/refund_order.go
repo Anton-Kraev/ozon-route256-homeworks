@@ -1,6 +1,7 @@
 package order
 
 import (
+	"fmt"
 	"time"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
@@ -19,8 +20,11 @@ func (s *OrderService) RefundOrder(orderID, clientID uint64) error {
 		return err
 	}
 
-	if len(orders) != 0 {
-		return errsdomain.ErrOrderNotFound(orderID)
+	if len(orders) == 0 {
+		return fmt.Errorf("%w: %w",
+			errsdomain.ErrOrderNotFound,
+			errsdomain.ErrorOrderNotFound(orderID),
+		)
 	}
 
 	order := orders[0]

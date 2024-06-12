@@ -30,7 +30,7 @@ func (c *CLI) clientOrders(args []string) (string, error) {
 
 	orders, err := c.Service.ClientOrders(clientID, lastN, inStorage)
 	if err != nil {
-		return "", fmt.Errorf("can't get client orders: %v", err)
+		return "", errors.New("can't get client orders")
 	}
 
 	return clientOrdersToString(orders), nil

@@ -1,6 +1,7 @@
 package order
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"strings"
@@ -21,7 +22,7 @@ func (c *CLI) refundsList(args []string) (string, error) {
 
 	refunds, err := c.Service.RefundsList(pageN, perPage)
 	if err != nil {
-		return "", fmt.Errorf("can't get refunds list: %v", err)
+		return "", errors.New("can't get refunds list")
 	}
 
 	return refundsListToString(refunds), nil

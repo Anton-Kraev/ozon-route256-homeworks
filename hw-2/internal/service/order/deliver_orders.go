@@ -1,6 +1,7 @@
 package order
 
 import (
+	"fmt"
 	"time"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
@@ -9,9 +10,9 @@ import (
 
 // DeliverOrders deliver list of orders to client.
 func (s *OrderService) DeliverOrders(ordersID []uint64) error {
-	delivered := make(map[uint64]models.Order)
+	toDeliver := make(map[uint64]models.Order)
 	for _, orderID := range ordersID {
-		delivered[orderID] = models.Order{}
+		toDeliver[orderID] = models.Order{}
 	}
 
 	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: ordersID})
@@ -19,37 +20,36 @@ func (s *OrderService) DeliverOrders(ordersID []uint64) error {
 		return err
 	}
 
-	var prevDelivered models.Order
+	var prevOrder models.Order
 
 	for _, order := range orders {
 		now := time.Now().UTC()
 
-		if prevDelivered.OrderID != 0 && order.ClientID != prevDelivered.ClientID {
-			return errsdomain.ErrDifferentClientOrders(order.ClientID, prevDelivered.ClientID)
+		if prevOrder.OrderID != 0 && order.ClientID != prevOrder.ClientID {
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrDifferentClients,
+				errsdomain.ErrorDifferentClients(order.ClientID, prevOrder.ClientID),
+			)
 		}
 		if order.Status != models.Received {
-			return errsdomain.ErrUnexpectedOrderStatus(order.OrderID, order.Status)
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrUnexpectedOrderStatus,
+				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, order.Status),
+			)
 		}
 		if now.After(order.StoredUntil) {
-			return errsdomain.ErrRetentionPeriodExpired(order.OrderID)
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrRetentionPeriodExpired,
+				errsdomain.ErrorRetentionPeriodExpired(order.OrderID),
+			)
 		}
 
 		order.SetStatus(models.Delivered, now)
 		order.SetHash(s.hashes.GetHash())
 
-		prevDelivered = order
-		delivered[order.OrderID] = order
+		prevOrder = order
+		toDeliver[order.OrderID] = order
 	}
 
-	changes := make(map[uint64]models.Order)
-
-	for id, order := range delivered {
-		if order.OrderID == 0 {
-			return errsdomain.ErrOrderNotFound(id)
-		}
-
-		changes[id] = order
-	}
-
-	return s.Repo.ChangeOrders(changes)
+	return s.Repo.ChangeOrders(toDeliver)
 }

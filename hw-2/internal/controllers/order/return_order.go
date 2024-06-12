@@ -3,7 +3,8 @@ package order
 import (
 	"errors"
 	"flag"
-	"fmt"
+
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 )
 
 func (c *CLI) returnOrder(args []string) (string, error) {
@@ -21,7 +22,15 @@ func (c *CLI) returnOrder(args []string) (string, error) {
 
 	errReturn := c.Service.ReturnOrder(orderID)
 	if errReturn != nil {
-		return "", fmt.Errorf("can't return order: %v", errReturn)
+		switch {
+		case errors.Is(errReturn, errsdomain.ErrOrderNotFound) ||
+			errors.Is(errReturn, errsdomain.ErrRetentionPeriodNotExpiredYet) ||
+			errors.Is(errReturn, errsdomain.ErrOrderAlreadyReturned) ||
+			errors.Is(errReturn, errsdomain.ErrOrderDelivered):
+			return "", errReturn
+		default:
+			return "", errors.New("can't return order")
+		}
 	}
 
 	return "", nil
