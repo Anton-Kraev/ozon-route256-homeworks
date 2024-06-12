@@ -5,17 +5,16 @@ import (
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 // DeliverOrders deliver list of orders to client.
-func (s *OrderService) DeliverOrders(req requests.DeliverOrdersRequest) error {
+func (s *OrderService) DeliverOrders(ordersID []uint64) error {
 	delivered := make(map[uint64]models.Order)
-	for _, orderID := range req.OrdersID {
+	for _, orderID := range ordersID {
 		delivered[orderID] = models.Order{}
 	}
 
-	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: req.OrdersID})
+	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: ordersID})
 	if err != nil {
 		return err
 	}

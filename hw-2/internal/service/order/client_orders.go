@@ -2,19 +2,18 @@ package order
 
 import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 // ClientOrders returns list of client orders
 // optional lastN for get last orders, by default return all orders
 // optional inStorage for get only orders from storage.
-func (s *OrderService) ClientOrders(req requests.ClientOrdersRequest) ([]order.Order, error) {
+func (s *OrderService) ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]order.Order, error) {
 	filter := order.Filter{
-		ClientsID:    []uint64{req.ClientID},
-		PerPage:      req.LastN,
+		ClientsID:    []uint64{clientID},
+		PerPage:      lastN,
 		SortedByDate: true,
 	}
-	if req.InStorage {
+	if inStorage {
 		filter.Statuses = []order.Status{order.Received, order.Refunded}
 	}
 

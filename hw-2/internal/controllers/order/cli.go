@@ -8,20 +8,20 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 const timeFormat = "02.01.2006-15:04:05"
 
 type orderService interface {
-	ReceiveOrder(req requests.ReceiveOrderRequest) error
-	ReturnOrder(req requests.ReturnOrderRequest) error
-	DeliverOrders(req requests.DeliverOrdersRequest) error
-	ClientOrders(req requests.ClientOrdersRequest) ([]order.Order, error)
-	RefundOrder(req requests.RefundOrderRequest) error
-	RefundsList(req requests.RefundsListRequest) ([]order.Order, error)
+	ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
+	DeliverOrders(ordersID []uint64) error
+	ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error
+	RefundsList(pageN, perPage uint) ([]order.Order, error)
+	RefundOrder(orderID, clientID uint64) error
+	ReturnOrder(orderID uint64) error
 }
 
 type workerPool interface {

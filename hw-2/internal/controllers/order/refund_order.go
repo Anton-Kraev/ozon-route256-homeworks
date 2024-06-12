@@ -4,8 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) refundOrder(args []string) (string, error) {
@@ -25,7 +23,7 @@ func (c *CLI) refundOrder(args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	errRefund := c.Service.RefundOrder(requests.RefundOrderRequest{OrderID: orderID, ClientID: clientID})
+	errRefund := c.Service.RefundOrder(orderID, clientID)
 	if errRefund != nil {
 		return "", fmt.Errorf("can't refund order: %v", errRefund)
 	}

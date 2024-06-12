@@ -4,8 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) returnOrder(args []string) (string, error) {
@@ -21,7 +19,7 @@ func (c *CLI) returnOrder(args []string) (string, error) {
 		return "", errors.New("orderID must be positive number")
 	}
 
-	errReturn := c.Service.ReturnOrder(requests.ReturnOrderRequest{OrderID: orderID})
+	errReturn := c.Service.ReturnOrder(orderID)
 	if errReturn != nil {
 		return "", fmt.Errorf("can't return order: %v", errReturn)
 	}

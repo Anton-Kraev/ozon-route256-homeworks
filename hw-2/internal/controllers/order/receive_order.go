@@ -5,8 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"time"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) receiveOrder(args []string) (string, error) {
@@ -35,11 +33,7 @@ func (c *CLI) receiveOrder(args []string) (string, error) {
 		return "", errTime
 	}
 
-	errReceive := c.Service.ReceiveOrder(requests.ReceiveOrderRequest{
-		OrderID:     orderID,
-		ClientID:    clientID,
-		StoredUntil: storedUntil,
-	})
+	errReceive := c.Service.ReceiveOrder(orderID, clientID, storedUntil)
 	if errReceive != nil {
 		return "", fmt.Errorf("can't receive order: %v", errReceive)
 	}

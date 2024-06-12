@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/controllers/order/helpers"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) deliverOrders(args []string) (string, error) {
@@ -30,7 +29,7 @@ func (c *CLI) deliverOrders(args []string) (string, error) {
 		}
 	}
 
-	errDeliver := c.Service.DeliverOrders(requests.DeliverOrdersRequest{OrdersID: orders})
+	errDeliver := c.Service.DeliverOrders(orders)
 	if errDeliver != nil {
 		return "", fmt.Errorf("can't deliver orders: %v", errDeliver)
 	}

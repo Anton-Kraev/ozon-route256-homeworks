@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) clientOrders(args []string) (string, error) {
@@ -29,11 +28,7 @@ func (c *CLI) clientOrders(args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	orders, err := c.Service.ClientOrders(requests.ClientOrdersRequest{
-		ClientID:  clientID,
-		LastN:     lastN,
-		InStorage: inStorage,
-	})
+	orders, err := c.Service.ClientOrders(clientID, lastN, inStorage)
 	if err != nil {
 		return "", fmt.Errorf("can't get client orders: %v", err)
 	}

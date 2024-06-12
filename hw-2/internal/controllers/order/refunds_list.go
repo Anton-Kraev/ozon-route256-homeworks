@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/requests"
 )
 
 func (c *CLI) refundsList(args []string) (string, error) {
@@ -20,7 +19,7 @@ func (c *CLI) refundsList(args []string) (string, error) {
 		return "", err
 	}
 
-	refunds, err := c.Service.RefundsList(requests.RefundsListRequest{PageN: pageN, PerPage: perPage})
+	refunds, err := c.Service.RefundsList(pageN, perPage)
 	if err != nil {
 		return "", fmt.Errorf("can't get refunds list: %v", err)
 	}
