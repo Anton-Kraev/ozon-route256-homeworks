@@ -136,6 +136,7 @@ func (c *CLI) runCommand(input []string) {
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			c.mutex.Lock()
 			defer c.mutex.Unlock()
+
 			return c.refundOrder(args)
 		})
 	case refundsList:
