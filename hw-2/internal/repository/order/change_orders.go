@@ -1,4 +1,4 @@
-package repository
+package order
 
 import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"

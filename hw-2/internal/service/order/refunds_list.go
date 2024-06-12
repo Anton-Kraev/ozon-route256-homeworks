@@ -1,4 +1,4 @@
-package service
+package order
 
 import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
