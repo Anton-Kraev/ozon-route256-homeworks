@@ -1,4 +1,4 @@
-package cli
+package order
 
 type command struct {
 	name  string
