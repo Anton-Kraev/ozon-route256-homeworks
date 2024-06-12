@@ -24,9 +24,9 @@ func (o *Order) SetHash(hash string) {
 }
 
 func (o *Order) MatchesFilter(filter Filter) bool {
-	matchesOrderID := len(filter.OrdersID) == 0 || slices.Contains(filter.OrdersID, o.OrderID)
-	matchesClientID := len(filter.ClientsID) == 0 || slices.Contains(filter.ClientsID, o.ClientID)
-	matchesStatus := len(filter.Statuses) == 0 || slices.Contains(filter.Statuses, o.Status)
+	matchesOrderID := filter.OrdersID == nil || slices.Contains(filter.OrdersID, o.OrderID)
+	matchesClientID := filter.ClientsID == nil || slices.Contains(filter.ClientsID, o.ClientID)
+	matchesStatus := filter.Statuses == nil || slices.Contains(filter.Statuses, o.Status)
 
 	return matchesOrderID && matchesClientID && matchesStatus
 }
