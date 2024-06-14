@@ -14,7 +14,7 @@ type WorkersConfig struct {
 
 func ParseWorkersConfig(configPath string) *WorkersConfig {
 	workersConfig := &WorkersConfig{}
-	if err := config.ParseConfigFile(workersConfig, configPath+"workers.json"); err != nil {
+	if err := config.ParseConfigFile(workersConfig, configPath); err != nil {
 		log.Fatalln(err)
 	}
 
