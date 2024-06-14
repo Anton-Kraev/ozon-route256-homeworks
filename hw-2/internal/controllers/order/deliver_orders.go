@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/controllers/order/helpers"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/helpers"
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
 )
 
