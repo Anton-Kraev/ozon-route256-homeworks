@@ -30,14 +30,17 @@ func (c *CLI) deliverOrders(args []string) (string, error) {
 		}
 	}
 
-	errDeliver := c.Service.DeliverOrders(orders)
-	if errDeliver != nil {
+	err = c.Service.DeliverOrders(orders)
+	if err != nil {
 		switch {
-		case errors.Is(errDeliver, errsdomain.ErrOrderNotFound) ||
-			errors.Is(errDeliver, errsdomain.ErrDifferentClients) ||
-			errors.Is(errDeliver, errsdomain.ErrUnexpectedOrderStatus) ||
-			errors.Is(errDeliver, errsdomain.ErrRetentionPeriodExpired):
-			return "", errDeliver
+		case errors.Is(err, errsdomain.ErrOrderNotFound):
+			return "", err
+		case errors.Is(err, errsdomain.ErrDifferentClients):
+			return "", err
+		case errors.Is(err, errsdomain.ErrUnexpectedOrderStatus):
+			return "", err
+		case errors.Is(err, errsdomain.ErrRetentionPeriodExpired):
+			return "", err
 		default:
 			return "", errors.New("can't deliver orders")
 		}

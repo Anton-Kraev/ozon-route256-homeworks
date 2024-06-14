@@ -20,14 +20,17 @@ func (c *CLI) returnOrder(args []string) (string, error) {
 		return "", errors.New("orderID must be positive number")
 	}
 
-	errReturn := c.Service.ReturnOrder(orderID)
-	if errReturn != nil {
+	err := c.Service.ReturnOrder(orderID)
+	if err != nil {
 		switch {
-		case errors.Is(errReturn, errsdomain.ErrOrderNotFound) ||
-			errors.Is(errReturn, errsdomain.ErrRetentionPeriodNotExpiredYet) ||
-			errors.Is(errReturn, errsdomain.ErrOrderAlreadyReturned) ||
-			errors.Is(errReturn, errsdomain.ErrOrderDelivered):
-			return "", errReturn
+		case errors.Is(err, errsdomain.ErrOrderNotFound):
+			return "", err
+		case errors.Is(err, errsdomain.ErrRetentionPeriodNotExpiredYet):
+			return "", err
+		case errors.Is(err, errsdomain.ErrOrderAlreadyReturned):
+			return "", err
+		case errors.Is(err, errsdomain.ErrOrderDelivered):
+			return "", err
 		default:
 			return "", errors.New("can't return order")
 		}

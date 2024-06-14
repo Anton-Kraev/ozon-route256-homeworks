@@ -24,14 +24,17 @@ func (c *CLI) refundOrder(args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	errRefund := c.Service.RefundOrder(orderID, clientID)
-	if errRefund != nil {
+	err := c.Service.RefundOrder(orderID, clientID)
+	if err != nil {
 		switch {
-		case errors.Is(errRefund, errsdomain.ErrOrderNotFound) ||
-			errors.Is(errRefund, errsdomain.ErrOrderAlreadyRefunded) ||
-			errors.Is(errRefund, errsdomain.ErrOrderNotDeliveredYet) ||
-			errors.Is(errRefund, errsdomain.ErrOrderDeliveredLongAgo):
-			return "", errRefund
+		case errors.Is(err, errsdomain.ErrOrderNotFound):
+			return "", err
+		case errors.Is(err, errsdomain.ErrOrderAlreadyRefunded):
+			return "", err
+		case errors.Is(err, errsdomain.ErrOrderNotDeliveredYet):
+			return "", err
+		case errors.Is(err, errsdomain.ErrOrderDeliveredLongAgo):
+			return "", err
 		default:
 			return "", errors.New("can't refund order")
 		}

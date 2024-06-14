@@ -29,17 +29,18 @@ func (c *CLI) receiveOrder(args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	storedUntil, errTime := time.Parse(timeFormat, storedUntilStr)
-	if errTime != nil {
-		return "", errTime
+	storedUntil, err := time.Parse(timeFormat, storedUntilStr)
+	if err != nil {
+		return "", err
 	}
 
-	errReceive := c.Service.ReceiveOrder(orderID, clientID, storedUntil)
-	if errReceive != nil {
+	err = c.Service.ReceiveOrder(orderID, clientID, storedUntil)
+	if err != nil {
 		switch {
-		case errors.Is(errReceive, errsdomain.ErrOrderIDNotUnique) ||
-			errors.Is(errReceive, errsdomain.ErrRetentionTimeInPast):
-			return "", errReceive
+		case errors.Is(err, errsdomain.ErrOrderIDNotUnique):
+			return "", err
+		case errors.Is(err, errsdomain.ErrRetentionTimeInPast):
+			return "", err
 		default:
 			return "", errors.New("can't receive order")
 		}
