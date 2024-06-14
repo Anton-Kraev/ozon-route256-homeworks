@@ -3,8 +3,8 @@ package order
 import (
 	"fmt"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 // ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>.

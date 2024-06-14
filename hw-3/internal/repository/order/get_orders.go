@@ -4,7 +4,7 @@ import (
 	"math"
 	"sort"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 // GetOrders returns orders that matches specified filter.

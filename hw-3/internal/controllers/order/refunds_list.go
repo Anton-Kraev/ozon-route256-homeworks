@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 func (c *CLI) refundsList(args []string) (string, error) {

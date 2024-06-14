@@ -5,12 +5,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/app/config"
-	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/controllers/order"
-	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/repository/order"
-	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/service/order"
-	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/workers/hash_generator"
-	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/workers/worker_pool"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/app/config"
+	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/controllers/order"
+	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/repository/order"
+	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/service/order"
+	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/workers/hash_generator"
+	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/workers/worker_pool"
 )
 
 func Start(storageFile, configPath string) {

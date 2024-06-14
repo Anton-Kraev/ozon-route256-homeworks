@@ -3,8 +3,8 @@ package order
 import (
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 // ReceiveOrder receives order from courier.

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 // ReturnOrder returns order to courier.

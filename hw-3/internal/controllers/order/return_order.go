@@ -4,7 +4,7 @@ import (
 	"errors"
 	"flag"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 )
 
 func (c *CLI) returnOrder(args []string) (string, error) {

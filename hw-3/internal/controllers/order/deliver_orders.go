@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/helpers"
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/helpers"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 )
 
 func (c *CLI) deliverOrders(args []string) (string, error) {

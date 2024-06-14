@@ -3,7 +3,7 @@ package hashgen
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/pkg/hash"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/pkg/hash"
 )
 
 type HashGenerator struct {

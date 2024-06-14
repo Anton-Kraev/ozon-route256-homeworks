@@ -1,7 +1,7 @@
 package order
 
 import (
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 type orderRepository interface {

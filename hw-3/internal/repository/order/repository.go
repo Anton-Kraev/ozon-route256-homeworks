@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-2/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 type OrderRepository struct {
