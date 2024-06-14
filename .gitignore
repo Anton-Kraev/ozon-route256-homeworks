@@ -1,2 +1,4 @@
+pgdata/
 orders.json
 .idea/
+.golangci.yml
