@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 )
 
-func (c *CLI) deliverOrders(args []string) (string, error) {
+func (c *CLI) deliverOrders(ctx context.Context, args []string) (string, error) {
 	var ordersStr string
 
 	fs := flag.NewFlagSet(deliverOrders, flag.ContinueOnError)
@@ -30,7 +31,7 @@ func (c *CLI) deliverOrders(args []string) (string, error) {
 		}
 	}
 
-	err = c.Service.DeliverOrders(orders)
+	err = c.Service.DeliverOrders(ctx, orders)
 	if err != nil {
 		switch {
 		case errors.Is(err, errsdomain.ErrOrderNotFound):

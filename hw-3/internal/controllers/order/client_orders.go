@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
-func (c *CLI) clientOrders(args []string) (string, error) {
+func (c *CLI) clientOrders(ctx context.Context, args []string) (string, error) {
 	var (
 		clientID  uint64
 		lastN     uint
@@ -28,7 +29,7 @@ func (c *CLI) clientOrders(args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	orders, err := c.Service.ClientOrders(clientID, lastN, inStorage)
+	orders, err := c.Service.ClientOrders(ctx, clientID, lastN, inStorage)
 	if err != nil {
 		return "", errors.New("can't get client orders")
 	}

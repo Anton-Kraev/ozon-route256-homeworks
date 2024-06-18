@@ -1,13 +1,14 @@
 package order
 
 import (
+	"context"
 	"errors"
 	"flag"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 )
 
-func (c *CLI) returnOrder(args []string) (string, error) {
+func (c *CLI) returnOrder(ctx context.Context, args []string) (string, error) {
 	var orderID uint64
 
 	fs := flag.NewFlagSet(returnOrder, flag.ContinueOnError)
@@ -20,7 +21,7 @@ func (c *CLI) returnOrder(args []string) (string, error) {
 		return "", errors.New("orderID must be positive number")
 	}
 
-	err := c.Service.ReturnOrder(orderID)
+	err := c.Service.ReturnOrder(ctx, orderID)
 	if err != nil {
 		switch {
 		case errors.Is(err, errsdomain.ErrOrderNotFound):

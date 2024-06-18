@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"time"
@@ -8,7 +9,7 @@ import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 )
 
-func (c *CLI) receiveOrder(args []string) (string, error) {
+func (c *CLI) receiveOrder(ctx context.Context, args []string) (string, error) {
 	var (
 		orderID, clientID uint64
 		storedUntilStr    string
@@ -34,7 +35,7 @@ func (c *CLI) receiveOrder(args []string) (string, error) {
 		return "", err
 	}
 
-	err = c.Service.ReceiveOrder(orderID, clientID, storedUntil)
+	err = c.Service.ReceiveOrder(ctx, orderID, clientID, storedUntil)
 	if err != nil {
 		switch {
 		case errors.Is(err, errsdomain.ErrOrderIDNotUnique):

@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
-func (c *CLI) refundsList(args []string) (string, error) {
+func (c *CLI) refundsList(ctx context.Context, args []string) (string, error) {
 	var pageN, perPage uint
 
 	fs := flag.NewFlagSet(refundsList, flag.ContinueOnError)
@@ -20,7 +21,7 @@ func (c *CLI) refundsList(args []string) (string, error) {
 		return "", err
 	}
 
-	refunds, err := c.Service.RefundsList(pageN, perPage)
+	refunds, err := c.Service.RefundsList(ctx, pageN, perPage)
 	if err != nil {
 		return "", errors.New("can't get refunds list")
 	}

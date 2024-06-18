@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"time"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
@@ -8,7 +9,9 @@ import (
 )
 
 // ReceiveOrder receives order from courier.
-func (s *OrderService) ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error {
+func (s *OrderService) ReceiveOrder(
+	ctx context.Context, orderID, clientID uint64, storedUntil time.Time,
+) error {
 	now := time.Now().UTC()
 	if now.After(storedUntil) {
 		return errsdomain.ErrRetentionTimeInPast

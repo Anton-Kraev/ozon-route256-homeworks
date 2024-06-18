@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 // DeliverOrders deliver list of orders to client.
-func (s *OrderService) DeliverOrders(ordersID []uint64) error {
+func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) error {
 	toDeliver := make(map[uint64]models.Order)
 	for _, orderID := range ordersID {
 		toDeliver[orderID] = models.Order{}

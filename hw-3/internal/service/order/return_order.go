@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 // ReturnOrder returns order to courier.
-func (s *OrderService) ReturnOrder(orderID uint64) error {
+func (s *OrderService) ReturnOrder(ctx context.Context, orderID uint64) error {
 	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: []uint64{orderID}})
 	if err != nil {
 		return err

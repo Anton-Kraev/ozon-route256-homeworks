@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 // RefundOrder receives order refund from client.
-func (s *OrderService) RefundOrder(orderID, clientID uint64) error {
+func (s *OrderService) RefundOrder(ctx context.Context, orderID, clientID uint64) error {
 	const maxRefundPeriod = time.Hour * 48
 
 	orders, err := s.Repo.GetOrders(models.Filter{
