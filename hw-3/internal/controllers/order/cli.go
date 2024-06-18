@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"sync"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
@@ -16,12 +17,12 @@ import (
 const timeFormat = "02.01.2006-15:04:05"
 
 type orderService interface {
-	ClientOrders(clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
-	DeliverOrders(ordersID []uint64) error
-	ReceiveOrder(orderID, clientID uint64, storedUntil time.Time) error
-	RefundsList(pageN, perPage uint) ([]order.Order, error)
-	RefundOrder(orderID, clientID uint64) error
-	ReturnOrder(orderID uint64) error
+	ClientOrders(ctx context.Context, clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
+	DeliverOrders(ctx context.Context, ordersID []uint64) error
+	ReceiveOrder(ctx context.Context, orderID, clientID uint64, storedUntil time.Time) error
+	RefundsList(ctx context.Context, pageN, perPage uint) ([]order.Order, error)
+	RefundOrder(ctx context.Context, orderID, clientID uint64) error
+	ReturnOrder(ctx context.Context, orderID uint64) error
 }
 
 type workerPool interface {
@@ -31,19 +32,29 @@ type workerPool interface {
 	Done() <-chan struct{}
 }
 
+type txMiddleware interface {
+	CreateTransactionContext(
+		ctx context.Context,
+		txOptions pgx.TxOptions,
+		args []string,
+		handler func(ctx context.Context, args []string) (string, error),
+	) (res string, err error)
+}
+
 type CLI struct {
 	Service           orderService
 	availableCommands []command
 	cmdCounter        int
 	workerPool        workerPool
-	mutex             sync.Mutex
+	txMiddleware      txMiddleware
 }
 
-func NewCLI(service orderService, pool workerPool) CLI {
+func NewCLI(service orderService, pool workerPool, middleware txMiddleware) CLI {
 	return CLI{
 		Service:           service,
 		availableCommands: commandsList,
 		workerPool:        pool,
+		txMiddleware:      middleware,
 	}
 }
 
@@ -95,6 +106,7 @@ func (c *CLI) runCommand(input []string) {
 		inputString = strings.Join(input, " ")
 		comm        = input[0]
 		args        = input[1:]
+		ctx         = context.Background()
 	)
 
 	switch comm {
@@ -105,44 +117,32 @@ func (c *CLI) runCommand(input []string) {
 	case receiveOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			c.mutex.Lock()
-			defer c.mutex.Unlock()
-
-			return c.receiveOrder(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.receiveOrder)
 		})
 	case returnOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			c.mutex.Lock()
-			defer c.mutex.Unlock()
-
-			return c.returnOrder(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.returnOrder)
 		})
 	case deliverOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			c.mutex.Lock()
-			defer c.mutex.Unlock()
-
-			return c.deliverOrders(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.deliverOrders)
 		})
 	case clientOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.clientOrders(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.clientOrders)
 		})
 	case refundOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			c.mutex.Lock()
-			defer c.mutex.Unlock()
-
-			return c.refundOrder(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.refundOrder)
 		})
 	case refundsList:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.refundsList(args)
+			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.refundsList)
 		})
 	default:
 		fmt.Printf("unknown command %s\n", comm)

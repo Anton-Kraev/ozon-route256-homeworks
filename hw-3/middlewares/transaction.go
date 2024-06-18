@@ -24,8 +24,8 @@ func (tm *TransactionMiddleware) CreateTransactionContext(
 	ctx context.Context,
 	txOptions pgx.TxOptions,
 	args []string,
-	handler func(ctx context.Context, args []string) error,
-) (err error) {
+	handler func(ctx context.Context, args []string) (string, error),
+) (res string, err error) {
 	var tx pgx.Tx
 
 	tx, err = tm.pool.BeginTx(ctx, txOptions)
@@ -51,7 +51,7 @@ func (tm *TransactionMiddleware) CreateTransactionContext(
 	}()
 
 	ctx = pg.AddTransactionToContext(ctx, tx)
-	err = handler(ctx, args)
+	res, err = handler(ctx, args)
 
 	return
 }
