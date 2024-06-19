@@ -1,37 +1,39 @@
 package order
 
 import (
-	"fmt"
+	"context"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/pg"
 )
 
-// ChangeOrders changes orders data in storage, key=<order id to change> value=<new order data>.
-func (r OrderRepository) ChangeOrders(changes map[uint64]models.Order) error {
-	orders, err := r.readAll()
+func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Order) error {
+	tx, err := pg.GetTransactionFromContext(ctx)
 	if err != nil {
 		return err
 	}
 
-	for i, order := range orders {
-		if _, ok := changes[order.OrderID]; !ok {
-			continue
-		}
+	const query = `
+		UPDATE orders 
+		SET client_id = $2, stored_until = $3, status = $4, status_changed = $5, hash = $6 
+		WHERE id = $1
+	`
 
-		orders[i] = changes[order.OrderID]
-		delete(changes, order.OrderID)
+	for _, order := range changes {
+		_, err = tx.Exec(
+			ctx,
+			query,
+			order.OrderID,
+			order.ClientID,
+			order.StoredUntil,
+			order.Status,
+			order.StatusChanged,
+			order.Hash,
+		)
+		if err != nil {
+			return err
+		}
 	}
 
-	// return err with first order that not found
-	if len(changes) != 0 {
-		for orderID := range changes {
-			return fmt.Errorf("%w: %w",
-				errsdomain.ErrOrderNotFound,
-				errsdomain.ErrorOrderNotFound(orderID),
-			)
-		}
-	}
-
-	return r.rewriteAll(orders)
+	return nil
 }

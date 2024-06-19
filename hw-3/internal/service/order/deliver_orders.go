@@ -11,33 +11,24 @@ import (
 
 // DeliverOrders deliver list of orders to client.
 func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) error {
-	toDeliver := make(map[uint64]models.Order)
-	for _, orderID := range ordersID {
-		toDeliver[orderID] = models.Order{}
-	}
-
-	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: ordersID})
+	orders, err := s.Repo.GetOrdersByIDs(ctx, ordersID)
 	if err != nil {
 		return err
 	}
 
-	var prevOrder models.Order
+	if len(orders) != len(ordersID) {
+		return errsdomain.ErrOrderNotFound
+	}
 
-	for _, order := range orders {
+	var (
+		order     *models.Order
+		prevOrder *models.Order
+	)
+
+	for i := 0; i < len(orders); i++ {
+		order = &orders[i]
+
 		now := time.Now().UTC()
-
-		if prevOrder.OrderID != 0 && order.ClientID != prevOrder.ClientID {
-			return fmt.Errorf("%w: %w",
-				errsdomain.ErrDifferentClients,
-				errsdomain.ErrorDifferentClients(order.ClientID, prevOrder.ClientID),
-			)
-		}
-		if order.Status != models.Received {
-			return fmt.Errorf("%w: %w",
-				errsdomain.ErrUnexpectedOrderStatus,
-				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, order.Status),
-			)
-		}
 		if now.After(order.StoredUntil) {
 			return fmt.Errorf("%w: %w",
 				errsdomain.ErrRetentionPeriodExpired,
@@ -45,12 +36,25 @@ func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) err
 			)
 		}
 
+		if prevOrder != nil && order.ClientID != prevOrder.ClientID {
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrDifferentClients,
+				errsdomain.ErrorDifferentClients(order.ClientID, prevOrder.ClientID),
+			)
+		}
+
+		if order.Status != models.Received {
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrUnexpectedOrderStatus,
+				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, order.Status),
+			)
+		}
+
 		order.SetStatus(models.Delivered, now)
 		order.SetHash(s.hashes.GetHash())
 
 		prevOrder = order
-		toDeliver[order.OrderID] = order
 	}
 
-	return s.Repo.ChangeOrders(toDeliver)
+	return s.Repo.ChangeOrders(ctx, orders)
 }

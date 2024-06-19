@@ -10,15 +10,10 @@ import (
 // optional pageN=<page number from the end>
 // optional perPage=<number of orders per page>.
 func (s *OrderService) RefundsList(ctx context.Context, pageN, perPage uint) ([]order.Order, error) {
-	orders, err := s.Repo.GetOrders(order.Filter{
+	return s.Repo.GetOrdersByFilter(ctx, order.Filter{
 		Statuses:     []order.Status{order.Refunded},
 		PageN:        pageN,
 		PerPage:      perPage,
 		SortedByDate: true,
 	})
-	if err != nil {
-		return []order.Order{}, err
-	}
-
-	return orders, nil
 }

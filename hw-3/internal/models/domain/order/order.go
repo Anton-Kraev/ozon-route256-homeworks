@@ -1,7 +1,6 @@
 package order
 
 import (
-	"slices"
 	"time"
 )
 
@@ -21,12 +20,4 @@ func (o *Order) SetStatus(status Status, timeChanged time.Time) {
 
 func (o *Order) SetHash(hash string) {
 	o.Hash = hash
-}
-
-func (o *Order) MatchesFilter(filter Filter) bool {
-	matchesOrderID := filter.OrdersID == nil || slices.Contains(filter.OrdersID, o.OrderID)
-	matchesClientID := filter.ClientsID == nil || slices.Contains(filter.ClientsID, o.ClientID)
-	matchesStatus := filter.Statuses == nil || slices.Contains(filter.Statuses, o.Status)
-
-	return matchesOrderID && matchesClientID && matchesStatus
 }

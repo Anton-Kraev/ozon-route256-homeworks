@@ -13,22 +13,18 @@ import (
 func (s *OrderService) RefundOrder(ctx context.Context, orderID, clientID uint64) error {
 	const maxRefundPeriod = time.Hour * 48
 
-	orders, err := s.Repo.GetOrders(models.Filter{
-		OrdersID:  []uint64{orderID},
-		ClientsID: []uint64{clientID},
-	})
+	order, err := s.Repo.GetOrderByID(ctx, orderID)
 	if err != nil {
 		return err
 	}
 
-	if len(orders) == 0 {
+	if order == nil || order.ClientID != clientID {
 		return fmt.Errorf("%w: %w",
 			errsdomain.ErrOrderNotFound,
 			errsdomain.ErrorOrderNotFound(orderID),
 		)
 	}
 
-	order := orders[0]
 	if order.Status == models.Refunded {
 		return errsdomain.ErrOrderAlreadyRefunded
 	}
@@ -44,5 +40,5 @@ func (s *OrderService) RefundOrder(ctx context.Context, orderID, clientID uint64
 	order.SetStatus(models.Refunded, now)
 	order.SetHash(s.hashes.GetHash())
 
-	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(ctx, []models.Order{*order})
 }

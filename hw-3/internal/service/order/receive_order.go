@@ -26,5 +26,5 @@ func (s *OrderService) ReceiveOrder(
 		Hash:          s.hashes.GetHash(),
 	}
 
-	return s.Repo.AddOrders([]order.Order{newOrder})
+	return s.Repo.AddOrder(ctx, newOrder)
 }

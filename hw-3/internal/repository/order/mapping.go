@@ -6,16 +6,16 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
-type orderRecord struct {
-	OrderID       uint64    `json:"order_id"`
-	ClientID      uint64    `json:"client_id"`
-	StoredUntil   time.Time `json:"stored_until"`
-	Status        string    `json:"status"`
-	StatusChanged time.Time `json:"status_changed"`
-	Hash          string    `json:"hash"`
+type orderSchema struct {
+	OrderID       uint64    `db:"id"`
+	ClientID      uint64    `db:"client_id"`
+	StoredUntil   time.Time `db:"stored_until"`
+	Status        string    `db:"status"`
+	StatusChanged time.Time `db:"status_changed"`
+	Hash          string    `db:"hash"`
 }
 
-func (r orderRecord) toDomain() order.Order {
+func (r orderSchema) toDomain() order.Order {
 	return order.Order{
 		OrderID:       r.OrderID,
 		ClientID:      r.ClientID,
@@ -23,16 +23,5 @@ func (r orderRecord) toDomain() order.Order {
 		Status:        order.Status(r.Status),
 		StatusChanged: r.StatusChanged,
 		Hash:          r.Hash,
-	}
-}
-
-func toRecord(order order.Order) orderRecord {
-	return orderRecord{
-		OrderID:       order.OrderID,
-		ClientID:      order.ClientID,
-		StoredUntil:   order.StoredUntil,
-		Status:        string(order.Status),
-		StatusChanged: order.StatusChanged,
-		Hash:          order.Hash,
 	}
 }

@@ -13,7 +13,7 @@ func (s *OrderService) ClientOrders(
 	ctx context.Context, clientID uint64, lastN uint, inStorage bool,
 ) ([]order.Order, error) {
 	filter := order.Filter{
-		ClientsID:    []uint64{clientID},
+		ClientID:     clientID,
 		PerPage:      lastN,
 		SortedByDate: true,
 	}
@@ -21,5 +21,5 @@ func (s *OrderService) ClientOrders(
 		filter.Statuses = []order.Status{order.Received, order.Refunded}
 	}
 
-	return s.Repo.GetOrders(filter)
+	return s.Repo.GetOrdersByFilter(ctx, filter)
 }

@@ -11,21 +11,19 @@ import (
 
 // ReturnOrder returns order to courier.
 func (s *OrderService) ReturnOrder(ctx context.Context, orderID uint64) error {
-	orders, err := s.Repo.GetOrders(models.Filter{OrdersID: []uint64{orderID}})
+	order, err := s.Repo.GetOrderByID(ctx, orderID)
 	if err != nil {
 		return err
 	}
 
-	if len(orders) == 0 {
+	if order == nil {
 		return fmt.Errorf("%w: %w",
 			errsdomain.ErrOrderNotFound,
 			errsdomain.ErrorOrderNotFound(orderID),
 		)
 	}
 
-	order := orders[0]
 	now := time.Now().UTC()
-
 	if order.StoredUntil.After(now) {
 		return errsdomain.ErrRetentionPeriodNotExpiredYet
 	}
@@ -39,5 +37,5 @@ func (s *OrderService) ReturnOrder(ctx context.Context, orderID uint64) error {
 	order.SetStatus(models.Returned, now)
 	order.SetHash(s.hashes.GetHash())
 
-	return s.Repo.ChangeOrders(map[uint64]models.Order{orderID: order})
+	return s.Repo.ChangeOrders(ctx, []models.Order{*order})
 }

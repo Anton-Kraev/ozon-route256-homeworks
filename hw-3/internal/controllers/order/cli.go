@@ -14,7 +14,10 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
-const timeFormat = "02.01.2006-15:04:05"
+const (
+	requestTimeout = 5 * time.Second
+	timeFormat     = "02.01.2006-15:04:05"
+)
 
 type orderService interface {
 	ClientOrders(ctx context.Context, clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
@@ -106,8 +109,15 @@ func (c *CLI) runCommand(input []string) {
 		inputString = strings.Join(input, " ")
 		comm        = input[0]
 		args        = input[1:]
-		ctx         = context.Background()
+
+		txReadOptions  = pgx.TxOptions{AccessMode: pgx.ReadOnly, IsoLevel: pgx.ReadCommitted}
+		txWriteOptions = pgx.TxOptions{AccessMode: pgx.ReadWrite, IsoLevel: pgx.RepeatableRead}
+
+		parentCtx   = context.Background()
+		ctx, cancel = context.WithTimeout(parentCtx, requestTimeout)
 	)
+
+	defer cancel()
 
 	switch comm {
 	case help:
@@ -117,32 +127,32 @@ func (c *CLI) runCommand(input []string) {
 	case receiveOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.receiveOrder)
+			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.receiveOrder)
 		})
 	case returnOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.returnOrder)
+			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.returnOrder)
 		})
 	case deliverOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.deliverOrders)
+			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.deliverOrders)
 		})
 	case clientOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.clientOrders)
+			return c.txMiddleware.CreateTransactionContext(ctx, txReadOptions, args, c.clientOrders)
 		})
 	case refundOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.refundOrder)
+			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.refundOrder)
 		})
 	case refundsList:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
-			return c.txMiddleware.CreateTransactionContext(ctx, pgx.TxOptions{}, args, c.refundsList)
+			return c.txMiddleware.CreateTransactionContext(ctx, txReadOptions, args, c.refundsList)
 		})
 	default:
 		fmt.Printf("unknown command %s\n", comm)

@@ -5,8 +5,7 @@ import (
 )
 
 type Filter struct {
-	OrdersID     []uint64
-	ClientsID    []uint64
+	ClientID     uint64
 	Statuses     []Status
 	PageN        uint
 	PerPage      uint
