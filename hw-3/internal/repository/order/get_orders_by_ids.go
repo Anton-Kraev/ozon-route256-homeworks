@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/helpers"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
@@ -16,7 +17,7 @@ func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]mo
 
 	query := fmt.Sprintf("SELECT * FROM orders WHERE id IN (%s)", strings.Join(placeholder, ","))
 
-	rows, err := r.pool.Query(ctx, query, ToInterfaceSlice(ids)...)
+	rows, err := r.pool.Query(ctx, query, helpers.TypedSliceToInterfaceSlice(ids)...)
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +37,4 @@ func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]mo
 	}
 
 	return orders, nil
-}
-
-func ToInterfaceSlice[T any](slice []T) []interface{} {
-	res := make([]interface{}, len(slice))
-	for i, v := range slice {
-		res[i] = v
-	}
-
-	return res
 }

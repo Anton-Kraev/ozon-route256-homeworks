@@ -19,3 +19,12 @@ func StrToUint64Arr(str string) ([]uint64, error) {
 
 	return arr, nil
 }
+
+func TypedSliceToInterfaceSlice[T any](slice []T) []interface{} {
+	res := make([]interface{}, len(slice))
+	for i, v := range slice {
+		res[i] = v
+	}
+
+	return res
+}
