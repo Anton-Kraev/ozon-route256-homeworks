@@ -8,11 +8,7 @@ services:
   # database
   postgres:
     image: postgres:15.1
-    environment:
-      POSTGRES_DB: oms
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      PGDATA: "/var/lib/postgresql/data/pgdata"
+    env_file: .env
     container_name: 'postgres-container'
     volumes:
       - .:/var/lib/postgresql/data
@@ -28,6 +24,7 @@ services:
       - net
   # service
   app:
+    env_file: .env
     build:
       context: .
       dockerfile: Dockerfile
@@ -40,8 +37,6 @@ services:
     container_name: 'app-container'
     restart: unless-stopped
     hostname: server
-    environment:
-      DATABASE_URL: postgres://postgres:password@postgres:5432/oms?sslmode=disable # должно быть в секретах/конфиге. Учебный пример
     ports:
       - 8080:8080
     command: ./app
@@ -49,4 +44,3 @@ services:
       - postgres
     networks:
       - net
-

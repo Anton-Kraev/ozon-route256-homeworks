@@ -3,26 +3,39 @@ package app
 import (
 	"context"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
+
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/app/config"
 	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/controllers/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/middlewares"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/pg"
 	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/repository/order"
 	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/service/order"
 	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/workers/hash_generator"
 	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/workers/worker_pool"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/middlewares"
 )
 
-func Start(configPath string) {
-	workersConfig := config.ParseWorkersConfig(configPath)
+const (
+	envFilePath       = "../.env"
+	workersConfigPath = "../configs/workers.json"
+)
+
+func Start() {
+	if err := godotenv.Load(envFilePath); err != nil {
+		log.Fatalln("can't load environment file")
+	}
+
+	workersConfig := config.ParseWorkersConfig(workersConfigPath)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	connPool, err := pg.NewPoolConn(ctx)
+	dsn := os.Getenv("DATABASE_URL")
+	connPool, err := pg.NewPoolConn(ctx, dsn)
 	if err != nil {
 		log.Fatalln("can't open postgres connection pool")
 	}

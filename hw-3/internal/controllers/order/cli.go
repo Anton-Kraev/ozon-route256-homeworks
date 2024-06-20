@@ -94,9 +94,14 @@ func (c *CLI) handleCommand(scanner *bufio.Scanner, cancel context.CancelFunc) {
 			continue
 		}
 
-		if input[0] == exit {
+		switch input[0] {
+		case exit:
 			cancel()
-		} else {
+		case help:
+			c.help()
+		case numWorkers:
+			c.numWorkers(input[1:])
+		default:
 			c.runCommand(input)
 		}
 
@@ -117,45 +122,52 @@ func (c *CLI) runCommand(input []string) {
 		ctx, cancel = context.WithTimeout(parentCtx, requestTimeout)
 	)
 
-	defer cancel()
-
 	switch comm {
-	case help:
-		c.help()
-	case numWorkers:
-		c.numWorkers(args)
 	case receiveOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.receiveOrder)
 		})
 	case returnOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.returnOrder)
 		})
 	case deliverOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.deliverOrders)
 		})
 	case clientOrders:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txReadOptions, args, c.clientOrders)
 		})
 	case refundOrder:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txWriteOptions, args, c.refundOrder)
 		})
 	case refundsList:
 		c.cmdCounter++
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
+			defer cancel()
+
 			return c.txMiddleware.CreateTransactionContext(ctx, txReadOptions, args, c.refundsList)
 		})
 	default:
 		fmt.Printf("unknown command %s\n", comm)
+		cancel()
 	}
 }
 
