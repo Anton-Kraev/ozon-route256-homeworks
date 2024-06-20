@@ -3,20 +3,22 @@ package order
 import (
 	"context"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
+
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
 func (r OrderRepository) GetOrderByID(ctx context.Context, id uint64) (*models.Order, error) {
 	const query = `SELECT * FROM orders WHERE id = $1`
 
-	var order orderSchema
+	var orders []orderSchema
 
-	row := r.pool.QueryRow(ctx, query, id)
-	if err := row.Scan(&order); err != nil {
+	err := pgxscan.Select(ctx, r.pool, &orders, query, id)
+	if err != nil || len(orders) == 0 {
 		return nil, err
 	}
 
-	ord := order.toDomain()
+	ord := orders[0].toDomain()
 
 	return &ord, nil
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
+
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/helpers"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
@@ -24,12 +26,13 @@ func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]mo
 	defer rows.Close()
 
 	var (
-		order  orderSchema
-		orders []models.Order
+		orders     []models.Order
+		rowScanner = pgxscan.NewRowScanner(rows)
 	)
 
 	for rows.Next() {
-		if err = rows.Scan(&order); err != nil {
+		var order orderSchema
+		if err = rowScanner.Scan(&order); err != nil {
 			return nil, err
 		}
 

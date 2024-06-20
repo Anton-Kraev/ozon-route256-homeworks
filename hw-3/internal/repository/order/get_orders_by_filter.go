@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
+
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
 )
 
@@ -51,19 +53,20 @@ func (r OrderRepository) GetOrdersByFilter(ctx context.Context, filter models.Fi
 		finalQuery = strings.Replace(finalQuery, "?", fmt.Sprintf("$%d", i+1), 1)
 	}
 
-	rows, err := r.pool.Query(ctx, finalQuery, args)
+	rows, err := r.pool.Query(ctx, finalQuery, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var (
-		order  orderSchema
-		orders []models.Order
+		orders     []models.Order
+		rowScanner = pgxscan.NewRowScanner(rows)
 	)
 
 	for rows.Next() {
-		if err = rows.Scan(&order); err != nil {
+		var order orderSchema
+		if err = rowScanner.Scan(&order); err != nil {
 			return nil, err
 		}
 

@@ -14,6 +14,6 @@ type Filter struct {
 
 func (f *Filter) Init() {
 	if f.PerPage == 0 {
-		f.PerPage = math.MaxUint
+		f.PerPage = math.MaxUint32
 	}
 }
