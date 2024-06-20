@@ -25,7 +25,7 @@ func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) err
 		prevOrder *models.Order
 	)
 
-	for i := 0; i < len(orders); i++ {
+	for i := range len(orders) {
 		order = &orders[i]
 
 		now := time.Now().UTC()

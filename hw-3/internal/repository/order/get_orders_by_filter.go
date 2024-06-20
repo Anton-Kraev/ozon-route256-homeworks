@@ -44,7 +44,7 @@ func (r OrderRepository) GetOrdersByFilter(ctx context.Context, filter models.Fi
 	args = append(args, filter.PerPage, (filter.PageN)*filter.PerPage)
 
 	if len(conditions) > 0 {
-		wherePart = fmt.Sprintf("WHERE %s", strings.Join(conditions, " AND "))
+		wherePart = "WHERE " + strings.Join(conditions, " AND ")
 	}
 
 	finalQuery := fmt.Sprintf("%s %s %s %s", baseQuery, wherePart, sortedPart, limitPart)

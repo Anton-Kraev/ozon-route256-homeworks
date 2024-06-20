@@ -36,9 +36,8 @@ func (tm *TransactionMiddleware) CreateTransactionContext(
 	defer func() {
 		if p := recover(); p != nil {
 			_ = tx.Rollback(ctx)
-			panic(p)
 
-			return
+			panic(p)
 		}
 
 		if err != nil {

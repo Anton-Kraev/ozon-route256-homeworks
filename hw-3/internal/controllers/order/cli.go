@@ -77,7 +77,7 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 
 				return
 			default:
-				c.handleCommand(scanner, cancel)
+				c.handleCommand(cancel, scanner)
 			}
 		}
 	}()
@@ -87,7 +87,7 @@ func (c *CLI) Run(ctx context.Context, cancel context.CancelFunc) {
 	fmt.Println("The application has been stopped")
 }
 
-func (c *CLI) handleCommand(scanner *bufio.Scanner, cancel context.CancelFunc) {
+func (c *CLI) handleCommand(cancel context.CancelFunc, scanner *bufio.Scanner) {
 	for scanner.Scan() {
 		input := strings.Split(strings.TrimSpace(scanner.Text()), " ")
 		if len(input) == 0 || input[0] == "" {

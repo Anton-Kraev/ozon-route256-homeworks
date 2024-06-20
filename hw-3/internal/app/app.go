@@ -34,8 +34,7 @@ func Start() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	dsn := os.Getenv("DATABASE_URL")
-	connPool, err := pg.NewPoolConn(ctx, dsn)
+	connPool, err := pg.NewPoolConn(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalln("can't open postgres connection pool")
 	}
