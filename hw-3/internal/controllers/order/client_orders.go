@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"strings"
 
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
@@ -31,6 +32,8 @@ func (c *CLI) clientOrders(ctx context.Context, args []string) (string, error) {
 
 	orders, err := c.Service.ClientOrders(ctx, clientID, lastN, inStorage)
 	if err != nil {
+		log.Println(err.Error())
+
 		return "", errors.New("can't get client orders")
 	}
 

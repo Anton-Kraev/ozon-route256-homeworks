@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/helpers"
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
@@ -43,6 +44,8 @@ func (c *CLI) deliverOrders(ctx context.Context, args []string) (string, error) 
 		case errors.Is(err, errsdomain.ErrRetentionPeriodExpired):
 			return "", err
 		default:
+			log.Println(err.Error())
+
 			return "", errors.New("can't deliver orders")
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"log"
 	"time"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/errors"
@@ -43,6 +44,8 @@ func (c *CLI) receiveOrder(ctx context.Context, args []string) (string, error) {
 		case errors.Is(err, errsdomain.ErrRetentionTimeInPast):
 			return "", err
 		default:
+			log.Println(err.Error())
+
 			return "", errors.New("can't receive order")
 		}
 	}

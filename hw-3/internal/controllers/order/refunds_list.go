@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"strings"
 
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-3/internal/models/domain/order"
@@ -23,6 +24,8 @@ func (c *CLI) refundsList(ctx context.Context, args []string) (string, error) {
 
 	refunds, err := c.Service.RefundsList(ctx, pageN, perPage)
 	if err != nil {
+		log.Println(err.Error())
+
 		return "", errors.New("can't get refunds list")
 	}
 
