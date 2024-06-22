@@ -37,7 +37,7 @@ var commandsList = []command{
 	{
 		receiveOrder,
 		"receive order from a courier",
-		"receive --clientID=123 --orderID=456 --storedUntil=dd.mm.yyyy-hh:mm:ss",
+		"receive --clientID=123 --orderID=456 --weight=100 --cost=100 --storedUntil=dd.mm.yyyy-hh:mm:ss [--wrap=box]",
 	},
 	{
 		returnOrder,

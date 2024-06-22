@@ -14,8 +14,8 @@ func (r OrderRepository) AddOrder(ctx context.Context, order order.Order) error 
 	}
 
 	const query = `
-		INSERT INTO orders(id, client_id, stored_until, status, status_changed, hash) 
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO orders(id, client_id, weight, cost, wrap_type, stored_until, status, status_changed, hash) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 
 	_, err = tx.Exec(
@@ -23,6 +23,9 @@ func (r OrderRepository) AddOrder(ctx context.Context, order order.Order) error 
 		query,
 		order.OrderID,
 		order.ClientID,
+		order.Weight,
+		order.Cost,
+		order.WrapType,
 		order.StoredUntil,
 		order.Status,
 		order.StatusChanged,

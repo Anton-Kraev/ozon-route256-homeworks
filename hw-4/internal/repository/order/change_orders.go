@@ -15,7 +15,7 @@ func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Orde
 
 	const query = `
 		UPDATE orders 
-		SET client_id = $2, stored_until = $3, status = $4, status_changed = $5, hash = $6 
+		SET status = $4, status_changed = $5, hash = $6 
 		WHERE id = $1
 	`
 
@@ -23,9 +23,6 @@ func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Orde
 		_, err = tx.Exec(
 			ctx,
 			query,
-			order.OrderID,
-			order.ClientID,
-			order.StoredUntil,
 			order.Status,
 			order.StatusChanged,
 			order.Hash,

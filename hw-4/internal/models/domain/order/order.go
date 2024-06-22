@@ -7,6 +7,9 @@ import (
 type Order struct {
 	OrderID       uint64
 	ClientID      uint64
+	Weight        uint
+	Cost          uint
+	WrapType      Wrap
 	StoredUntil   time.Time
 	Status        Status
 	StatusChanged time.Time

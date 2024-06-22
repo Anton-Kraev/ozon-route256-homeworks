@@ -20,6 +20,8 @@ var (
 	ErrRetentionPeriodExpired       = errors.New("retention period is expired")
 	ErrOrderNotFound                = errors.New("order not found")
 	ErrOrderIDNotUnique             = errors.New("order with same ID already exist")
+	ErrUnknownOrderWrapType         = errors.New("unknown order wrap type")
+	ErrOrderWeightExceedsLimit      = errors.New("order weight exceeds permissible weight for this type of wrap")
 )
 
 func ErrorDifferentClients(clientID, anotherClientID uint64) error {

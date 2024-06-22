@@ -22,7 +22,7 @@ const (
 type orderService interface {
 	ClientOrders(ctx context.Context, clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
 	DeliverOrders(ctx context.Context, ordersID []uint64) error
-	ReceiveOrder(ctx context.Context, orderID, clientID uint64, storedUntil time.Time) error
+	ReceiveOrder(ctx context.Context, order order.Order) error
 	RefundsList(ctx context.Context, pageN, perPage uint) ([]order.Order, error)
 	RefundOrder(ctx context.Context, orderID, clientID uint64) error
 	ReturnOrder(ctx context.Context, orderID uint64) error

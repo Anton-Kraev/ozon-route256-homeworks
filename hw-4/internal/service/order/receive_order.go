@@ -6,33 +6,37 @@ import (
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/wrap"
 )
 
 // ReceiveOrder receives order from courier.
 func (s *OrderService) ReceiveOrder(
-	ctx context.Context, orderID, clientID uint64, storedUntil time.Time,
+	ctx context.Context, order models.Order,
 ) error {
 	now := time.Now().UTC()
-	if now.After(storedUntil) {
+	if now.After(order.StoredUntil) {
 		return errsdomain.ErrRetentionTimeInPast
 	}
 
-	order, err := s.Repo.GetOrderByID(ctx, orderID)
+	wrapper, err := wrap.GetWrapper(order.WrapType)
 	if err != nil {
 		return err
 	}
-	if order == nil {
+
+	if err = wrapper.WrapOrder(&order); err != nil {
+		return err
+	}
+
+	orderWithSameID, err := s.Repo.GetOrderByID(ctx, order.OrderID)
+	if err != nil {
+		return err
+	}
+	if orderWithSameID != nil {
 		return errsdomain.ErrOrderIDNotUnique
 	}
 
-	newOrder := models.Order{
-		OrderID:       orderID,
-		ClientID:      clientID,
-		StoredUntil:   storedUntil,
-		Status:        models.Received,
-		StatusChanged: now,
-		Hash:          s.hashes.GetHash(),
-	}
+	order.SetStatus(models.Received, now)
+	order.SetHash(s.hashes.GetHash())
 
-	return s.Repo.AddOrder(ctx, newOrder)
+	return s.Repo.AddOrder(ctx, order)
 }
