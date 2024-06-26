@@ -9,10 +9,10 @@ import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 )
 
-func (c *CLI) returnOrder(ctx context.Context, args []string) (string, error) {
+func (c OrderController) ReturnOrder(ctx context.Context, args []string) (string, error) {
 	var orderID uint64
 
-	fs := flag.NewFlagSet(returnOrder, flag.ContinueOnError)
+	fs := flag.NewFlagSet("return", flag.ContinueOnError)
 	fs.Uint64Var(&orderID, "orderID", 0, "use --orderID=12345")
 
 	if err := fs.Parse(args); err != nil {
@@ -22,7 +22,7 @@ func (c *CLI) returnOrder(ctx context.Context, args []string) (string, error) {
 		return "", errors.New("orderID must be positive number")
 	}
 
-	err := c.Service.ReturnOrder(ctx, orderID)
+	err := c.service.ReturnOrder(ctx, orderID)
 	if err != nil {
 		switch {
 		case errors.Is(err, errsdomain.ErrOrderNotFound):

@@ -11,14 +11,14 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
-func (c *CLI) receiveOrder(ctx context.Context, args []string) (string, error) {
+func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (string, error) {
 	var (
 		orderID, clientID        uint64
 		orderWeight, orderCost   uint
 		wrapType, storedUntilStr string
 	)
 
-	fs := flag.NewFlagSet(receiveOrder, flag.ContinueOnError)
+	fs := flag.NewFlagSet("receive", flag.ContinueOnError)
 	fs.Uint64Var(&orderID, "orderID", 0, "use --orderID=12345")
 	fs.Uint64Var(&clientID, "clientID", 0, "use --clientID=67890")
 	fs.UintVar(&orderWeight, "weight", 0, "use --weight=2000")
@@ -52,7 +52,7 @@ func (c *CLI) receiveOrder(ctx context.Context, args []string) (string, error) {
 		wrapType = string(order.Nowrap)
 	}
 
-	err = c.Service.ReceiveOrder(ctx, order.Order{
+	err = c.service.ReceiveOrder(ctx, order.Order{
 		OrderID:     orderID,
 		ClientID:    clientID,
 		Weight:      orderWeight,

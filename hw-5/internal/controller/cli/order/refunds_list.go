@@ -11,10 +11,10 @@ import (
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
-func (c *CLI) refundsList(ctx context.Context, args []string) (string, error) {
+func (c OrderController) RefundsList(ctx context.Context, args []string) (string, error) {
 	var pageN, perPage uint
 
-	fs := flag.NewFlagSet(refundsList, flag.ContinueOnError)
+	fs := flag.NewFlagSet("rlist", flag.ContinueOnError)
 	fs.UintVar(&pageN, "pageN", 0, "use --pageN=3")
 	fs.UintVar(&perPage, "perPage", 0, "use --perPage=10")
 
@@ -22,7 +22,7 @@ func (c *CLI) refundsList(ctx context.Context, args []string) (string, error) {
 		return "", err
 	}
 
-	refunds, err := c.Service.RefundsList(ctx, pageN, perPage)
+	refunds, err := c.service.RefundsList(ctx, pageN, perPage)
 	if err != nil {
 		log.Println(err.Error())
 

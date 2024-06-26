@@ -11,14 +11,14 @@ import (
 	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
-func (c *CLI) clientOrders(ctx context.Context, args []string) (string, error) {
+func (c OrderController) ClientOrders(ctx context.Context, args []string) (string, error) {
 	var (
 		clientID  uint64
 		lastN     uint
 		inStorage bool
 	)
 
-	fs := flag.NewFlagSet(clientOrders, flag.ContinueOnError)
+	fs := flag.NewFlagSet("olist", flag.ContinueOnError)
 	fs.Uint64Var(&clientID, "clientID", 0, "use --clientID=12345")
 	fs.UintVar(&lastN, "lastN", 0, "use --lastN=10")
 	fs.BoolVar(&inStorage, "inStorage", false, "use --inStorage")
@@ -30,7 +30,7 @@ func (c *CLI) clientOrders(ctx context.Context, args []string) (string, error) {
 		return "", errors.New("clientID must be positive number")
 	}
 
-	orders, err := c.Service.ClientOrders(ctx, clientID, lastN, inStorage)
+	orders, err := c.service.ClientOrders(ctx, clientID, lastN, inStorage)
 	if err != nil {
 		log.Println(err.Error())
 

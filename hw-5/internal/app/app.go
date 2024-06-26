@@ -10,7 +10,8 @@ import (
 	"github.com/joho/godotenv"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/app/config"
-	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controllers/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/cli"
+	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controller/cli/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/middlewares"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/pg"
 	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
@@ -44,9 +45,10 @@ func Start() {
 		orderRepository = repository.NewOrderRepository(connPool)
 		hashGen         = hashgen.NewHashGenerator(workersConfig.HashesN)
 		orderService    = service.NewOrderService(orderRepository, hashGen)
+		orderController = controller.NewOrderController(orderService)
 		workerPool      = workerpool.NewWorkerPool(workersConfig.WorkersN, workersConfig.TasksN)
 		txMiddleware    = middlewares.NewTransactionMiddleware(connPool)
-		commands        = controller.NewCLI(orderService, workerPool, txMiddleware)
+		commands        = cli.NewCLI(orderController, workerPool, txMiddleware)
 	)
 
 	hashGen.Run(ctx)

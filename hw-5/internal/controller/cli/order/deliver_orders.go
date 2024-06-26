@@ -11,10 +11,10 @@ import (
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 )
 
-func (c *CLI) deliverOrders(ctx context.Context, args []string) (string, error) {
+func (c OrderController) DeliverOrders(ctx context.Context, args []string) (string, error) {
 	var ordersStr string
 
-	fs := flag.NewFlagSet(deliverOrders, flag.ContinueOnError)
+	fs := flag.NewFlagSet("deliver", flag.ContinueOnError)
 	fs.StringVar(&ordersStr, "orders", "", "use --orders=1,2,3,4,5")
 
 	if err := fs.Parse(args); err != nil {
@@ -32,7 +32,7 @@ func (c *CLI) deliverOrders(ctx context.Context, args []string) (string, error) 
 		}
 	}
 
-	err = c.Service.DeliverOrders(ctx, orders)
+	err = c.service.DeliverOrders(ctx, orders)
 	if err != nil {
 		switch {
 		case errors.Is(err, errsdomain.ErrOrderNotFound):
