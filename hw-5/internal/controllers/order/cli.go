@@ -11,7 +11,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 const (

@@ -1,7 +1,7 @@
 package wrap
 
 import (
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 type Tape struct{}

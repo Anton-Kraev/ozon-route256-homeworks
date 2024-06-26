@@ -8,7 +8,7 @@ import (
 	"log"
 	"strings"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 func (c *CLI) refundsList(ctx context.Context, args []string) (string, error) {

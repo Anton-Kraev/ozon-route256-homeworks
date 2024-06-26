@@ -3,8 +3,8 @@ package order
 import (
 	"context"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/pg"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/pg"
 )
 
 func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Order) error {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 // RefundOrder receives order refund from client.

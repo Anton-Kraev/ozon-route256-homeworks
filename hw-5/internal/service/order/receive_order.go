@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/wrap"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 )
 
 // ReceiveOrder receives order from courier.

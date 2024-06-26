@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 func (c *CLI) receiveOrder(ctx context.Context, args []string) (string, error) {

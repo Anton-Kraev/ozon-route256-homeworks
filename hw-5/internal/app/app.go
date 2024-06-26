@@ -9,14 +9,14 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/app/config"
-	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/controllers/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/middlewares"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/pg"
-	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/repository/order"
-	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/service/order"
-	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/workers/hash_generator"
-	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/workers/worker_pool"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/app/config"
+	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controllers/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/middlewares"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/pg"
+	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
+	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/service/order"
+	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/workers/hash_generator"
+	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/workers/worker_pool"
 )
 
 const (

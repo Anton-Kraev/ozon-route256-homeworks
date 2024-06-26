@@ -6,7 +6,7 @@ import (
 	"flag"
 	"log"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 )
 
 func (c *CLI) refundOrder(ctx context.Context, args []string) (string, error) {

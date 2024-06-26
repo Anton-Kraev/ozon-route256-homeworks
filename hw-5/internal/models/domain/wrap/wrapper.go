@@ -1,8 +1,8 @@
 package wrap
 
 import (
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 type Wrapper interface {

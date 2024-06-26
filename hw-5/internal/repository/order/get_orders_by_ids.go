@@ -7,8 +7,8 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/helpers"
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/helpers"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]models.Order, error) {

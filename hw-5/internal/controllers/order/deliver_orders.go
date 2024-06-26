@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log"
 
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/helpers"
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/helpers"
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 )
 
 func (c *CLI) deliverOrders(ctx context.Context, args []string) (string, error) {

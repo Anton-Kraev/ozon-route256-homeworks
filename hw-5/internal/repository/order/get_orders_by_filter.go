@@ -7,7 +7,7 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-4/internal/models/domain/order"
+	models "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 func (r OrderRepository) GetOrdersByFilter(ctx context.Context, filter models.Filter) ([]models.Order, error) {
