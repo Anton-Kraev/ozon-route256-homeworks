@@ -11,7 +11,7 @@ import (
 
 // DeliverOrders deliver list of orders to client.
 func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) error {
-	orders, err := s.Repo.GetOrdersByIDs(ctx, ordersID)
+	orders, err := s.orderRepo.GetOrdersByIDs(ctx, ordersID)
 	if err != nil {
 		return err
 	}
@@ -56,5 +56,5 @@ func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) err
 		prevOrder = order
 	}
 
-	return s.Repo.ChangeOrders(ctx, orders)
+	return s.orderRepo.ChangeOrders(ctx, orders)
 }

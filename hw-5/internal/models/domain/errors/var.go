@@ -22,6 +22,9 @@ var (
 	ErrOrderIDNotUnique             = errors.New("order with same ID already exist")
 	ErrUnknownOrderWrapType         = errors.New("unknown order wrap type")
 	ErrOrderWeightExceedsLimit      = errors.New("order weight exceeds permissible weight for this type of wrap")
+
+	ErrWrapNotFound      = errors.New("wrap not found")
+	ErrWrapAlreadyExists = errors.New("wrap already exists")
 )
 
 func ErrorDifferentClients(clientID, anotherClientID uint64) error {

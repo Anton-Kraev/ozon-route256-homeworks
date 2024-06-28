@@ -13,7 +13,7 @@ import (
 func (s *OrderService) RefundOrder(ctx context.Context, orderID, clientID uint64) error {
 	const maxRefundPeriod = time.Hour * 48
 
-	order, err := s.Repo.GetOrderByID(ctx, orderID)
+	order, err := s.orderRepo.GetOrderByID(ctx, orderID)
 	if err != nil {
 		return err
 	}
@@ -40,5 +40,5 @@ func (s *OrderService) RefundOrder(ctx context.Context, orderID, clientID uint64
 	order.SetStatus(models.Refunded, now)
 	order.SetHash(s.hashes.GetHash())
 
-	return s.Repo.ChangeOrders(ctx, []models.Order{*order})
+	return s.orderRepo.ChangeOrders(ctx, []models.Order{*order})
 }

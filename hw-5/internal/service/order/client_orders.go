@@ -21,5 +21,5 @@ func (s *OrderService) ClientOrders(
 		filter.Statuses = []order.Status{order.Received, order.Refunded}
 	}
 
-	return s.Repo.GetOrdersByFilter(ctx, filter)
+	return s.orderRepo.GetOrdersByFilter(ctx, filter)
 }

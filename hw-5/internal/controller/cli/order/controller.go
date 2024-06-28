@@ -13,7 +13,7 @@ type orderService interface {
 	RefundsList(ctx context.Context, pageN, perPage uint) ([]order.Order, error)
 	ReturnOrder(ctx context.Context, orderID uint64) error
 	ClientOrders(ctx context.Context, clientID uint64, lastN uint, inStorage bool) ([]order.Order, error)
-	ReceiveOrder(ctx context.Context, order order.Order) error
+	ReceiveOrder(ctx context.Context, wrapType string, order order.Order) error
 	DeliverOrders(ctx context.Context, ordersID []uint64) error
 }
 

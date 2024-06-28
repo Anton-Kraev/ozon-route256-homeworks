@@ -24,6 +24,10 @@ type (
 		DeliverOrders(ctx context.Context, args []string) (string, error)
 	}
 
+	wrapController interface {
+		AddWrap(ctx context.Context, args []string) (string, error)
+	}
+
 	workerPool interface {
 		AddTask(taskID int, command string, task func() (string, error))
 		SetNumWorkers(workersN int)
@@ -42,17 +46,21 @@ type (
 )
 
 type CLI struct {
-	cmdCounter   int
-	controller   orderController
-	workerPool   workerPool
-	txMiddleware txMiddleware
+	cmdCounter      int
+	orderController orderController
+	wrapController  wrapController
+	workerPool      workerPool
+	txMiddleware    txMiddleware
 }
 
-func NewCLI(controller orderController, pool workerPool, middleware txMiddleware) CLI {
+func NewCLI(
+	orderController orderController, wrapController wrapController, pool workerPool, middleware txMiddleware,
+) CLI {
 	return CLI{
-		controller:   controller,
-		workerPool:   pool,
-		txMiddleware: middleware,
+		orderController: orderController,
+		wrapController:  wrapController,
+		workerPool:      pool,
+		txMiddleware:    middleware,
 	}
 }
 
@@ -96,6 +104,8 @@ func (c *CLI) handleCommand(cancel context.CancelFunc, scanner *bufio.Scanner) {
 			c.handleControlCommand(cancel, input)
 		case slices.Contains(orderCommandsNames, cmd):
 			c.handleOrderCommand(input)
+		case slices.Contains(wrapCommandsNames, cmd):
+			c.handleWrapCommand(input)
 		default:
 			fmt.Printf("unknown command %s\n", cmd)
 		}

@@ -15,7 +15,7 @@ type (
 const (
 	help       commandName = "help"
 	exit       commandName = "exit"
-	numWorkers commandName = "numWorkers"
+	numWorkers commandName = "nworkers"
 
 	receiveOrder  commandName = "receive"
 	returnOrder   commandName = "return"
@@ -23,6 +23,8 @@ const (
 	clientOrders  commandName = "olist"
 	refundOrder   commandName = "refund"
 	refundsList   commandName = "rlist"
+
+	addWrap commandName = "addwrap"
 )
 
 var (
@@ -41,7 +43,7 @@ var (
 		{
 			numWorkers,
 			"change the number of workers in worker pool",
-			"numWorkers --num=4",
+			"nworkers --num=4",
 		},
 	}
 
@@ -79,5 +81,14 @@ var (
 		},
 	}
 
-	allCommandsInfo = slices.Concat(controlCommandsInfo, orderCommandsInfo)
+	wrapCommandsNames = []commandName{addWrap}
+	wrapCommandsInfo  = []commandInfo{
+		{
+			addWrap,
+			"add a new available order wrap",
+			"addwrap --name=box --weight=1000 --cost=10",
+		},
+	}
+
+	allCommandsInfo = slices.Concat(controlCommandsInfo, orderCommandsInfo, wrapCommandsInfo)
 )

@@ -11,7 +11,7 @@ import (
 
 // ReturnOrder returns order to courier.
 func (s *OrderService) ReturnOrder(ctx context.Context, orderID uint64) error {
-	order, err := s.Repo.GetOrderByID(ctx, orderID)
+	order, err := s.orderRepo.GetOrderByID(ctx, orderID)
 	if err != nil {
 		return err
 	}
@@ -37,5 +37,5 @@ func (s *OrderService) ReturnOrder(ctx context.Context, orderID uint64) error {
 	order.SetStatus(models.Returned, now)
 	order.SetHash(s.hashes.GetHash())
 
-	return s.Repo.ChangeOrders(ctx, []models.Order{*order})
+	return s.orderRepo.ChangeOrders(ctx, []models.Order{*order})
 }

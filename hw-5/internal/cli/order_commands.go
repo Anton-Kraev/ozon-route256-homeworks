@@ -31,17 +31,17 @@ func (c *CLI) handleOrderCommand(input []string) {
 
 	switch cmd {
 	case receiveOrder:
-		addTask(txWriteOptions, c.controller.ReceiveOrder)
+		addTask(txWriteOptions, c.orderController.ReceiveOrder)
 	case returnOrder:
-		addTask(txWriteOptions, c.controller.ReturnOrder)
+		addTask(txWriteOptions, c.orderController.ReturnOrder)
 	case deliverOrders:
-		addTask(txWriteOptions, c.controller.DeliverOrders)
+		addTask(txWriteOptions, c.orderController.DeliverOrders)
 	case clientOrders:
-		addTask(txReadOptions, c.controller.ClientOrders)
+		addTask(txReadOptions, c.orderController.ClientOrders)
 	case refundOrder:
-		addTask(txWriteOptions, c.controller.RefundOrder)
+		addTask(txWriteOptions, c.orderController.RefundOrder)
 	case refundsList:
-		addTask(txReadOptions, c.controller.RefundsList)
+		addTask(txReadOptions, c.orderController.RefundsList)
 	default:
 		cancel()
 	}

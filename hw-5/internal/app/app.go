@@ -11,11 +11,14 @@ import (
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/app/config"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/cli"
-	controller "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controller/cli/order"
+	orderCtrl "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controller/cli/order"
+	wrapCtrl "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/controller/cli/wrap"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/middlewares"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/pg"
-	repository "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
-	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/service/order"
+	orderRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
+	wrapRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/wrap"
+	orderSrvc "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/service/order"
+	wrapSrvc "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/service/wrap"
 	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/workers/hash_generator"
 	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/workers/worker_pool"
 )
@@ -42,13 +45,19 @@ func Start() {
 	defer connPool.Close()
 
 	var (
-		orderRepository = repository.NewOrderRepository(connPool)
-		hashGen         = hashgen.NewHashGenerator(workersConfig.HashesN)
-		orderService    = service.NewOrderService(orderRepository, hashGen)
-		orderController = controller.NewOrderController(orderService)
-		workerPool      = workerpool.NewWorkerPool(workersConfig.WorkersN, workersConfig.TasksN)
-		txMiddleware    = middlewares.NewTransactionMiddleware(connPool)
-		commands        = cli.NewCLI(orderController, workerPool, txMiddleware)
+		orderRepository = orderRepo.NewOrderRepository(connPool)
+		wrapRepository  = wrapRepo.NewWrapRepository(connPool)
+
+		hashGen      = hashgen.NewHashGenerator(workersConfig.HashesN)
+		orderService = orderSrvc.NewOrderService(orderRepository, wrapRepository, hashGen)
+		wrapService  = wrapSrvc.NewWrapService(wrapRepository)
+
+		orderController = orderCtrl.NewOrderController(orderService)
+		wrapController  = wrapCtrl.NewWrapController(wrapService)
+
+		workerPool   = workerpool.NewWorkerPool(workersConfig.WorkersN, workersConfig.TasksN)
+		txMiddleware = middlewares.NewTransactionMiddleware(connPool)
+		commands     = cli.NewCLI(orderController, wrapController, workerPool, txMiddleware)
 	)
 
 	hashGen.Run(ctx)

@@ -48,16 +48,11 @@ func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (strin
 		return "", err
 	}
 
-	if wrapType == "" {
-		wrapType = string(order.Nowrap)
-	}
-
-	err = c.service.ReceiveOrder(ctx, order.Order{
+	err = c.service.ReceiveOrder(ctx, wrapType, order.Order{
 		OrderID:     orderID,
 		ClientID:    clientID,
 		Weight:      orderWeight,
 		Cost:        orderCost,
-		WrapType:    order.Wrap(wrapType),
 		StoredUntil: storedUntil,
 	})
 	if err != nil {
@@ -69,6 +64,8 @@ func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (strin
 		case errors.Is(err, errsdomain.ErrUnknownOrderWrapType):
 			return "", err
 		case errors.Is(err, errsdomain.ErrOrderWeightExceedsLimit):
+			return "", err
+		case errors.Is(err, errsdomain.ErrWrapNotFound):
 			return "", err
 		default:
 			log.Println(err.Error())
