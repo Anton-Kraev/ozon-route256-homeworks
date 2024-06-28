@@ -8,15 +8,17 @@ import (
 )
 
 type orderSchema struct {
-	OrderID       uint64         `db:"id"`
-	ClientID      uint64         `db:"client_id"`
-	Weight        uint           `db:"weight"`
-	Cost          uint           `db:"cost"`
-	WrapType      sql.NullString `db:"wrap_type"`
-	StoredUntil   time.Time      `db:"stored_until"`
-	Status        string         `db:"status"`
-	StatusChanged time.Time      `db:"status_changed"`
-	Hash          string         `db:"hash"`
+	OrderID         uint64         `db:"id"`
+	ClientID        uint64         `db:"client_id"`
+	Weight          uint           `db:"weight"`
+	Cost            uint           `db:"cost"`
+	WrapType        sql.NullString `db:"wrap_type"`
+	StoredUntil     time.Time      `db:"stored_until"`
+	Status          string         `db:"status"`
+	StatusChangedAt time.Time      `db:"status_changed_at"`
+	Hash            string         `db:"hash"`
+	CreatedAt       time.Time      `db:"created_at"`
+	UpdatedAt       sql.NullTime   `db:"updated_at"`
 }
 
 func (r orderSchema) toDomain() order.Order {
@@ -28,7 +30,7 @@ func (r orderSchema) toDomain() order.Order {
 		WrapType:      r.WrapType.String,
 		StoredUntil:   r.StoredUntil,
 		Status:        order.Status(r.Status),
-		StatusChanged: r.StatusChanged,
+		StatusChanged: r.StatusChangedAt,
 		Hash:          r.Hash,
 	}
 }

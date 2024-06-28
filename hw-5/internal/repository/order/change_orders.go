@@ -15,7 +15,7 @@ func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Orde
 
 	const query = `
 		UPDATE orders 
-		SET status = $4, status_changed = $5, hash = $6 
+		SET status = $4, status_changed_at = $5, hash = $6, updated_at = $7
 		WHERE id = $1
 	`
 
@@ -26,6 +26,7 @@ func (r OrderRepository) ChangeOrders(ctx context.Context, changes []models.Orde
 			order.Status,
 			order.StatusChanged,
 			order.Hash,
+			order.StatusChanged,
 		)
 		if err != nil {
 			return err
