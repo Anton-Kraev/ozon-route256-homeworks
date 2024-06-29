@@ -36,17 +36,17 @@ func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) err
 			)
 		}
 
-		if prevOrder != nil && order.ClientID != prevOrder.ClientID {
-			return fmt.Errorf("%w: %w",
-				errsdomain.ErrDifferentClients,
-				errsdomain.ErrorDifferentClients(order.ClientID, prevOrder.ClientID),
-			)
-		}
-
 		if order.Status != models.Received {
 			return fmt.Errorf("%w: %w",
 				errsdomain.ErrUnexpectedOrderStatus,
 				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, order.Status),
+			)
+		}
+
+		if prevOrder != nil && order.ClientID != prevOrder.ClientID {
+			return fmt.Errorf("%w: %w",
+				errsdomain.ErrDifferentClients,
+				errsdomain.ErrorDifferentClients(order.ClientID, prevOrder.ClientID),
 			)
 		}
 

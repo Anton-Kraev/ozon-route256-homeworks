@@ -1,3 +1,4 @@
+//go:generate mockgen -package=order -source=./service.go -destination=./service_mocks.go
 package order
 
 import (

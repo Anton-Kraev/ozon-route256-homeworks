@@ -27,7 +27,6 @@ func TestWrapService_AddWrap(t *testing.T) {
 		mockRepo := NewMockwrapRepository(ctrl)
 		service := NewWrapService(mockRepo)
 		mockRepo.EXPECT().GetWrapByName(gomock.Any(), oldWrap).Return(&wrap.Wrap{Name: oldWrap}, nil)
-		mockRepo.EXPECT().AddWrap(gomock.Any(), wrap.Wrap{Name: oldWrap}).Return(nil)
 
 		err := service.AddWrap(ctx, wrap.Wrap{Name: oldWrap})
 
