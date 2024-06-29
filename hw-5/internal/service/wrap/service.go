@@ -1,3 +1,4 @@
+//go:generate mockgen -package=wrap -source=./service.go -destination=./service_mocks.go
 package wrap
 
 import (

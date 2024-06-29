@@ -4,10 +4,16 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
+)
+
+var (
+	errParseArgs  = errors.New("can't parse args")
+	errAddNewWrap = errors.New("can't add new wrap")
 )
 
 func (c WrapController) AddWrap(ctx context.Context, args []string) (string, error) {
@@ -22,11 +28,11 @@ func (c WrapController) AddWrap(ctx context.Context, args []string) (string, err
 	fs.UintVar(&cost, "cost", 0, "use --cost=10")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
 
 	if name == "" {
-		return "", errors.New("wrap name is required")
+		return "", fmt.Errorf("%w: wrap name is required", errParseArgs)
 	}
 
 	err := c.wrapService.AddWrap(ctx, wrap.Wrap{Name: name, Weight: weight, Cost: cost})
@@ -37,7 +43,7 @@ func (c WrapController) AddWrap(ctx context.Context, args []string) (string, err
 		default:
 			log.Println(err.Error())
 
-			return "", errors.New("can't add new wrap")
+			return "", errAddNewWrap
 		}
 	}
 
