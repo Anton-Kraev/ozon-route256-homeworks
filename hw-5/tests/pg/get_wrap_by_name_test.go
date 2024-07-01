@@ -34,6 +34,7 @@ func TestGetWrapByName(t *testing.T) {
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
 	DB.FillWraps(testWraps)
+
 	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
 
 	t.Run("get_wrap", func(t *testing.T) {

@@ -33,6 +33,7 @@ func TestAddWrap(t *testing.T) {
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
 	DB.FillWraps(testWraps[:1])
+
 	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
 	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
 

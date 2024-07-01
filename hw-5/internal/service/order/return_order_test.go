@@ -22,8 +22,10 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 	}
 
 	var (
-		ctx = context.Background()
-		now = time.Now().UTC()
+		ctx       = context.Background()
+		now       = time.Now().UTC()
+		afterNow  = now.Add(time.Hour)
+		beforeNow = now.Add(-time.Hour)
 	)
 
 	tests := []struct {
@@ -45,7 +47,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "err_not_expired_yet",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(1)).Return(
-					&order.Order{StoredUntil: now.UTC().Add(time.Hour)}, nil,
+					&order.Order{StoredUntil: afterNow}, nil,
 				)
 			},
 			orderID: 1,
@@ -55,7 +57,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "err_already_returned",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(2)).Return(
-					&order.Order{Status: order.Returned, StoredUntil: now.UTC().Add(-time.Hour)}, nil,
+					&order.Order{Status: order.Returned, StoredUntil: beforeNow}, nil,
 				)
 			},
 			orderID: 2,
@@ -65,7 +67,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "err_delivered",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(3)).Return(
-					&order.Order{Status: order.Delivered, StoredUntil: now.UTC().Add(-time.Hour)}, nil,
+					&order.Order{Status: order.Delivered, StoredUntil: beforeNow}, nil,
 				)
 			},
 			orderID: 3,
@@ -75,7 +77,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "successful_return",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(4)).Return(
-					&order.Order{Status: order.Received, StatusChanged: now.UTC().Add(-time.Hour), StoredUntil: now.UTC().Add(-time.Hour)}, nil,
+					&order.Order{Status: order.Received, StatusChanged: beforeNow, StoredUntil: beforeNow}, nil,
 				)
 				f.orderRepo.EXPECT().ChangeOrders(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, changes []order.Order) error {

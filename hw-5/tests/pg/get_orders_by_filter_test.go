@@ -19,10 +19,46 @@ func TestGetOrdersByFilter(t *testing.T) {
 
 		testWrap   = []wrap.Wrap{{Name: "name6", Weight: 10, Cost: 10}}
 		testOrders = []order.Order{
-			{OrderID: 1, ClientID: 1, Weight: 1, Cost: 1, WrapType: "name6", Status: order.Received, StatusChanged: now.Add(time.Hour * 4), StoredUntil: now},
-			{OrderID: 2, ClientID: 1, Weight: 2, Cost: 2, WrapType: "name6", Status: order.Refunded, StatusChanged: now.Add(time.Hour * 3), StoredUntil: now},
-			{OrderID: 3, ClientID: 1, Weight: 3, Cost: 3, WrapType: "name6", Status: order.Delivered, StatusChanged: now.Add(time.Hour * 2), StoredUntil: now},
-			{OrderID: 4, ClientID: 2, Weight: 4, Cost: 4, WrapType: "name6", Status: order.Returned, StatusChanged: now.Add(time.Hour * 1), StoredUntil: now},
+			{
+				OrderID:       1,
+				ClientID:      1,
+				Weight:        1,
+				Cost:          1,
+				WrapType:      "name6",
+				StoredUntil:   now,
+				Status:        order.Received,
+				StatusChanged: now.Add(time.Hour * 4),
+			},
+			{
+				OrderID:       2,
+				ClientID:      1,
+				Weight:        2,
+				Cost:          2,
+				WrapType:      "name6",
+				StoredUntil:   now,
+				Status:        order.Refunded,
+				StatusChanged: now.Add(time.Hour * 3),
+			},
+			{
+				OrderID:       3,
+				ClientID:      1,
+				Weight:        3,
+				Cost:          3,
+				WrapType:      "name6",
+				StoredUntil:   now,
+				Status:        order.Delivered,
+				StatusChanged: now.Add(time.Hour * 2),
+			},
+			{
+				OrderID:       4,
+				ClientID:      2,
+				Weight:        4,
+				Cost:          4,
+				WrapType:      "name6",
+				StoredUntil:   now,
+				Status:        order.Returned,
+				StatusChanged: now.Add(time.Hour * 1),
+			},
 		}
 	)
 
@@ -30,6 +66,7 @@ func TestGetOrdersByFilter(t *testing.T) {
 	defer DB.TearDown(t)
 	DB.FillWraps(testWrap)
 	DB.FillOrders(testOrders)
+
 	repo := orderRepo.NewOrderRepository(DB.ConnPool)
 
 	t.Run("complex_filter", func(t *testing.T) {

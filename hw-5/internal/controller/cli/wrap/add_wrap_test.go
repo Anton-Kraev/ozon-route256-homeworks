@@ -5,14 +5,12 @@ import (
 	"strings"
 	"testing"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
-
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	service "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/service/wrap"
 )
 

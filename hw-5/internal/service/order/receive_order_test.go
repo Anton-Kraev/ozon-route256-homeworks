@@ -31,9 +31,11 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 	)
 
 	var (
-		ctx      = context.Background()
-		now      = time.Now().UTC()
-		wrapName = "wrap"
+		ctx       = context.Background()
+		now       = time.Now().UTC()
+		afterNow  = now.Add(time.Hour)
+		beforeNow = now.Add(-time.Hour)
+		wrapName  = "wrap"
 	)
 
 	tests := []struct {
@@ -46,7 +48,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 		{
 			name:    "err_retention_in_past",
 			mockFn:  func(f fields) {},
-			args:    args{"", order.Order{StoredUntil: now.Add(-time.Hour)}},
+			args:    args{"", order.Order{StoredUntil: beforeNow}},
 			wantErr: errsdomain.ErrRetentionTimeInPast,
 		},
 		{
@@ -56,7 +58,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 					&order.Order{OrderID: 1}, nil,
 				)
 			},
-			args:    args{"", order.Order{OrderID: 1, StoredUntil: now.Add(time.Hour)}},
+			args:    args{"", order.Order{OrderID: 1, StoredUntil: afterNow}},
 			wantErr: errsdomain.ErrOrderIDNotUnique,
 		},
 		{
@@ -65,7 +67,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(2)).Return(nil, nil)
 				f.wrapRepo.EXPECT().GetWrapByName(gomock.Any(), wrapName).Return(nil, nil)
 			},
-			args:    args{wrapName, order.Order{OrderID: 2, StoredUntil: now.Add(time.Hour)}},
+			args:    args{wrapName, order.Order{OrderID: 2, StoredUntil: afterNow}},
 			wantErr: errsdomain.ErrWrapNotFound,
 		},
 		{
@@ -91,7 +93,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 				f.hashes.EXPECT().GetHash().Return("hash")
 			},
 			args: args{wrapName, order.Order{
-				OrderID: 3, Weight: 900, Cost: 90, StoredUntil: now.Add(time.Hour),
+				OrderID: 3, Weight: 900, Cost: 90, StoredUntil: afterNow,
 			}},
 			wantErr: nil,
 		},

@@ -30,6 +30,7 @@ func TestGetOrderByID(t *testing.T) {
 	defer DB.TearDown(t)
 	DB.FillWraps(testWrap)
 	DB.FillOrders(testOrder)
+
 	repo := orderRepo.NewOrderRepository(DB.ConnPool)
 
 	t.Run("get_order", func(t *testing.T) {

@@ -22,8 +22,10 @@ func TestOrderService_DeliverOrders(t *testing.T) {
 	}
 
 	var (
-		ctx = context.Background()
-		now = time.Now().UTC()
+		ctx       = context.Background()
+		now       = time.Now().UTC()
+		afterNow  = now.Add(time.Hour)
+		beforeNow = now.Add(-time.Hour)
 	)
 
 	tests := []struct {
@@ -45,7 +47,7 @@ func TestOrderService_DeliverOrders(t *testing.T) {
 			name: "err_retention_expired",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrdersByIDs(gomock.Any(), []uint64{2}).Return(
-					[]order.Order{{StoredUntil: now.Add(-time.Hour)}}, nil,
+					[]order.Order{{StoredUntil: beforeNow}}, nil,
 				)
 			},
 			ordersID: []uint64{2},
@@ -55,7 +57,7 @@ func TestOrderService_DeliverOrders(t *testing.T) {
 			name: "err_not_received",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrdersByIDs(gomock.Any(), []uint64{3}).Return(
-					[]order.Order{{StoredUntil: now.Add(time.Hour)}}, nil,
+					[]order.Order{{StoredUntil: afterNow}}, nil,
 				)
 			},
 			ordersID: []uint64{3},
@@ -65,8 +67,8 @@ func TestOrderService_DeliverOrders(t *testing.T) {
 			name: "err_different_clients",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrdersByIDs(gomock.Any(), []uint64{4, 5}).Return([]order.Order{
-					{ClientID: 4, Status: order.Received, StoredUntil: now.Add(time.Hour)},
-					{ClientID: 5, Status: order.Received, StoredUntil: now.Add(time.Hour)},
+					{ClientID: 4, Status: order.Received, StoredUntil: afterNow},
+					{ClientID: 5, Status: order.Received, StoredUntil: afterNow},
 				}, nil)
 				f.hashes.EXPECT().GetHash().Return("hash")
 			},
@@ -77,7 +79,7 @@ func TestOrderService_DeliverOrders(t *testing.T) {
 			name: "successful_deliver",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrdersByIDs(gomock.Any(), []uint64{6}).Return(
-					[]order.Order{{Status: order.Received, StatusChanged: now, StoredUntil: now.Add(time.Hour)}}, nil,
+					[]order.Order{{Status: order.Received, StatusChanged: now, StoredUntil: afterNow}}, nil,
 				)
 				f.orderRepo.EXPECT().ChangeOrders(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, changes []order.Order) error {
