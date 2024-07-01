@@ -92,7 +92,7 @@ func TestOrderService_RefundOrder(t *testing.T) {
 			name: "err_delivered_long_ago",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(5)).Return(
-					&order.Order{Status: order.Delivered, StatusChanged: now.Add(-time.Hour * 48)}, nil,
+					&order.Order{Status: order.Delivered, StatusChanged: now.Add(-time.Hour * 1000)}, nil,
 				)
 			},
 			args:    args{orderID: 5},

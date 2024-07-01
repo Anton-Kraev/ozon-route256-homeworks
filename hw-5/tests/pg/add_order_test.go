@@ -1,4 +1,4 @@
-package order
+package pg
 
 import (
 	"context"
@@ -12,7 +12,6 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	orderRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/tests/pg"
 )
 
 func TestAddOrder(t *testing.T) {
@@ -57,15 +56,13 @@ func TestAddOrder(t *testing.T) {
 		}
 	)
 
-	pg.DB.SetUp(t, "orders", "wrap")
-	defer pg.DB.TearDown(t)
-	pg.DB.FillWraps(testWrap)
-	repo := orderRepo.NewOrderRepository(pg.DB.ConnPool)
-	txMw := middlewares.NewTransactionMiddleware(pg.DB.ConnPool)
+	DB.SetUp(t, "orders", "wrap")
+	defer DB.TearDown(t)
+	DB.FillWraps(testWrap)
+	repo := orderRepo.NewOrderRepository(DB.ConnPool)
+	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
 
 	t.Run("with_wrap", func(t *testing.T) {
-		t.Parallel()
-
 		ctx := context.Background()
 		res, err := txMw.CreateTransactionContext(
 			ctx,
@@ -79,7 +76,7 @@ func TestAddOrder(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := pg.DB.GetAllOrders()
+		records := DB.GetAllOrders()
 		require.NotEmpty(t, records)
 
 		var actual order.Order
@@ -94,8 +91,6 @@ func TestAddOrder(t *testing.T) {
 	})
 
 	t.Run("bad_wrap", func(t *testing.T) {
-		t.Parallel()
-
 		ctx := context.Background()
 		_, err := txMw.CreateTransactionContext(
 			ctx,
@@ -110,8 +105,6 @@ func TestAddOrder(t *testing.T) {
 	})
 
 	t.Run("no_wrap", func(t *testing.T) {
-		t.Parallel()
-
 		ctx := context.Background()
 		res, err := txMw.CreateTransactionContext(
 			ctx,
@@ -125,7 +118,7 @@ func TestAddOrder(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := pg.DB.GetAllOrders()
+		records := DB.GetAllOrders()
 		require.NotEmpty(t, records)
 
 		var actual order.Order

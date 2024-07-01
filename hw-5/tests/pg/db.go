@@ -18,7 +18,7 @@ import (
 	wrapsch "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/wrap"
 )
 
-const testEnvPath = "../../../test.env"
+const testEnvPath = "../../test.env"
 
 type TDB struct {
 	ConnPool *pgxpool.Pool

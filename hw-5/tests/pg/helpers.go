@@ -1,4 +1,4 @@
-package order
+package pg
 
 import (
 	"testing"
@@ -7,7 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
+	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 )
+
+func AssertEqualWraps(t *testing.T, expected, actual wrap.Wrap) {
+	assert.Equal(t, expected.Name, actual.Name)
+	assert.Equal(t, expected.Weight, actual.Weight)
+	assert.Equal(t, expected.Cost, actual.Cost)
+}
 
 func AssertEqualOrders(t *testing.T, expected, actual order.Order) {
 	assert.Equal(t, expected.OrderID, actual.OrderID)

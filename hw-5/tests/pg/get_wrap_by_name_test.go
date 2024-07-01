@@ -1,4 +1,4 @@
-package wrap
+package pg
 
 import (
 	"context"
@@ -9,13 +9,12 @@ import (
 
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	wrapRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/wrap"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/tests/pg"
 )
 
 func TestGetWrapByName(t *testing.T) {
 	var (
 		ctx     = context.Background()
-		names   = []string{"box", "package"}
+		names   = []string{"name1", "name2"}
 		badName = "unknown"
 
 		testWraps = []wrap.Wrap{
@@ -32,14 +31,12 @@ func TestGetWrapByName(t *testing.T) {
 		}
 	)
 
-	pg.DB.SetUp(t, "orders", "wrap")
-	defer pg.DB.TearDown(t)
-	pg.DB.FillWraps(testWraps)
-	repo := wrapRepo.NewWrapRepository(pg.DB.ConnPool)
+	DB.SetUp(t, "orders", "wrap")
+	defer DB.TearDown(t)
+	DB.FillWraps(testWraps)
+	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
 
 	t.Run("get_wrap", func(t *testing.T) {
-		t.Parallel()
-
 		resp, err := repo.GetWrapByName(ctx, names[0])
 
 		require.NoError(t, err)
@@ -48,8 +45,6 @@ func TestGetWrapByName(t *testing.T) {
 	})
 
 	t.Run("not_found", func(t *testing.T) {
-		t.Parallel()
-
 		resp, err := repo.GetWrapByName(ctx, badName)
 
 		require.NoError(t, err)

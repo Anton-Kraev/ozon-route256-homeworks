@@ -46,7 +46,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 		{
 			name:    "err_retention_in_past",
 			mockFn:  func(f fields) {},
-			args:    args{"", order.Order{}},
+			args:    args{"", order.Order{StoredUntil: now.Add(-time.Hour)}},
 			wantErr: errsdomain.ErrRetentionTimeInPast,
 		},
 		{

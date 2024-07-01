@@ -1,4 +1,4 @@
-package order
+package pg
 
 import (
 	"context"
@@ -12,7 +12,6 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	orderRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/tests/pg"
 )
 
 func TestChangeOrders(t *testing.T) {
@@ -21,12 +20,12 @@ func TestChangeOrders(t *testing.T) {
 
 		testWraps = []wrap.Wrap{
 			{
-				Name:   "box",
+				Name:   "name8",
 				Weight: 10,
 				Cost:   10,
 			},
 			{
-				Name:   "package",
+				Name:   "name9",
 				Weight: 10,
 				Cost:   10,
 			},
@@ -39,7 +38,7 @@ func TestChangeOrders(t *testing.T) {
 				Weight:        1,
 				Cost:          1,
 				Status:        order.Received,
-				WrapType:      "box",
+				WrapType:      "name8",
 				StoredUntil:   now,
 				StatusChanged: now,
 				Hash:          "hash",
@@ -50,7 +49,7 @@ func TestChangeOrders(t *testing.T) {
 				Weight:        2,
 				Cost:          2,
 				Status:        order.Delivered,
-				WrapType:      "package",
+				WrapType:      "name9",
 				StoredUntil:   now,
 				StatusChanged: now,
 				Hash:          "hash",
@@ -64,7 +63,7 @@ func TestChangeOrders(t *testing.T) {
 				Weight:        1,
 				Cost:          1,
 				Status:        order.Delivered,
-				WrapType:      "box",
+				WrapType:      "name8",
 				StoredUntil:   now,
 				StatusChanged: now.Add(time.Hour),
 				Hash:          "hash",
@@ -75,7 +74,7 @@ func TestChangeOrders(t *testing.T) {
 				Weight:        2,
 				Cost:          2,
 				Status:        order.Refunded,
-				WrapType:      "package",
+				WrapType:      "name9",
 				StoredUntil:   now,
 				StatusChanged: now,
 				Hash:          "newhash",
@@ -86,7 +85,7 @@ func TestChangeOrders(t *testing.T) {
 				Weight:        3,
 				Cost:          3,
 				Status:        order.Received,
-				WrapType:      "box",
+				WrapType:      "name8",
 				StoredUntil:   now,
 				StatusChanged: now,
 				Hash:          "hash",
@@ -94,12 +93,12 @@ func TestChangeOrders(t *testing.T) {
 		}
 	)
 
-	pg.DB.SetUp(t, "orders", "wrap")
-	defer pg.DB.TearDown(t)
-	pg.DB.FillWraps(testWraps)
-	pg.DB.FillOrders(testOrders)
-	repo := orderRepo.NewOrderRepository(pg.DB.ConnPool)
-	txMw := middlewares.NewTransactionMiddleware(pg.DB.ConnPool)
+	DB.SetUp(t, "orders", "wrap")
+	defer DB.TearDown(t)
+	DB.FillWraps(testWraps)
+	DB.FillOrders(testOrders)
+	repo := orderRepo.NewOrderRepository(DB.ConnPool)
+	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
 
 	t.Run("no_changes", func(t *testing.T) {
 		ctx := context.Background()
@@ -115,7 +114,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := pg.DB.GetAllOrders()
+		records := DB.GetAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrders[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrders[1], records[1].ToDomain())
@@ -135,7 +134,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := pg.DB.GetAllOrders()
+		records := DB.GetAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrdersChanged[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrdersChanged[1], records[1].ToDomain())
@@ -155,7 +154,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := pg.DB.GetAllOrders()
+		records := DB.GetAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrdersChanged[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrdersChanged[1], records[1].ToDomain())

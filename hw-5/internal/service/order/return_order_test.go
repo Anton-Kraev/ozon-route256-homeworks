@@ -55,7 +55,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "err_already_returned",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(2)).Return(
-					&order.Order{Status: order.Returned}, nil,
+					&order.Order{Status: order.Returned, StoredUntil: now.UTC().Add(-time.Hour)}, nil,
 				)
 			},
 			orderID: 2,
@@ -65,7 +65,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "err_delivered",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(3)).Return(
-					&order.Order{Status: order.Delivered}, nil,
+					&order.Order{Status: order.Delivered, StoredUntil: now.UTC().Add(-time.Hour)}, nil,
 				)
 			},
 			orderID: 3,
@@ -75,7 +75,7 @@ func TestOrderService_ReturnOrder(t *testing.T) {
 			name: "successful_return",
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(4)).Return(
-					&order.Order{Status: order.Received, StatusChanged: now, StoredUntil: now}, nil,
+					&order.Order{Status: order.Received, StatusChanged: now.UTC().Add(-time.Hour), StoredUntil: now.UTC().Add(-time.Hour)}, nil,
 				)
 				f.orderRepo.EXPECT().ChangeOrders(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, changes []order.Order) error {

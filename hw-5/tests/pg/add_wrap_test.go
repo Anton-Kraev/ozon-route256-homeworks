@@ -1,4 +1,4 @@
-package wrap
+package pg
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/middlewares"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	wrapRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/wrap"
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/tests/pg"
 )
 
 func TestAddWrap(t *testing.T) {
@@ -19,27 +18,25 @@ func TestAddWrap(t *testing.T) {
 
 		testWraps = []wrap.Wrap{
 			{
-				Name:   "box",
+				Name:   "name3",
 				Weight: 1000,
 				Cost:   1000,
 			},
 			{
-				Name:   "package",
+				Name:   "name4",
 				Weight: 2000,
 				Cost:   2000,
 			},
 		}
 	)
 
-	pg.DB.SetUp(t, "orders", "wrap")
-	defer pg.DB.TearDown(t)
-	pg.DB.FillWraps(testWraps[:1])
-	repo := wrapRepo.NewWrapRepository(pg.DB.ConnPool)
-	txMw := middlewares.NewTransactionMiddleware(pg.DB.ConnPool)
+	DB.SetUp(t, "orders", "wrap")
+	defer DB.TearDown(t)
+	DB.FillWraps(testWraps[:1])
+	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
+	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
 
 	t.Run("add_existing", func(t *testing.T) {
-		t.Parallel()
-
 		_, err := txMw.CreateTransactionContext(
 			ctx,
 			pgx.TxOptions{AccessMode: pgx.ReadWrite, IsoLevel: pgx.RepeatableRead},
@@ -53,8 +50,6 @@ func TestAddWrap(t *testing.T) {
 	})
 
 	t.Run("add_new", func(t *testing.T) {
-		t.Parallel()
-
 		res, err := txMw.CreateTransactionContext(
 			ctx,
 			pgx.TxOptions{AccessMode: pgx.ReadWrite, IsoLevel: pgx.RepeatableRead},
@@ -67,7 +62,7 @@ func TestAddWrap(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		wraps := pg.DB.GetAllWraps()
+		wraps := DB.GetAllWraps()
 		require.Len(t, wraps, 2)
 		AssertEqualWraps(t, testWraps[0], wraps[0].ToDomain())
 		AssertEqualWraps(t, testWraps[1], wraps[1].ToDomain())
