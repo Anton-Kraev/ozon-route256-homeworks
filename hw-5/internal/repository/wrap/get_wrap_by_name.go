@@ -11,14 +11,14 @@ import (
 func (r WrapRepository) GetWrapByName(ctx context.Context, name string) (*wrap.Wrap, error) {
 	const query = `SELECT * FROM wrap WHERE name = $1`
 
-	var wraps []wrapSchema
+	var wraps []WrapSchema
 
 	err := pgxscan.Select(ctx, r.pool, &wraps, query, name)
 	if err != nil || len(wraps) == 0 {
 		return nil, err
 	}
 
-	wrapDomain := wraps[0].toDomain()
+	wrapDomain := wraps[0].ToDomain()
 
 	return &wrapDomain, nil
 }

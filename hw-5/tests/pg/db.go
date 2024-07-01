@@ -14,7 +14,8 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/pg"
-	schemas "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
+	ordersch "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/order"
+	wrapsch "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/repository/wrap"
 )
 
 const testEnvPath = "../../../test.env"
@@ -66,13 +67,13 @@ func (db *TDB) FillOrders(records []order.Order) {
 	}
 }
 
-func (db *TDB) GetAllOrders() []schemas.OrderSchema {
+func (db *TDB) GetAllOrders() []ordersch.OrderSchema {
 	rows, err := db.ConnPool.Query(context.Background(), "SELECT * FROM orders")
 	if err != nil {
 		panic(err)
 	}
 
-	var records []schemas.OrderSchema
+	var records []ordersch.OrderSchema
 
 	if err = pgxscan.ScanAll(&records, rows); err != nil {
 		panic(err)
@@ -91,4 +92,19 @@ func (db *TDB) FillWraps(records []wrap.Wrap) {
 			panic(err)
 		}
 	}
+}
+
+func (db *TDB) GetAllWraps() []wrapsch.WrapSchema {
+	rows, err := db.ConnPool.Query(context.Background(), "SELECT * FROM wrap")
+	if err != nil {
+		panic(err)
+	}
+
+	var records []wrapsch.WrapSchema
+
+	if err = pgxscan.ScanAll(&records, rows); err != nil {
+		panic(err)
+	}
+
+	return records
 }
