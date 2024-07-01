@@ -2,4 +2,4 @@ pgdata/
 orders.json
 .idea/
 .golangci.yml
-.env
+*.env

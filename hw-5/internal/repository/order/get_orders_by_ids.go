@@ -31,12 +31,12 @@ func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]mo
 	)
 
 	for rows.Next() {
-		var order orderSchema
+		var order OrderSchema
 		if err = rowScanner.Scan(&order); err != nil {
 			return nil, err
 		}
 
-		orders = append(orders, order.toDomain())
+		orders = append(orders, order.ToDomain())
 	}
 
 	return orders, nil

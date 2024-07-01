@@ -7,7 +7,7 @@ import (
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
-type orderSchema struct {
+type OrderSchema struct {
 	OrderID         uint64         `db:"id"`
 	ClientID        uint64         `db:"client_id"`
 	Weight          uint           `db:"weight"`
@@ -21,7 +21,7 @@ type orderSchema struct {
 	UpdatedAt       sql.NullTime   `db:"updated_at"`
 }
 
-func (r orderSchema) toDomain() order.Order {
+func (r OrderSchema) ToDomain() order.Order {
 	return order.Order{
 		OrderID:       r.OrderID,
 		ClientID:      r.ClientID,

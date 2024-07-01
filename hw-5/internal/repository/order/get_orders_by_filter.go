@@ -37,7 +37,7 @@ func (r OrderRepository) GetOrdersByFilter(ctx context.Context, filter models.Fi
 	}
 
 	if filter.SortedByDate {
-		sortedPart = "ORDER BY status_changed DESC"
+		sortedPart = "ORDER BY status_changed_at DESC"
 	}
 
 	limitPart = "LIMIT ? OFFSET ?"
@@ -65,12 +65,12 @@ func (r OrderRepository) GetOrdersByFilter(ctx context.Context, filter models.Fi
 	)
 
 	for rows.Next() {
-		var order orderSchema
+		var order OrderSchema
 		if err = rowScanner.Scan(&order); err != nil {
 			return nil, err
 		}
 
-		orders = append(orders, order.toDomain())
+		orders = append(orders, order.ToDomain())
 	}
 
 	return orders, nil
