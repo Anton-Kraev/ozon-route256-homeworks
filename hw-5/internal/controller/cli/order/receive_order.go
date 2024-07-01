@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"time"
 
@@ -27,25 +28,25 @@ func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (strin
 	fs.StringVar(&storedUntilStr, "storedUntil", "", "use --storedUntil="+timeFormat)
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
 
 	if orderID == 0 {
-		return "", errors.New("orderID must be positive number")
+		return "", fmt.Errorf("%w: orderID must be positive number", errParseArgs)
 	}
 	if clientID == 0 {
-		return "", errors.New("clientID must be positive number")
+		return "", fmt.Errorf("%w: clientID must be positive number", errParseArgs)
 	}
 	if orderWeight == 0 {
-		return "", errors.New("weight must be positive number")
+		return "", fmt.Errorf("%w: weight must be positive number", errParseArgs)
 	}
 	if orderCost == 0 {
-		return "", errors.New("cost must be positive number")
+		return "", fmt.Errorf("%w: cost must be positive number", errParseArgs)
 	}
 
 	storedUntil, err := time.Parse(timeFormat, storedUntilStr)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
 
 	err = c.service.ReceiveOrder(ctx, wrapType, order.Order{
@@ -70,7 +71,7 @@ func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (strin
 		default:
 			log.Println(err.Error())
 
-			return "", errors.New("can't receive order")
+			return "", errReceiveOrder
 		}
 	}
 

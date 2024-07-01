@@ -2,7 +2,6 @@ package order
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -24,17 +23,18 @@ func (c OrderController) ClientOrders(ctx context.Context, args []string) (strin
 	fs.BoolVar(&inStorage, "inStorage", false, "use --inStorage")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
+
 	if clientID == 0 {
-		return "", errors.New("clientID must be positive number")
+		return "", fmt.Errorf("%w: clientID must be positive number", errParseArgs)
 	}
 
 	orders, err := c.service.ClientOrders(ctx, clientID, lastN, inStorage)
 	if err != nil {
 		log.Println(err.Error())
 
-		return "", errors.New("can't get client orders")
+		return "", errClientOrders
 	}
 
 	return clientOrdersToString(orders), nil

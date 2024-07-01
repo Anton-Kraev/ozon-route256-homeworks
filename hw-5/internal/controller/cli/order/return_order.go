@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 
 	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
@@ -16,10 +17,11 @@ func (c OrderController) ReturnOrder(ctx context.Context, args []string) (string
 	fs.Uint64Var(&orderID, "orderID", 0, "use --orderID=12345")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
+
 	if orderID == 0 {
-		return "", errors.New("orderID must be positive number")
+		return "", fmt.Errorf("%w: orderID must be positive number", errParseArgs)
 	}
 
 	err := c.service.ReturnOrder(ctx, orderID)
@@ -36,7 +38,7 @@ func (c OrderController) ReturnOrder(ctx context.Context, args []string) (string
 		default:
 			log.Println(err.Error())
 
-			return "", errors.New("can't return order")
+			return "", errReturnOrder
 		}
 	}
 

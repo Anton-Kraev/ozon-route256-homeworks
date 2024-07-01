@@ -18,17 +18,17 @@ func (c OrderController) DeliverOrders(ctx context.Context, args []string) (stri
 	fs.StringVar(&ordersStr, "orders", "", "use --orders=1,2,3,4,5")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
 
 	orders, err := helpers.StrToUint64Arr(ordersStr)
 	if err != nil {
-		return "", fmt.Errorf("invalid input format, must be --orders=<id1>,<id2>,<id3>: %v", err)
+		return "", fmt.Errorf("%w: invalid format, must be --orders=<id1>,<id2>,<id3>: %w", errParseArgs, err)
 	}
 
 	for _, order := range orders {
 		if order == 0 {
-			return "", errors.New("orderID must be positive number")
+			return "", fmt.Errorf("%w: orderID must be positive number", errParseArgs)
 		}
 	}
 
@@ -46,7 +46,7 @@ func (c OrderController) DeliverOrders(ctx context.Context, args []string) (stri
 		default:
 			log.Println(err.Error())
 
-			return "", errors.New("can't deliver orders")
+			return "", errDeliverOrders
 		}
 	}
 

@@ -2,7 +2,6 @@ package order
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -19,14 +18,14 @@ func (c OrderController) RefundsList(ctx context.Context, args []string) (string
 	fs.UintVar(&perPage, "perPage", 0, "use --perPage=10")
 
 	if err := fs.Parse(args); err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %w", errParseArgs, err)
 	}
 
 	refunds, err := c.service.RefundsList(ctx, pageN, perPage)
 	if err != nil {
 		log.Println(err.Error())
 
-		return "", errors.New("can't get refunds list")
+		return "", errRefundsList
 	}
 
 	return refundsListToString(refunds), nil
