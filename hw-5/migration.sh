@@ -1,3 +1,10 @@
-goose -dir ./migrations postgres "postgres://postgres:password@localhost:5432/oms?sslmode=disable" status
+#!/bin/bash
 
-goose -dir ./migrations postgres "postgres://postgres:password@localhost:5432/oms?sslmode=disable" up
+if [ "\$1" == "test" ]; then
+  export $(cat test.env | xargs)
+else
+  export $(cat .env | xargs)
+fi
+
+goose -dir ./migrations postgres "$DATABASE_URL_MIGRATIONS" status
+goose -dir ./migrations postgres "$DATABASE_URL_MIGRATIONS" up
