@@ -33,7 +33,9 @@ func (s *OrderService) ReceiveOrder(ctx context.Context, wrapType string, order 
 			return errsdomain.ErrWrapNotFound
 		}
 
-		order.Wrap(*wrap)
+		if err = order.Wrap(*wrap); err != nil {
+			return err
+		}
 	}
 
 	order.SetStatus(models.Received, now)

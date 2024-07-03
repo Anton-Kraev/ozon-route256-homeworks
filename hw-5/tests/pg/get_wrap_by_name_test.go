@@ -19,14 +19,14 @@ func TestGetWrapByName(t *testing.T) {
 
 		testWraps = []wrap.Wrap{
 			{
-				Name:   names[0],
-				Weight: 1000,
-				Cost:   1000,
+				Name:      names[0],
+				MaxWeight: 1000,
+				Cost:      1000,
 			},
 			{
-				Name:   names[1],
-				Weight: 2000,
-				Cost:   2000,
+				Name:      names[1],
+				MaxWeight: 2000,
+				Cost:      2000,
 			},
 		}
 	)

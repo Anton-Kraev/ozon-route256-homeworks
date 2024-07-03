@@ -20,14 +20,14 @@ func TestChangeOrders(t *testing.T) {
 
 		testWraps = []wrap.Wrap{
 			{
-				Name:   "name8",
-				Weight: 10,
-				Cost:   10,
+				Name:      "name8",
+				MaxWeight: 10,
+				Cost:      10,
 			},
 			{
-				Name:   "name9",
-				Weight: 10,
-				Cost:   10,
+				Name:      "name9",
+				MaxWeight: 10,
+				Cost:      10,
 			},
 		}
 

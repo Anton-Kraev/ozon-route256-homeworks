@@ -14,13 +14,13 @@ func (r WrapRepository) AddWrap(ctx context.Context, wrap wrap.Wrap) error {
 		return err
 	}
 
-	const query = `INSERT INTO wrap(name, weight, cost) VALUES ($1, $2, $3)`
+	const query = `INSERT INTO wrap(name, max_weight, cost) VALUES ($1, $2, $3)`
 
 	_, err = tx.Exec(
 		ctx,
 		query,
 		wrap.Name,
-		wrap.Weight,
+		wrap.MaxWeight,
 		wrap.Cost,
 	)
 

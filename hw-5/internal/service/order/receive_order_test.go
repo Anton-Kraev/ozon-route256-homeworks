@@ -75,14 +75,27 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 			mockFn: func(f fields) {
 				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(3)).Return(nil, nil)
 				f.wrapRepo.EXPECT().GetWrapByName(gomock.Any(), wrapName).Return(
-					&wrap.Wrap{Name: wrapName, Weight: 100, Cost: 10}, nil,
+					&wrap.Wrap{Name: wrapName, MaxWeight: 100, Cost: 10}, nil,
+				)
+			},
+			args: args{wrapName, order.Order{
+				OrderID: 3, Weight: 1000, Cost: 90, StoredUntil: afterNow,
+			}},
+			wantErr: errsdomain.ErrOrderWeightExceedsLimit,
+		},
+		{
+			name: "successful_receive",
+			mockFn: func(f fields) {
+				f.orderRepo.EXPECT().GetOrderByID(gomock.Any(), uint64(3)).Return(nil, nil)
+				f.wrapRepo.EXPECT().GetWrapByName(gomock.Any(), wrapName).Return(
+					&wrap.Wrap{Name: wrapName, MaxWeight: 100, Cost: 10}, nil,
 				)
 				f.orderRepo.EXPECT().AddOrder(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, orderToAdd order.Order) error {
 						if orderToAdd.StatusChanged.Sub(now) < time.Hour &&
 							orderToAdd.Status == order.Received &&
 							orderToAdd.Hash == "hash" &&
-							orderToAdd.Weight == 1000 &&
+							orderToAdd.Weight == 100 &&
 							orderToAdd.Cost == 100 &&
 							orderToAdd.WrapType == wrapName {
 							return nil
@@ -93,7 +106,7 @@ func TestOrderService_ReceiveOrder(t *testing.T) {
 				f.hashes.EXPECT().GetHash().Return("hash")
 			},
 			args: args{wrapName, order.Order{
-				OrderID: 3, Weight: 900, Cost: 90, StoredUntil: afterNow,
+				OrderID: 3, Weight: 100, Cost: 90, StoredUntil: afterNow,
 			}},
 			wantErr: nil,
 		},

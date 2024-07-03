@@ -18,14 +18,14 @@ func TestAddWrap(t *testing.T) {
 
 		testWraps = []wrap.Wrap{
 			{
-				Name:   "name3",
-				Weight: 1000,
-				Cost:   1000,
+				Name:      "name3",
+				MaxWeight: 1000,
+				Cost:      1000,
 			},
 			{
-				Name:   "name4",
-				Weight: 2000,
-				Cost:   2000,
+				Name:      "name4",
+				MaxWeight: 2000,
+				Cost:      2000,
 			},
 		}
 	)

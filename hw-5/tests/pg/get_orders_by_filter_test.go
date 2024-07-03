@@ -17,7 +17,7 @@ func TestGetOrdersByFilter(t *testing.T) {
 		ctx = context.Background()
 		now = time.Now().UTC()
 
-		testWrap   = []wrap.Wrap{{Name: "name6", Weight: 10, Cost: 10}}
+		testWrap   = []wrap.Wrap{{Name: "name6", MaxWeight: 10, Cost: 10}}
 		testOrders = []order.Order{
 			{
 				OrderID:       1,

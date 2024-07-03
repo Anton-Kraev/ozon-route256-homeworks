@@ -85,8 +85,8 @@ func (db *TDB) GetAllOrders() []ordersch.OrderSchema {
 func (db *TDB) FillWraps(records []wrap.Wrap) {
 	for _, r := range records {
 		_, err := db.ConnPool.Exec(context.Background(),
-			`INSERT INTO wrap(name, weight, cost) VALUES ($1,$2,$3);`,
-			r.Name, r.Weight, r.Cost,
+			`INSERT INTO wrap(name, max_weight, cost) VALUES ($1,$2,$3);`,
+			r.Name, r.MaxWeight, r.Cost,
 		)
 		if err != nil {
 			panic(err)

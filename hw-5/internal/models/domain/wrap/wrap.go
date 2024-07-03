@@ -1,7 +1,7 @@
 package wrap
 
 type Wrap struct {
-	Name   string
-	Weight uint
-	Cost   uint
+	Name      string
+	MaxWeight uint
+	Cost      uint
 }

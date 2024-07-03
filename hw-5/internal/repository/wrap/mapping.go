@@ -9,7 +9,7 @@ import (
 
 type WrapSchema struct {
 	Name      string       `db:"name"`
-	Weight    uint         `db:"weight"`
+	MaxWeight uint         `db:"max_weight"`
 	Cost      uint         `db:"cost"`
 	CreatedAt time.Time    `db:"created_at"`
 	UpdatedAt sql.NullTime `db:"updated_at"`
@@ -17,8 +17,8 @@ type WrapSchema struct {
 
 func (r WrapSchema) ToDomain() wrap.Wrap {
 	return wrap.Wrap{
-		Name:   r.Name,
-		Weight: r.Weight,
-		Cost:   r.Cost,
+		Name:      r.Name,
+		MaxWeight: r.MaxWeight,
+		Cost:      r.Cost,
 	}
 }

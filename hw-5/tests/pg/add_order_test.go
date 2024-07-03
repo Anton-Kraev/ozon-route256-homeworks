@@ -18,7 +18,7 @@ func TestAddOrder(t *testing.T) {
 	var (
 		now = time.Now().UTC()
 
-		testWrap   = []wrap.Wrap{{Name: "box", Weight: 10, Cost: 10}}
+		testWrap   = []wrap.Wrap{{Name: "box", MaxWeight: 10, Cost: 10}}
 		testOrders = []order.Order{
 			{
 				OrderID:       1,

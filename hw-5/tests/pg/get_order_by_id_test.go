@@ -20,7 +20,7 @@ func TestGetOrderByID(t *testing.T) {
 		badID uint64 = 2
 		now          = time.Now().UTC()
 
-		testWrap  = []wrap.Wrap{{Name: "name7", Weight: 10, Cost: 10}}
+		testWrap  = []wrap.Wrap{{Name: "name7", MaxWeight: 10, Cost: 10}}
 		testOrder = []order.Order{
 			{OrderID: ID, ClientID: 1, Weight: 1, Cost: 1, WrapType: "name7", StoredUntil: now, StatusChanged: now},
 		}

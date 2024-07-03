@@ -39,7 +39,7 @@ func (s *OrderService) DeliverOrders(ctx context.Context, ordersID []uint64) err
 		if order.Status != models.Received {
 			return fmt.Errorf("%w: %w",
 				errsdomain.ErrUnexpectedOrderStatus,
-				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, order.Status),
+				errsdomain.ErrorUnexpectedOrderStatus(order.OrderID, string(order.Status)),
 			)
 		}
 

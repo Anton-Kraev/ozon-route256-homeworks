@@ -3,6 +3,7 @@ package order
 import (
 	"time"
 
+	errsdomain "gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/errors"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/wrap"
 )
 
@@ -18,10 +19,15 @@ type Order struct {
 	Hash          string
 }
 
-func (o *Order) Wrap(wrap wrap.Wrap) {
+func (o *Order) Wrap(wrap wrap.Wrap) error {
+	if o.Weight > wrap.MaxWeight {
+		return errsdomain.ErrOrderWeightExceedsLimit
+	}
+
 	o.WrapType = wrap.Name
-	o.Weight += wrap.Weight
 	o.Cost += wrap.Cost
+
+	return nil
 }
 
 func (o *Order) SetStatus(status Status, timeChanged time.Time) {

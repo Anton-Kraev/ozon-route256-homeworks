@@ -12,7 +12,7 @@ import (
 
 func AssertEqualWraps(t *testing.T, expected, actual wrap.Wrap) {
 	assert.Equal(t, expected.Name, actual.Name)
-	assert.Equal(t, expected.Weight, actual.Weight)
+	assert.Equal(t, expected.MaxWeight, actual.MaxWeight)
 	assert.Equal(t, expected.Cost, actual.Cost)
 }
 

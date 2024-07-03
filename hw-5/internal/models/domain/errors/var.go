@@ -3,8 +3,6 @@ package errors
 import (
 	"errors"
 	"fmt"
-
-	"gitlab.ozon.dev/antonkraeww/homeworks/hw-5/internal/models/domain/order"
 )
 
 var (
@@ -31,7 +29,7 @@ func ErrorDifferentClients(clientID, anotherClientID uint64) error {
 	return fmt.Errorf("orders with id %d and %d belong to different clients", clientID, anotherClientID)
 }
 
-func ErrorUnexpectedOrderStatus(orderID uint64, status order.Status) error {
+func ErrorUnexpectedOrderStatus(orderID uint64, status string) error {
 	return fmt.Errorf("order with id %d has the %s status", orderID, status)
 }
 
