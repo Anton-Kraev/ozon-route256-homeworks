@@ -18,6 +18,11 @@ unit-tests:
 	$(info running unit tests...)
 	go test ./internal/... ./pkg/...
 
+.PHONY: mockgen
+mockgen:
+	$(info generating mocks...)
+	go generate -x -run=mockgen ./...
+
 .PHONY: integration-tests
 integration-tests:
 	$(info running integration tests...)
