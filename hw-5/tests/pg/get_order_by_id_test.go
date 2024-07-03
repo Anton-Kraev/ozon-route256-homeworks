@@ -1,3 +1,5 @@
+//go:build integration
+
 package pg
 
 import (
@@ -28,8 +30,8 @@ func TestGetOrderByID(t *testing.T) {
 
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
-	DB.FillWraps(testWrap)
-	DB.FillOrders(testOrder)
+	DB.fillWraps(testWrap)
+	DB.fillOrders(testOrder)
 
 	repo := orderRepo.NewOrderRepository(DB.ConnPool)
 

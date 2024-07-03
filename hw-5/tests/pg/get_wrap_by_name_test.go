@@ -1,3 +1,5 @@
+//go:build integration
+
 package pg
 
 import (
@@ -33,7 +35,7 @@ func TestGetWrapByName(t *testing.T) {
 
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
-	DB.FillWraps(testWraps)
+	DB.fillWraps(testWraps)
 
 	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
 

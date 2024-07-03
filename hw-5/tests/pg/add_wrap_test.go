@@ -1,3 +1,5 @@
+//go:build integration
+
 package pg
 
 import (
@@ -32,7 +34,7 @@ func TestAddWrap(t *testing.T) {
 
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
-	DB.FillWraps(testWraps[:1])
+	DB.fillWraps(testWraps[:1])
 
 	repo := wrapRepo.NewWrapRepository(DB.ConnPool)
 	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
@@ -63,7 +65,7 @@ func TestAddWrap(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		wraps := DB.GetAllWraps()
+		wraps := DB.getAllWraps()
 		require.Len(t, wraps, 2)
 		AssertEqualWraps(t, testWraps[0], wraps[0].ToDomain())
 		AssertEqualWraps(t, testWraps[1], wraps[1].ToDomain())

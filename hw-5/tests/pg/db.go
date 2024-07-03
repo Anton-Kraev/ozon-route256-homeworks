@@ -54,7 +54,7 @@ func (db *TDB) truncateTable(ctx context.Context, tableName ...string) {
 	}
 }
 
-func (db *TDB) FillOrders(records []order.Order) {
+func (db *TDB) fillOrders(records []order.Order) {
 	for _, r := range records {
 		_, err := db.ConnPool.Exec(context.Background(),
 			`INSERT INTO orders(id,client_id,stored_until,weight,cost,status,status_changed_at,wrap_type,hash) 
@@ -67,7 +67,7 @@ func (db *TDB) FillOrders(records []order.Order) {
 	}
 }
 
-func (db *TDB) GetAllOrders() []ordersch.OrderSchema {
+func (db *TDB) getAllOrders() []ordersch.OrderSchema {
 	rows, err := db.ConnPool.Query(context.Background(), "SELECT * FROM orders")
 	if err != nil {
 		panic(err)
@@ -82,7 +82,7 @@ func (db *TDB) GetAllOrders() []ordersch.OrderSchema {
 	return records
 }
 
-func (db *TDB) FillWraps(records []wrap.Wrap) {
+func (db *TDB) fillWraps(records []wrap.Wrap) {
 	for _, r := range records {
 		_, err := db.ConnPool.Exec(context.Background(),
 			`INSERT INTO wrap(name, max_weight, cost) VALUES ($1,$2,$3);`,
@@ -94,7 +94,7 @@ func (db *TDB) FillWraps(records []wrap.Wrap) {
 	}
 }
 
-func (db *TDB) GetAllWraps() []wrapsch.WrapSchema {
+func (db *TDB) getAllWraps() []wrapsch.WrapSchema {
 	rows, err := db.ConnPool.Query(context.Background(), "SELECT * FROM wrap")
 	if err != nil {
 		panic(err)

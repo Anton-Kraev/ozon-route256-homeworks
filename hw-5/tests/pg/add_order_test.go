@@ -1,3 +1,5 @@
+//go:build integration
+
 package pg
 
 import (
@@ -58,7 +60,7 @@ func TestAddOrder(t *testing.T) {
 
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
-	DB.FillWraps(testWrap)
+	DB.fillWraps(testWrap)
 
 	repo := orderRepo.NewOrderRepository(DB.ConnPool)
 	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
@@ -77,7 +79,7 @@ func TestAddOrder(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := DB.GetAllOrders()
+		records := DB.getAllOrders()
 		require.NotEmpty(t, records)
 
 		var actual order.Order
@@ -119,7 +121,7 @@ func TestAddOrder(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := DB.GetAllOrders()
+		records := DB.getAllOrders()
 		require.NotEmpty(t, records)
 
 		var actual order.Order

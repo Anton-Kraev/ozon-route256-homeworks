@@ -1,3 +1,5 @@
+//go:build integration
+
 package pg
 
 import (
@@ -95,8 +97,8 @@ func TestChangeOrders(t *testing.T) {
 
 	DB.SetUp(t, "orders", "wrap")
 	defer DB.TearDown(t)
-	DB.FillWraps(testWraps)
-	DB.FillOrders(testOrders)
+	DB.fillWraps(testWraps)
+	DB.fillOrders(testOrders)
 
 	repo := orderRepo.NewOrderRepository(DB.ConnPool)
 	txMw := middlewares.NewTransactionMiddleware(DB.ConnPool)
@@ -115,7 +117,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := DB.GetAllOrders()
+		records := DB.getAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrders[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrders[1], records[1].ToDomain())
@@ -135,7 +137,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := DB.GetAllOrders()
+		records := DB.getAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrdersChanged[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrdersChanged[1], records[1].ToDomain())
@@ -155,7 +157,7 @@ func TestChangeOrders(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, res)
 
-		records := DB.GetAllOrders()
+		records := DB.getAllOrders()
 		require.NotEmpty(t, records)
 		AssertEqualOrders(t, testOrdersChanged[0], records[0].ToDomain())
 		AssertEqualOrders(t, testOrdersChanged[1], records[1].ToDomain())

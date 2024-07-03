@@ -26,7 +26,7 @@ mockgen:
 .PHONY: integration-tests
 integration-tests:
 	$(info running integration tests...)
-	go test ./tests/...
+	go test -tags=integration ./tests/...
 
 .PHONY: up-test-db
 up-test-db:

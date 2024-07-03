@@ -1,20 +1,12 @@
 ## Запуск приложения
 
 ### Переменные окружения:
-В .env файле в корневой директории должны быть переменные:
+В .env и test.env файлах в корневой директории должны быть следующие переменные:
 ```
 POSTGRES_DB=...
 POSTGRES_USER=...
 POSTGRES_PASSWORD=...
-PGDATA=...
+PGDATA=...  // только для .env
 DATABASE_URL=...
-```
-### Запуск миграций:
-```shell
-./migration.sh up
-```
-
-### Сборка и запуск приложения в докере
-```shell
-docker-compose up --build -d postgres app
+DATABASE_URL_MIGRATIONS=...
 ```
