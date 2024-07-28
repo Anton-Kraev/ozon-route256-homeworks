@@ -23,6 +23,5 @@ func (r EventSchema) ToDomain() event.Event {
 		Payload:     r.Payload,
 		ProcessedAt: r.ProcessedAt.Time,
 		AcquiredTo:  r.AcquiredTo.Time,
-		CreatedAt:   r.CreatedAt,
 	}
 }
