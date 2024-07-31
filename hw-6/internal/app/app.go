@@ -15,6 +15,7 @@ import (
 	wrapCtrl "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/controller/cli/wrap"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/middlewares"
 	"gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/pg"
+	eventRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/repository/event"
 	orderRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/repository/order"
 	wrapRepo "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/repository/wrap"
 	orderSrvc "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/service/order"
@@ -47,6 +48,7 @@ func Start() {
 	var (
 		orderRepository = orderRepo.NewOrderRepository(connPool)
 		wrapRepository  = wrapRepo.NewWrapRepository(connPool)
+		eventRepository = eventRepo.NewEventRepository(connPool)
 
 		hashGen      = hashgen.NewHashGenerator(workersConfig.HashesN)
 		orderService = orderSrvc.NewOrderService(orderRepository, wrapRepository, hashGen)
@@ -57,7 +59,7 @@ func Start() {
 
 		workerPool   = workerpool.NewWorkerPool(workersConfig.WorkersN, workersConfig.TasksN)
 		txMiddleware = middlewares.NewTransactionMiddleware(connPool)
-		commands     = cli.NewCLI(orderController, wrapController, workerPool, txMiddleware)
+		commands     = cli.NewCLI(eventRepository, orderController, wrapController, workerPool, txMiddleware)
 	)
 
 	hashGen.Run(ctx)

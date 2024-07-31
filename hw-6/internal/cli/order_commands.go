@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+
+	domain "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/models/domain/event"
 )
 
 func (c *CLI) handleOrderCommand(input []string) {
@@ -25,7 +27,19 @@ func (c *CLI) handleOrderCommand(input []string) {
 		c.workerPool.AddTask(c.cmdCounter, inputString, func() (string, error) {
 			defer cancel()
 
-			return c.txMiddleware.CreateTransactionContext(ctx, txOptions, args, handler)
+			return c.txMiddleware.CreateTransactionContext(ctx, txOptions, args,
+				func(ctx context.Context, args []string) (string, error) {
+					err := c.eventRepo.AddEvent(ctx, domain.Event{
+						Type:    domain.Type(cmd),
+						Payload: inputString,
+					})
+					if err != nil {
+						return "", err
+					}
+
+					return handler(ctx, args)
+				},
+			)
 		})
 	}
 

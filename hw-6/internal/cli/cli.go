@@ -10,11 +10,17 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	domain "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/models/domain/event"
 )
 
 const requestTimeout = 5 * time.Second
 
 type (
+	eventRepo interface {
+		AddEvent(ctx context.Context, event domain.Event) error
+	}
+
 	orderController interface {
 		RefundOrder(ctx context.Context, args []string) (string, error)
 		RefundsList(ctx context.Context, args []string) (string, error)
@@ -47,6 +53,7 @@ type (
 
 type CLI struct {
 	cmdCounter      int
+	eventRepo       eventRepo
 	orderController orderController
 	wrapController  wrapController
 	workerPool      workerPool
@@ -54,9 +61,14 @@ type CLI struct {
 }
 
 func NewCLI(
-	orderController orderController, wrapController wrapController, pool workerPool, middleware txMiddleware,
+	eventRepo eventRepo,
+	orderController orderController,
+	wrapController wrapController,
+	pool workerPool,
+	middleware txMiddleware,
 ) CLI {
 	return CLI{
+		eventRepo:       eventRepo,
 		orderController: orderController,
 		wrapController:  wrapController,
 		workerPool:      pool,

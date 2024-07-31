@@ -14,14 +14,13 @@ func (r EventRepository) AddEvent(ctx context.Context, event event.Event) error 
 	}
 
 	const query = `
-		INSERT INTO event(id, type, payload, processed_at, acquired_to) 
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO event(type, payload, processed_at, acquired_to) 
+		VALUES ($1, $2, $3, $4)
 	`
 
 	_, err = tx.Exec(
 		ctx,
 		query,
-		event.ID,
 		event.Type,
 		event.Payload,
 		event.ProcessedAt,
