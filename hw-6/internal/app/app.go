@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 
@@ -21,10 +22,13 @@ import (
 	orderSrvc "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/service/order"
 	wrapSrvc "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/service/wrap"
 	hashgen "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/workers/hash_generator"
+	outbox "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/workers/outbox_processor"
 	workerpool "gitlab.ozon.dev/antonkraeww/homeworks/hw-6/internal/workers/worker_pool"
 )
 
 const (
+	outboxHandlePeriod = 3 * time.Second
+
 	envFilePath       = "../.env"
 	workersConfigPath = "../configs/workers.json"
 )
@@ -60,8 +64,11 @@ func Start() {
 		workerPool   = workerpool.NewWorkerPool(workersConfig.WorkersN, workersConfig.TasksN)
 		txMiddleware = middlewares.NewTransactionMiddleware(connPool)
 		commands     = cli.NewCLI(eventRepository, orderController, wrapController, workerPool, txMiddleware)
+
+		outboxProcessor = outbox.NewOutboxProcessor(eventRepository)
 	)
 
+	outboxProcessor.Start(ctx, outboxHandlePeriod)
 	hashGen.Run(ctx)
 	workerPool.Run()
 	commands.Run(ctx, cancel)
