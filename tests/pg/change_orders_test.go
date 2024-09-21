@@ -10,10 +10,10 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/middlewares"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	orderRepo "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/middlewares"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	orderRepo "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/order"
 )
 
 func TestChangeOrders(t *testing.T) {

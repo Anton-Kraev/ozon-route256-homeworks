@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
-	service "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/service/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
+	service "github.com/Anton-Kraev/ozon-route256-homeworks/internal/service/order"
 )
 
 func TestOrderController_RefundsList(t *testing.T) {

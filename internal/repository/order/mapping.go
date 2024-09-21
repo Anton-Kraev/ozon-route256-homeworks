@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 type OrderSchema struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	domain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
+	domain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
 )
 
 type eventRepo interface {

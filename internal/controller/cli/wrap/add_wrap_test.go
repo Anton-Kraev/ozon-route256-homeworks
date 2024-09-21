@@ -9,9 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	service "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/service/wrap"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	service "github.com/Anton-Kraev/ozon-route256-homeworks/internal/service/wrap"
 )
 
 func TestWrapController_AddWrap(t *testing.T) {

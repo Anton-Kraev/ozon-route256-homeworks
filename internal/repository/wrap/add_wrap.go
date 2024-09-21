@@ -3,9 +3,9 @@ package wrap
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/pg"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/pg"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
 )
 
 func (r WrapRepository) AddWrap(ctx context.Context, wrap wrap.Wrap) error {

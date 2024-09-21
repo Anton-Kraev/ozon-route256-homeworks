@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
 )
 
 func (c OrderController) RefundOrder(ctx context.Context, args []string) (string, error) {

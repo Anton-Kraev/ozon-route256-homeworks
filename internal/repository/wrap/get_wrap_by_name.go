@@ -5,7 +5,7 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
 )
 
 func (r WrapRepository) GetWrapByName(ctx context.Context, name string) (*wrap.Wrap, error) {

@@ -1,4 +1,4 @@
-module gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks
+module github.com/Anton-Kraev/ozon-route256-homeworks
 
 go 1.22.2
 

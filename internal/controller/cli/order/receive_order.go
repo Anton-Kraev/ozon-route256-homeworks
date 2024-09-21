@@ -8,8 +8,8 @@ import (
 	"log"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 func (c OrderController) ReceiveOrder(ctx context.Context, args []string) (string, error) {

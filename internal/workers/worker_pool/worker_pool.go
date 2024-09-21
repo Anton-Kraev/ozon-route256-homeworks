@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/tasks"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/tasks"
 )
 
 type WorkerPool struct {

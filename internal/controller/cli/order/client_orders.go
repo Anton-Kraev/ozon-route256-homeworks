@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	models "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	models "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 func (c OrderController) ClientOrders(ctx context.Context, args []string) (string, error) {

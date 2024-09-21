@@ -9,8 +9,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 func TestOrderService_RefundOrder(t *testing.T) {

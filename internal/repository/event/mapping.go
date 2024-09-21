@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
 )
 
 type EventSchema struct {

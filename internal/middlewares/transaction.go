@@ -5,7 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/pg"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/pg"
 )
 
 type PoolTxBeginner interface {

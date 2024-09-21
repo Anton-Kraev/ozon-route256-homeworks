@@ -5,7 +5,7 @@ package wrap
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
 )
 
 type wrapRepository interface {

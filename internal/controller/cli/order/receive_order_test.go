@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
-	service "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/service/order"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
+	service "github.com/Anton-Kraev/ozon-route256-homeworks/internal/service/order"
 )
 
 func TestOrderController_ReceiveOrder(t *testing.T) {

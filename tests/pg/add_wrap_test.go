@@ -9,9 +9,9 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/middlewares"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	wrapRepo "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/middlewares"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	wrapRepo "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/wrap"
 )
 
 func TestAddWrap(t *testing.T) {

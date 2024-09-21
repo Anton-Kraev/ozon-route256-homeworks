@@ -2,8 +2,9 @@ package cli
 
 import (
 	"context"
-	domain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
 	"strings"
+
+	domain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
 
 	"github.com/jackc/pgx/v5"
 )

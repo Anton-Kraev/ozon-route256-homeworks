@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	wrapRepo "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	wrapRepo "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/wrap"
 )
 
 func TestGetWrapByName(t *testing.T) {

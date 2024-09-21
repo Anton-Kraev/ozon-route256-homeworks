@@ -7,8 +7,8 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/helpers"
-	models "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/helpers"
+	models "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 func (r OrderRepository) GetOrdersByIDs(ctx context.Context, ids []uint64) ([]models.Order, error) {

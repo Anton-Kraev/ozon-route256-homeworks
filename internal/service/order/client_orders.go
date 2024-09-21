@@ -3,7 +3,7 @@ package order
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 // ClientOrders returns list of client orders

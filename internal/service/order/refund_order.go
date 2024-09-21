@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
-	models "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
+	models "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 // RefundOrder receives order refund from client.

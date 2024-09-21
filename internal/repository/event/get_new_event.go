@@ -5,7 +5,7 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	models "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
+	models "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
 )
 
 func (r EventRepository) GetNewEvent(ctx context.Context) (*models.Event, error) {

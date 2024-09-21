@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	domain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
+	domain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
 )
 
 func (c *CLI) handleOrderCommand(input []string) {

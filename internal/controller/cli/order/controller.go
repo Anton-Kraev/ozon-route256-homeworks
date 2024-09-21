@@ -3,7 +3,7 @@ package order
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 const timeFormat = "02.01.2006-15:04:05"

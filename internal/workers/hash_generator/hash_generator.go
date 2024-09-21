@@ -3,7 +3,7 @@ package hashgen
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/pkg/hash"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/pkg/hash"
 )
 
 type HashGenerator struct {

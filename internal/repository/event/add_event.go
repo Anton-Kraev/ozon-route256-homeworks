@@ -3,8 +3,8 @@ package event
 import (
 	"context"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/event"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/pg"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/event"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/pg"
 )
 
 func (r EventRepository) AddEvent(ctx context.Context, event event.Event) error {

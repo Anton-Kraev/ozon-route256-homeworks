@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/pg"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/pg"
 )
 
 func (r EventRepository) SetAcquired(ctx context.Context, eventID uint64, acquiredTo time.Time) error {

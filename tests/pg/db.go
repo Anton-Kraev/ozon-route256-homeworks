@@ -11,11 +11,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/pg"
-	ordersch "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/order"
-	wrapsch "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/pg"
+	ordersch "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/order"
+	wrapsch "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/wrap"
 )
 
 const testEnvPath = "../../test.env"

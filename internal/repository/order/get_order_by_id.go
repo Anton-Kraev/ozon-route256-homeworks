@@ -5,7 +5,7 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 
-	models "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
+	models "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
 )
 
 func (r OrderRepository) GetOrderByID(ctx context.Context, id uint64) (*models.Order, error) {

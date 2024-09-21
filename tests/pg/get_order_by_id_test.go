@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/order"
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/wrap"
-	orderRepo "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/repository/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/order"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/wrap"
+	orderRepo "github.com/Anton-Kraev/ozon-route256-homeworks/internal/repository/order"
 )
 
 func TestGetOrderByID(t *testing.T) {

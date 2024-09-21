@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log"
 
-	"gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/helpers"
-	errsdomain "gitlab.ozon.dev/antonkraeww/ozon-route256-homeworks/internal/models/domain/errors"
+	"github.com/Anton-Kraev/ozon-route256-homeworks/internal/helpers"
+	errsdomain "github.com/Anton-Kraev/ozon-route256-homeworks/internal/models/domain/errors"
 )
 
 func (c OrderController) DeliverOrders(ctx context.Context, args []string) (string, error) {
