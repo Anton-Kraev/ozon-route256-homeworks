@@ -1,8 +1,0 @@
-services:
-  postgres-test:
-    image: postgres:15.1
-    env_file: test.env
-    container_name: 'postgres-test-container'
-    ports:
-      - 5432:5432
-    restart: unless-stopped
